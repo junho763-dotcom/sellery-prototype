@@ -359,11 +359,19 @@ function seedData(){
       {id:'b2',name:'글로헬스',cat:'이너뷰티',manager:'박글로'}
     ],
     sellers:[
-      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:typeof AV1!=='undefined'?AV1:null,followers:84300,cat:'뷰티',likesAvg:3100,m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 공구 전환율 상위 10%.'},
-      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',followers:126000,cat:'라이프스타일',likesAvg:4200,m3Sales:22840000,refCode:'HYERIN',intro:'라이프스타일 큐레이션. 재공구율 78%.'},
-      {id:'s3',name:'민지',handle:'@minji_diet',platform:'naver',followers:45200,cat:'다이어트',likesAvg:1900,m3Sales:13221900,refCode:'MINJI5',referredBy:'s1',intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.'},
-      {id:'s4',name:'서아',handle:'@seoa_health',platform:'youtube',followers:118000,cat:'건기식',likesAvg:5400,m3Sales:52000000,refCode:'SEOA88',hidden:true,intro:'건기식 전문. 비공개 프로필.'},
-      {id:'s5',name:'로라',handle:'@lola_beauty',platform:'tiktok',followers:210000,cat:'뷰티',likesAvg:12800,m3Sales:87000000,refCode:'LOLA00',hidden:true,intro:'뷰티 메가 셀러. 비공개 프로필.'}
+      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:typeof AV1!=='undefined'?AV1:null,followers:84300,cat:'뷰티',likesAvg:3100,m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 공구 전환율 상위 10%.',
+        channels:[
+          {id:'ch1',platform:'instagram',handle:'@jiyu_beauty',url:'instagram.com/jiyu_beauty',followers:84300,verified:true,primary:true},
+          {id:'ch2',platform:'youtube',handle:'지유의 뷰티랩',url:'youtube.com/@jiyulab',followers:12400,verified:false}
+        ]},
+      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',followers:126000,cat:'라이프스타일',likesAvg:4200,m3Sales:22840000,refCode:'HYERIN',intro:'라이프스타일 큐레이션. 재공구율 78%.',
+        channels:[{id:'ch3',platform:'instagram',handle:'@hyerin_pick',url:'instagram.com/hyerin_pick',followers:126000,verified:true,primary:true}]},
+      {id:'s3',name:'민지',handle:'@minji_diet',platform:'naver',followers:45200,cat:'다이어트',likesAvg:1900,m3Sales:13221900,refCode:'MINJI5',referredBy:'s1',intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.',
+        channels:[{id:'ch4',platform:'naver',handle:'@minji_diet',url:'blog.naver.com/minji_diet',followers:45200,verified:true,primary:true}]},
+      {id:'s4',name:'서아',handle:'@seoa_health',platform:'youtube',followers:118000,cat:'건기식',likesAvg:5400,m3Sales:52000000,refCode:'SEOA88',hidden:true,intro:'건기식 전문. 비공개 프로필.',
+        channels:[{id:'ch5',platform:'youtube',handle:'@seoa_health',url:'youtube.com/@seoa_health',followers:118000,verified:true,primary:true}]},
+      {id:'s5',name:'로라',handle:'@lola_beauty',platform:'tiktok',followers:210000,cat:'뷰티',likesAvg:12800,m3Sales:87000000,refCode:'LOLA00',hidden:true,intro:'뷰티 메가 셀러. 비공개 프로필.',
+        channels:[{id:'ch6',platform:'tiktok',handle:'@lola_beauty',url:'tiktok.com/@lola_beauty',followers:210000,verified:true,primary:true}]}
     ],
     unlockedRefs:[],
     exclusiveReqs:[],
@@ -423,7 +431,8 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v5';
+const LS='sellery-proto-v6';
+const PLAT_NAMES={instagram:'인스타그램',youtube:'유튜브',naver:'네이버 블로그',tiktok:'틱톡'};
 const GRADES=[
   {g:'블랙',min:100000000,bonus:3,pct:1,perk:'수수료 +3%p · 전담 매니저 · 독점권 우선 협상'},
   {g:'다이아',min:50000000,bonus:2,pct:3,perk:'수수료 +2%p · 독점권 신청 · 스카우트 최상단'},
@@ -763,7 +772,21 @@ function vMy(){
       </div>
     </div>
   </div>
-  <div class="sec">정산 정보 ${ok?'<span class="st green">등록 완료</span>':'<span class="st red">미등록 — 등록 전까지 정산 지급 보류</span>'}</div>
+  <div class="sec">내 채널 <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--mute)">— 인증된 채널만 브랜드에 노출됩니다</span></div>
+  <div class="listcard">
+    ${(me.channels||[]).map(ch=>`<div class="rowitem" style="cursor:default">
+      <span style="font-size:18px;line-height:1">${platIcon(ch)}</span>
+      <div class="grow"><div class="nm">${esc(ch.handle)} ${ch.primary?'<span class="st green">대표</span>':''}
+        ${ch.verified?'<span class="st green">✓ 인증됨</span>':ch.vcode?'<span class="st amber">인증 대기</span>':'<span class="st red">미인증</span>'}</div>
+      <div class="sub">${PLAT_NAMES[ch.platform]||ch.platform} · ${ch.url?esc(ch.url)+' · ':''}팔로워 ${fmt(ch.followers||0)}</div></div>
+      ${!ch.verified?`<button class="pri sm" data-act="openVerify" data-k="${ch.id}">인증하기</button>`:''}
+      ${ch.verified&&!ch.primary?`<button class="sm" data-act="setPrimaryCh" data-k="${ch.id}">대표로 설정</button>`:''}
+      <button class="sm ghost" data-act="editCh" data-k="${ch.id}">수정</button>
+      ${!ch.primary?`<button class="sm danger" data-act="delCh" data-k="${ch.id}">삭제</button>`:''}
+    </div>`).join('')||'<div class="empty">등록된 채널이 없습니다</div>'}
+    <div style="padding:12px 18px;border-top:1px solid var(--soft-line)"><button class="sm" data-act="addCh">+ 채널 추가</button></div>
+  </div>
+  <div class="sec" style="margin-top:30px">정산 정보 ${ok?'<span class="st green">등록 완료</span>':'<span class="st red">미등록 — 등록 전까지 정산 지급 보류</span>'}</div>
   <div class="card">
     <div class="grid g2">
       <div class="fld"><label>정산 유형</label>
@@ -783,6 +806,42 @@ function vMy(){
     <p style="font-size:12px;color:var(--mute)">계좌 1원 인증과 사업자 진위 확인은 실서비스에서 자동 처리됩니다. 정산 정보가 없으면 D+21 지급이 보류됩니다.</p>
     <button class="pri" data-act="saveSettleInfo">정산 정보 저장</button>
   </div>`;
+}
+
+/* ============ CHANNELS ============ */
+function channelModal(chId){
+  const me=seller(S.actingSeller);
+  const ch=chId?(me.channels||[]).find(c=>c.id===chId):null;
+  openModal(`<h3>${ch?'채널 수정':'채널 추가'}</h3>
+  <div class="fld"><label>플랫폼</label><select id="chPlat">${Object.entries(PLAT_NAMES).map(([k,v])=>`<option value="${k}" ${ch&&ch.platform===k?'selected':''}>${v}</option>`).join('')}</select></div>
+  <div class="fld"><label>계정 핸들 / 채널명</label><input id="chHandle" value="${ch?esc(ch.handle):''}" placeholder="@my_account"></div>
+  <div class="fld"><label>채널 URL</label><input id="chUrl" value="${ch?esc(ch.url||''):''}" placeholder="instagram.com/my_account"></div>
+  <div class="fld"><label>팔로워 수</label><input id="chFol" type="number" value="${ch?ch.followers||0:''}" placeholder="실서비스에선 API로 자동 수집"></div>
+  <p style="font-size:12px;color:var(--mute)">저장 후 <b>인증 절차</b>를 거쳐야 브랜드에 노출됩니다. 수정하면 인증이 초기화됩니다(사칭 방지).</p>
+  <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="saveCh" data-k="${ch?ch.id:''}">저장</button></div>`);
+}
+function verifyModal(chId){
+  const me=seller(S.actingSeller);
+  const ch=(me.channels||[]).find(c=>c.id===chId);if(!ch)return;
+  if(!ch.vcode){ch.vcode='SLRY-'+Math.random().toString(36).slice(2,6).toUpperCase();save();}
+  openModal(`<h3>채널 인증 — ${esc(ch.handle)}</h3>
+  <p style="font-size:13px;color:var(--mute);margin-top:-6px">본인 계정임을 확인해 사칭을 방지합니다. 아래 <b>1회용 코드</b>를 사용해 두 방법 중 하나로 인증하세요.</p>
+  <div style="text-align:center;margin:16px 0">
+    <span style="font-family:'Archivo',sans-serif;font-size:26px;font-weight:800;letter-spacing:.15em;background:var(--yellow);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:5px 20px">${ch.vcode}</span>
+    <div style="margin-top:10px"><button class="sm ghost" data-act="copyVcode" data-k="${ch.vcode}">코드 복사</button></div>
+  </div>
+  <div class="grid g2">
+    <div class="card" style="box-shadow:none">
+      <div class="lbl-sm">방법 1 · 프로필 인증</div>
+      <p style="font-size:12.5px;color:var(--mute);margin:8px 0 0">${PLAT_NAMES[ch.platform]} 프로필 소개글(bio)에 코드를 붙여넣은 뒤 아래 확인 버튼을 누르세요. 확인 후 소개글에서 지워도 됩니다.</p>
+    </div>
+    <div class="card" style="box-shadow:none">
+      <div class="lbl-sm">방법 2 · DM 인증</div>
+      <p style="font-size:12.5px;color:var(--mute);margin:8px 0 0">해당 계정에서 셀러리 공식 계정 <b>@sellery.official</b>로 코드를 DM으로 보낸 뒤 확인 버튼을 누르세요.</p>
+    </div>
+  </div>
+  <p style="font-size:11.5px;color:var(--mute);margin-top:12px">실서비스: 프로필 크롤링/공식 API·DM 수신함 매칭으로 코드 존재를 자동 확인합니다. 프로토타입에서는 확인 버튼 클릭 시 즉시 성공 처리됩니다.</p>
+  <div class="foot"><button data-act="closeModal">나중에</button><button class="pri" data-act="confirmVerify" data-k="${ch.id}">인증 확인</button></div>`);
 }
 
 /* ============ REFERRAL ============ */
@@ -1292,6 +1351,47 @@ const ACT={
   rejectExcl(rid){
     const r=D_().exclusiveReqs.find(x=>x.id===rid);if(!r)return;
     r.status='REJECTED';save();render();toast('독점권 신청을 거절했습니다');
+  },
+  addCh(){channelModal(null);},
+  editCh(chId){channelModal(chId);},
+  saveCh(chId){
+    const me=seller(S.actingSeller);
+    const platform=$('#chPlat').value,handle=$('#chHandle').value.trim(),url=$('#chUrl').value.trim(),fol=+$('#chFol').value||0;
+    if(!handle){toast('계정 핸들을 입력해주세요');return;}
+    me.channels=me.channels||[];
+    if(chId){
+      const ch=me.channels.find(c=>c.id===chId);
+      const changed=ch.handle!==handle||ch.platform!==platform;
+      Object.assign(ch,{platform,handle,url,followers:fol});
+      if(changed){ch.verified=false;delete ch.vcode;if(ch.primary){/* 대표 채널 정보 동기화는 재인증 후 */}}
+      closeModal();save();render();toast(changed?'채널 수정됨 — 사칭 방지를 위해 재인증이 필요합니다':'채널 수정 완료');
+    }else{
+      me.channels.push({id:'ch'+(D_().seq++),platform,handle,url,followers:fol,verified:false});
+      closeModal();save();render();toast('채널 추가됨 — 인증을 진행해주세요');
+    }
+  },
+  delCh(chId){
+    const me=seller(S.actingSeller);
+    const ch=(me.channels||[]).find(c=>c.id===chId);
+    if(ch&&ch.primary){toast('대표 채널은 삭제할 수 없습니다');return;}
+    me.channels=me.channels.filter(c=>c.id!==chId);
+    save();render();toast('채널 삭제됨');
+  },
+  setPrimaryCh(chId){
+    const me=seller(S.actingSeller);
+    const ch=(me.channels||[]).find(c=>c.id===chId);
+    if(!ch||!ch.verified){toast('인증된 채널만 대표로 설정할 수 있습니다');return;}
+    me.channels.forEach(c=>c.primary=(c.id===chId));
+    me.platform=ch.platform;me.handle=ch.handle;if(ch.followers)me.followers=ch.followers;
+    save();render();toast(`대표 채널 변경 — ${ch.handle}`);
+  },
+  openVerify(chId){verifyModal(chId);},
+  copyVcode(code){try{navigator.clipboard.writeText(code);toast('인증 코드 복사됨');}catch(e){toast('복사 실패 — 코드: '+code);}},
+  confirmVerify(chId){
+    const me=seller(S.actingSeller);
+    const ch=(me.channels||[]).find(c=>c.id===chId);if(!ch)return;
+    ch.verified=true;delete ch.vcode;
+    closeModal();save();render();toast(`✓ ${ch.handle} 인증 완료 — 이제 브랜드에 노출됩니다 (시뮬레이션)`);
   },
   saveSettleInfo(){
     const me=seller(S.actingSeller);
