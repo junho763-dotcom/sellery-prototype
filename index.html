@@ -320,6 +320,23 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 .hb-val{font-family:'IBM Plex Mono',monospace;font-size:11px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 @media(max-width:640px){.hb-row{grid-template-columns:110px 1fr 78px}.hb-nm{font-size:11px}.hb-val{font-size:10px}}
 
+/* ===== seller cards (gallery) ===== */
+.scard{display:flex;flex-direction:column}
+.rec-tag{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10px;font-weight:800;letter-spacing:.06em;background:var(--yellow);border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 10px;margin:-6px 0 12px;align-self:flex-start;transform:rotate(-.8deg)}
+.sc-av{width:58px;height:58px;flex-shrink:0;border:2px solid var(--ink);box-shadow:2.5px 2.5px 0 var(--ink);background-size:cover;background-position:center;background-color:var(--surface-2)}
+.sc-av.em{display:flex;align-items:center;justify-content:center;font-size:26px}
+.mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0 12px}
+.mini-stats>div{background:var(--surface-2);border:1.5px solid var(--soft-line);padding:6px 8px;display:flex;flex-direction:column;min-width:0}
+.ms-l{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:8.5px;color:var(--mute);letter-spacing:.05em;white-space:nowrap}
+.ms-v{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-cols{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;flex:1}
+@media(max-width:640px){.mini-stats{grid-template-columns:repeat(2,1fr)}.sc-cols{grid-template-columns:1fr}}
+.sc-hist{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:11.5px;border:1.5px solid var(--soft-line);background:var(--surface-2);padding:5px 9px;margin-bottom:5px;cursor:pointer}
+.sc-hist:hover{border-color:var(--ink)}
+.sc-hist .st{font-size:9px;padding:1px 6px}
+.spark{display:flex;align-items:flex-end;gap:3px;height:44px;border-bottom:1.5px solid var(--ink);padding:0 2px}
+.spark span{flex:1;background:var(--red);border:1px solid var(--ink);border-bottom:none;min-height:4px}
+
 /* ===== gongu calendar ===== */
 .cal-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:2px solid var(--ink);flex-wrap:wrap}
 .cal-legend{margin-left:auto;font-size:10.5px;color:var(--mute);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
@@ -397,22 +414,22 @@ function seedData(){
   const D = n => ymd(addD(t,n));
   const data = {
     brands:[
-      {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인',email:'partner@vyneherb.co'},
-      {id:'b2',name:'글로헬스',cat:'이너뷰티',manager:'박글로',email:'official@weglow.biz'}
+      {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인',email:'partner@vyneherb.co',gmvBase:52000000},
+      {id:'b2',name:'글로헬스',cat:'이너뷰티',manager:'박글로',email:'official@weglow.biz',gmvBase:382000000}
     ],
     sellers:[
-      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:typeof AV1!=='undefined'?AV1:null,followers:84300,cat:'뷰티',likesAvg:3100,m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 판매 전환율 상위 10%.',
+      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:typeof AV1!=='undefined'?AV1:null,followers:84300,cat:'뷰티',likesAvg:3100,recentLikes:[2900,3400,2800,3600,3100,3500],m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 판매 전환율 상위 10%.',
         channels:[
           {id:'ch1',platform:'instagram',handle:'@jiyu_beauty',url:'instagram.com/jiyu_beauty',followers:84300,verified:true,primary:true},
           {id:'ch2',platform:'youtube',handle:'지유의 뷰티랩',url:'youtube.com/@jiyulab',followers:12400,verified:false}
         ]},
-      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',followers:126000,cat:'라이프스타일',likesAvg:4200,m3Sales:22840000,refCode:'HYERIN',intro:'라이프스타일 큐레이션. 재판매율 78%.',
+      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',followers:126000,cat:'라이프스타일',likesAvg:4200,recentLikes:[3900,4600,4100,4400,4000,4700],m3Sales:22840000,refCode:'HYERIN',intro:'라이프스타일 큐레이션. 재판매율 78%.',
         channels:[{id:'ch3',platform:'instagram',handle:'@hyerin_pick',url:'instagram.com/hyerin_pick',followers:126000,verified:true,primary:true}]},
-      {id:'s3',name:'민지',handle:'@minji_diet',platform:'naver',followers:45200,cat:'다이어트',likesAvg:1900,m3Sales:13221900,refCode:'MINJI5',referredBy:'s1',intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.',
+      {id:'s3',name:'민지',handle:'@minji_diet',platform:'naver',followers:45200,cat:'다이어트',likesAvg:1900,recentLikes:[1700,2100,1800,2000,1900,2200],m3Sales:13221900,refCode:'MINJI5',referredBy:'s1',intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.',
         channels:[{id:'ch4',platform:'naver',handle:'@minji_diet',url:'blog.naver.com/minji_diet',followers:45200,verified:true,primary:true}]},
-      {id:'s4',name:'서아',handle:'@seoa_health',platform:'youtube',followers:118000,cat:'건기식',likesAvg:5400,m3Sales:52000000,refCode:'SEOA88',hidden:true,intro:'건기식 전문. 비공개 프로필.',
+      {id:'s4',name:'서아',handle:'@seoa_health',platform:'youtube',followers:118000,cat:'건기식',likesAvg:5400,recentLikes:[5100,5800,5200,5600,5400],m3Sales:52000000,refCode:'SEOA88',hidden:true,intro:'건기식 전문. 비공개 프로필.',
         channels:[{id:'ch5',platform:'youtube',handle:'@seoa_health',url:'youtube.com/@seoa_health',followers:118000,verified:true,primary:true}]},
-      {id:'s5',name:'로라',handle:'@lola_beauty',platform:'tiktok',followers:210000,cat:'뷰티',likesAvg:12800,m3Sales:87000000,refCode:'LOLA00',hidden:true,intro:'뷰티 메가 셀러. 비공개 프로필.',
+      {id:'s5',name:'로라',handle:'@lola_beauty',platform:'tiktok',followers:210000,cat:'뷰티',likesAvg:12800,recentLikes:[12100,13400,12600,13100,12800],m3Sales:87000000,refCode:'LOLA00',hidden:true,intro:'뷰티 메가 셀러. 비공개 프로필.',
         channels:[{id:'ch6',platform:'tiktok',handle:'@lola_beauty',url:'tiktok.com/@lola_beauty',followers:210000,verified:true,primary:true}]}
     ],
     unlockedRefs:[],
@@ -473,7 +490,7 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v7';
+const LS='sellery-proto-v8';
 const PLAT_NAMES={instagram:'인스타그램',youtube:'유튜브',naver:'네이버 블로그',tiktok:'틱톡'};
 const GRADES=[
   {g:'블랙',min:100000000,bonus:3,pct:1,perk:'수수료 +3%p · 전담 매니저 · 독점권 우선 협상'},
@@ -506,6 +523,26 @@ const gfull=n=>`${GICON[n]||''} ${n}`;
 const tierIdx=g=>GRADES.findIndex(t=>t.g===g);
 const exGradeOf=p=>p.exclusive&&(p.exclusive.grade||(p.exclusive.min>=50000000?'다이아':'플래티넘'));
 const exEligible=(p,s)=>tierIdx(gname(s))>-1&&tierIdx(gname(s))<=tierIdx(exGradeOf(p));
+/* brand grades — cumulative confirmed GMV, perks are brand-side */
+const BGRADES=[
+  {g:'블랙',min:1000000000,pct:1,perk:'플랫폼 수수료 −2%p · 전담 파트너 매니저 · 기획전 최상단'},
+  {g:'다이아',min:500000000,pct:3,perk:'수수료 −1.5%p · 스카우트 열람권 월 5회 무료'},
+  {g:'플래티넘',min:200000000,pct:8,perk:'수수료 −1%p · 상위 셀러 우선 매칭'},
+  {g:'골드',min:80000000,pct:18,perk:'수수료 −0.5%p · 카탈로그 상단 노출'},
+  {g:'실버',min:30000000,pct:35,perk:'상품 검수 우선 처리'},
+  {g:'브론즈',min:10000000,pct:60,perk:'인증 브랜드 뱃지'},
+  {g:'스타터',min:0,pct:100,perk:'기본 조건'}
+];
+function bGmv(b){
+  const myP=D_().products.filter(p=>p.brandId===b.id).map(p=>p.id);
+  return (b.gmvBase||0)+D_().campaigns.filter(c=>myP.includes(c.productId)).reduce((a,c)=>a+calc(c).net,0);
+}
+const bgradeOf=v=>BGRADES.find(t=>v>=t.min);
+const bgname=b=>bgradeOf(bGmv(b)).g;
+function pyrHtml(tiers,cur){
+  return `<div class="pyr">${tiers.map((t,i)=>{const mine=t.g===cur;
+    return `<div class="pyr-row ${mine?'me':''}" style="width:calc(128px + ${(i*11).toFixed(1)}%)"><span>${GICON[t.g]} ${t.g}${mine?' <span class="mebadge">MY</span>':''}</span><span class="pct">상위 ${t.pct}%</span></div>`;}).join('')}</div>`;
+}
 const REF_RATE=0.02, REF_BOOST=0.01, REF_TIMES=5;
 const PLAT_ICONS={
   instagram:`<svg class="plic" viewBox="0 0 24 24" width="14" height="14" aria-label="Instagram"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" fill="none" stroke="#C13584" stroke-width="2.4"/><circle cx="12" cy="12" r="4.4" fill="none" stroke="#C13584" stroke-width="2.4"/><circle cx="17.6" cy="6.4" r="1.5" fill="#C13584"/></svg>`,
@@ -671,8 +708,7 @@ function vSellerHome(){
   const pct=next?Math.min(100,Math.round(sl.m3Sales/next.min*100)):100;
   const pyr=`<div class="card">
     <div class="lbl-sm">내 셀러 그레이드 — 상위 ${g.pct}%</div>
-    <div class="pyr">${GRADES.map((t,i)=>{const mine=t.g===g.g;
-      return `<div class="pyr-row ${mine?'me':''}" style="width:calc(128px + ${(i*11).toFixed(1)}%)"><span>${GICON[t.g]} ${t.g}${mine?' <span class="mebadge">MY</span>':''}</span><span class="pct">상위 ${t.pct}%</span></div>`;}).join('')}</div>
+    ${pyrHtml(GRADES,g.g)}
     ${next?`<div class="meter" style="margin-top:14px"><span style="width:${pct}%"></span></div>
     <div style="font-size:12px;color:var(--mute);margin-top:7px">최근 3개월 <b>₩${fmt(sl.m3Sales)}</b> — 다음 등급 <b>${next.g}</b>까지 <b style="color:var(--red)">₩${fmt(next.min-sl.m3Sales)}</b> 남음 · 달성 시 ${next.perk.split('·')[0].trim()}</div>`
     :`<div style="font-size:12px;color:var(--mute);margin-top:10px">최고 등급 달성 · ${g.perk}</div>`}
@@ -720,7 +756,7 @@ function prodCard(p){
     <div class="ph" data-act="prodDetail" data-k="${p.id}" style="cursor:pointer;position:relative">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:92%;max-width:78%;object-fit:contain;pointer-events:none">`:p.em}
       ${p.t?`<span class="trendbadge">▲ ${p.t.g}</span>`:''}
       ${p.exclusive?`<span class="exclbadge">독점권 오퍼</span>`:''}</div>
-    <div><span class="chip brand">${b.name}</span> <span class="sub" style="font-size:11px;color:var(--mute)">${p.cat}</span></div>
+    <div><span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> <span class="sub" style="font-size:11px;color:var(--mute)">${p.cat}</span></div>
     <div class="nm" data-act="prodDetail" data-k="${p.id}" style="cursor:pointer">${esc(p.name)}</div>
     <div class="meta">${esc(p.desc)} · 샘플 ${p.sample}</div>
     <div class="prices"><span class="gp">₩${fmt(p.gp)}</span><span class="cp">₩${fmt(p.cp)}</span><span class="rate">수수료 ${(p.rate*100).toFixed(0)}%</span></div>
@@ -1034,7 +1070,7 @@ function productDetailModal(pid){
     </div>`;
   }
   openModal(`<h3>${p.em} ${esc(p.name)}</h3>
-  <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px"><span class="chip brand">${b.name}</span> ${p.cat} · 판매가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> · 수수료 ${(p.rate*100).toFixed(0)}% · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
+  <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px"><span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> ${p.cat} · 판매가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> · 수수료 ${(p.rate*100).toFixed(0)}% · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
   ${excl}
   <div class="lbl-sm" style="margin:16px 0 8px">이 상품의 판매 실적 — 셀러 익명</div>
   <div class="tblw" style="box-shadow:none"><table style="min-width:480px">
@@ -1126,7 +1162,7 @@ function vBrandHome(){
   return `<div class="hero-band">
     <div class="ey">Brand Center</div>
     <h1>${brand(me).name} 님, 반가워요.<br>${heroLine}</h1>
-    <div class="sub">승인 대기 <b>${pend.length}건</b> · 진행 중 판매 <b>${live.length}건</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일</div>
+    <div class="sub">브랜드 등급 <b>${gfull(bgname(brand(me)))}</b> · 승인 대기 <b>${pend.length}건</b> · 진행 중 판매 <b>${live.length}건</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일</div>
   </div>
   <div class="grid g2 overlap">${topChart}${brandNews}</div>
   <div class="sec">내 현황</div>
@@ -1155,30 +1191,67 @@ function vBrandProducts(){
     <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||'<span style="color:var(--mute);font-size:12px">—</span>'}</td></tr>`;}).join('')}
   </tbody></table></div>`;
 }
+function sellerCard(s,reason){
+  const hist=D_().campaigns.filter(c=>c.sellerId===s.id&&['LIVE','CLEARING','SETTLED'].includes(c.status))
+    .sort((a,b)=>b.createdAt<a.createdAt?-1:1).slice(0,2);
+  const eng=(s.likesAvg/s.followers*100).toFixed(1);
+  const rl=s.recentLikes||[];
+  const mxL=Math.max(...rl,1);
+  const trendUp=rl.length>1&&rl[rl.length-1]>=rl[0];
+  return `<div class="card scard">
+    ${reason?`<div class="rec-tag">✦ 추천 — ${reason}</div>`:''}
+    <div style="display:flex;gap:14px;align-items:center">
+      ${s.img?`<div class="sc-av" style="background-image:url('${s.img}')"></div>`:`<div class="sc-av em">${{'s1':'💄','s2':'🛋️','s3':'🏃‍♀️'}[s.id]||'⭐'}</div>`}
+      <div style="flex:1;min-width:0">
+        <div><span class="gradebox sm">${gfull(gname(s))}</span> <b style="font-size:15.5px">${esc(s.name)}</b> <span style="color:var(--mute);font-size:12px">${platIcon(s)} ${s.handle}</span></div>
+        <div style="font-size:12px;color:var(--mute)">${s.cat} · ${esc(s.intro)}</div>
+      </div>
+    </div>
+    <div class="mini-stats">
+      <div><span class="ms-l">3개월 매출</span><span class="ms-v">₩${fmt(s.m3Sales)}</span></div>
+      <div><span class="ms-l">팔로워</span><span class="ms-v">${fmt(s.followers)}</span></div>
+      <div><span class="ms-l">좋아요 평균</span><span class="ms-v">${fmt(s.likesAvg)}</span></div>
+      <div><span class="ms-l">참여율</span><span class="ms-v">${eng}%</span></div>
+    </div>
+    <div class="sc-cols">
+      <div>
+        <div class="lbl-sm" style="margin-bottom:6px">최근 진행 이력</div>
+        ${hist.length?hist.map(c=>{const p=prod(c.productId),k=calc(c);
+          return `<div class="sc-hist" data-act="open" data-k="${c.id}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.em} ${esc(p.name)} <span style="color:var(--mute)">${c.start?md(P(c.start))+'–'+md(P(c.end)):''}</span></span><span style="font-family:'IBM Plex Mono',monospace;white-space:nowrap">₩${fmt(k.net)}</span>${stChip(c.status)}</div>`;}).join('')
+        :'<div style="font-size:12px;color:var(--mute)">셀러리 첫 판매 대기 — 지금 제안해 선점하세요</div>'}
+      </div>
+      <div>
+        <div class="lbl-sm" style="margin-bottom:6px">최근 게시물 반응 ${trendUp?'<b style="color:var(--red)">▲ 상승</b>':''}</div>
+        <div class="spark">${rl.map(v=>`<span style="height:${Math.max(12,v/mxL*100)}%"></span>`).join('')}</div>
+        <div style="font-size:10.5px;color:var(--mute);margin-top:4px">최근 ${rl.length}개 게시물 좋아요</div>
+      </div>
+    </div>
+    <button class="pri" data-act="invite" data-k="${s.id}" style="margin-top:12px;width:100%">판매 직접 제안</button>
+  </div>`;
+}
 function vGallery(){
   const unlocked=D_().unlockedRefs||[];
+  const b=brand(S.actingBrand);
+  const catMap={'건강기능식품':['건기식','다이어트','루테인','비타민'],'이너뷰티':['뷰티','이너뷰티','피부','화장품']};
+  const rel=catMap[b.cat]||[];
+  const pub=D_().sellers.filter(s=>!s.hidden);
+  const recs=pub.map(s=>({s,catFit:rel.includes(s.cat),score:(rel.includes(s.cat)?2:0)+(s.m3Sales/s.followers)/300}))
+    .sort((a,b)=>b.score-a.score).slice(0,2);
   const scout=D_().sellers.filter(s=>s.hidden).map(s=>{
     const un=unlocked.includes(s.id);
     return `<div class="card">
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="gradebox">${gfull(gname(s))}</span>${platIcon(s)}<b>○○○ 셀러</b><span style="color:var(--mute);font-size:12px">${s.cat} 주력</span></div>
     <div style="font-family:'Archivo',sans-serif;font-size:23px;font-weight:800;margin:8px 0 3px">₩${fmt(s.m3Sales)} <span style="font-size:11px;color:var(--mute);font-weight:500">최근 3개월 매출</span></div>
-    ${un?`<div style="font-size:12.5px;color:var(--mute)">팔로워 ${fmt(s.followers)} · 좋아요 평균 ${fmt(s.likesAvg)} · 매출/팔로워 ₩${fmt(s.m3Sales/s.followers)} · 매출/좋아요 ₩${fmt(s.m3Sales/s.likesAvg)}</div>
+    ${un?`<div style="font-size:12.5px;color:var(--mute)">팔로워 ${fmt(s.followers)} · 좋아요 평균 ${fmt(s.likesAvg)} · 참여율 ${(s.likesAvg/s.followers*100).toFixed(1)}% · 매출/팔로워 ₩${fmt(s.m3Sales/s.followers)}</div>
      <div class="btnrow" style="margin-top:12px"><button class="pri sm" data-act="invite" data-k="${s.id}">판매 제안 보내기</button></div>`
     :`<div style="font-size:12.5px;color:var(--mute)">팔로워 ●●●,●●● · 좋아요 평균 ●,●●● — 상세 지표 잠김</div>
      <div class="btnrow" style="margin-top:12px"><button class="sm" data-act="unlockRef" data-k="${s.id}">🔓 레퍼런스 열람 · ₩29,000 (시뮬)</button></div>`}
     </div>`;}).join('');
-  return `<h2 class="pg">인플루언서 갤러리 <small>셀러의 갤러리를 둘러보고 판매를 직접 제안하세요</small></h2>
-  <div class="grid g3">${D_().sellers.filter(s=>!s.hidden).map(s=>{
-    const done=D_().campaigns.filter(c=>c.sellerId===s.id&&['SETTLED','CLEARING'].includes(c.status));
-    const tot=done.reduce((a,c)=>a+calc(c).net,0);
-    return `<div class="card prod">
-      ${s.img?`<div class="ph av" style="background-image:url('${s.img}')"></div>`:`<div class="ph" style="font-size:40px">${{'s1':'💄','s2':'🛋️','s3':'🏃‍♀️'}[s.id]||'⭐'}</div>`}
-      <div><span class="gradebox sm">${gfull(gname(s))}</span> <b style="font-size:15px">${s.name}</b> <span style="color:var(--mute);font-size:12px">${platIcon(s)} ${s.handle}</span></div>
-      <div class="meta">${s.cat} · 팔로워 ${fmt(s.followers)}</div>
-      <div class="meta">${esc(s.intro)}</div>
-      <div class="meta">아카이브: 판매 ${done.length}회 · 누적 ₩${fmt(tot)}</div>
-      <button class="pri" data-act="invite" data-k="${s.id}">판매 직접 제안</button>
-    </div>`;}).join('')}</div>
+  return `<h2 class="pg">인플루언서 갤러리 <small>이력·반응 데이터를 보고 판매를 직접 제안하세요</small></h2>
+  <div class="sec" style="margin-top:0">${esc(b.name)} 맞춤 추천 셀러</div>
+  <div class="grid g2">${recs.map(r=>sellerCard(r.s,`${r.catFit?`${esc(b.cat)}와 카테고리 적합`:'매출 효율 상위'} · 매출/팔로워 ₩${fmt(r.s.m3Sales/r.s.followers)}`)).join('')}</div>
+  <div class="sec">전체 셀러</div>
+  <div class="grid g2">${pub.map(s=>sellerCard(s)).join('')}</div>
   <div class="sec">익명 셀러 스카우트 — 유료 레퍼런스</div>
   <p style="font-size:12.5px;color:var(--mute);margin:-2px 0 14px">프로필 비공개 셀러입니다. 레퍼런스 열람권(건당)을 구매하면 상세 지표를 확인하고 제안을 보낼 수 있습니다. <b>제안이 수락되는 순간 DM이 열리고 신원이 공개됩니다.</b></p>
   <div class="grid g2">${scout}</div>
@@ -1258,12 +1331,14 @@ function vBrandMy(){
       </div>
     </div>
     <div class="card">
-      <div class="lbl-sm">플랫폼 이용 요약</div>
-      <ul style="font-size:13px;margin:12px 0 0;padding-left:18px;line-height:2">
-        <li>플랫폼 중개 수수료 <b>${(PLAT_RATE*100).toFixed(0)}%</b> — 팔린 만큼만</li>
-        <li>정산: 판매 종료 + <b>D+${CLEAR_DAYS}</b> 자동 지급</li>
-        <li>셀러 제안·스카우트는 인플루언서 갤러리에서</li>
-      </ul>
+      ${(()=>{const gv=bGmv(b),bg=bgradeOf(gv),bnext=BGRADES[BGRADES.indexOf(bg)-1];
+        const bpct=bnext?Math.min(100,Math.round(gv/bnext.min*100)):100;
+        return `<div class="lbl-sm">브랜드 등급 — 상위 ${bg.pct}%</div>
+        ${pyrHtml(BGRADES,bg.g)}
+        ${bnext?`<div class="meter" style="margin-top:12px"><span style="width:${bpct}%"></span></div>
+        <div style="font-size:12px;color:var(--mute);margin-top:7px">누적 확정 매출 <b>₩${fmt(gv)}</b> — 다음 등급 <b>${bnext.g}</b>까지 <b style="color:var(--red)">₩${fmt(bnext.min-gv)}</b> · 달성 시 ${bnext.perk.split('·')[0].trim()}</div>`
+        :`<div style="font-size:12px;color:var(--mute);margin-top:8px">최고 등급 · ${bg.perk}</div>`}
+        <div style="font-size:12px;color:var(--mute);margin-top:8px">현재 혜택: <b>${bg.perk}</b></div>`;})()}
     </div>
   </div>
   <div class="sec" style="margin-top:30px">정산 정보 ${ok?'<span class="st green">등록 완료</span>':'<span class="st red">미등록 — 등록 전까지 정산 지급 보류</span>'}</div>
