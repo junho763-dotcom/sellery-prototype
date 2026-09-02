@@ -283,7 +283,7 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 
 /* ===== grade pyramid & home news ===== */
 .pyr{display:flex;flex-direction:column;align-items:center;gap:7px;margin-top:12px}
-.pyr-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface-2);border:1.5px solid var(--soft-line);padding:3px 11px;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;font-weight:700;min-width:172px;letter-spacing:.02em;white-space:nowrap}
+.pyr-row{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface-2);border:1.5px solid var(--soft-line);padding:3px 10px;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;font-weight:700;max-width:100%;letter-spacing:.02em;white-space:nowrap}
 .pyr-row span{white-space:nowrap}
 .pyr-row .pct{color:var(--mute);font-weight:500}
 .pyr-row.me{background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);font-size:11.5px;padding:5px 13px;position:relative;z-index:1}
@@ -620,8 +620,8 @@ function vSellerHome(){
   const pct=next?Math.min(100,Math.round(sl.m3Sales/next.min*100)):100;
   const pyr=`<div class="card">
     <div class="lbl-sm">내 셀러 그레이드 — 상위 ${g.pct}%</div>
-    <div class="pyr">${GRADES.map((t,i)=>{const w=26+i*12.3;const mine=t.g===g.g;
-      return `<div class="pyr-row ${mine?'me':''}" style="width:${w}%"><span>${GICON[t.g]} ${t.g}${mine?' <span class="mebadge">MY</span>':''}</span><span class="pct">상위 ${t.pct}%</span></div>`;}).join('')}</div>
+    <div class="pyr">${GRADES.map((t,i)=>{const mine=t.g===g.g;
+      return `<div class="pyr-row ${mine?'me':''}" style="width:calc(128px + ${(i*11).toFixed(1)}%)"><span>${GICON[t.g]} ${t.g}${mine?' <span class="mebadge">MY</span>':''}</span><span class="pct">상위 ${t.pct}%</span></div>`;}).join('')}</div>
     ${next?`<div class="meter" style="margin-top:14px"><span style="width:${pct}%"></span></div>
     <div style="font-size:12px;color:var(--mute);margin-top:7px">최근 3개월 <b>₩${fmt(sl.m3Sales)}</b> — 다음 등급 <b>${next.g}</b>까지 <b style="color:var(--red)">₩${fmt(next.min-sl.m3Sales)}</b> 남음 · 달성 시 ${next.perk.split('·')[0].trim()}</div>`
     :`<div style="font-size:12px;color:var(--mute);margin-top:10px">최고 등급 달성 · ${g.perk}</div>`}
