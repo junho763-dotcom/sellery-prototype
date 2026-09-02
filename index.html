@@ -1361,7 +1361,7 @@ function detActions(c,k,p,s,linkUrl){
     case 'LIVE':
       A.push(card('공구 링크 <span class="st live"><span class="pulse"></span>LIVE</span>',
         `<code style="font-size:11.5px">${linkUrl}</code> · 종료 ${md(P(c.end))}`,
-        `<button class="pri" data-act="preview" data-k="${c.id}">전시장(구매 페이지) 미리보기</button>
+        `<button class="pri" data-act="preview" data-k="${c.id}">공구 페이지 미리보기</button>
          <button data-act="copyLink" data-k="${linkUrl}">링크 복사</button>`));
       if(V==='admin') A.push(sim('판매 시뮬레이션','구매자 주문을 흉내내 정산 숫자가 움직이는 걸 확인하세요.',
         `<button class="sm" data-act="simOrders" data-k="${c.id}">주문 +5건</button>
@@ -1428,13 +1428,13 @@ function productModal(){
 function previewModal(cid){
   const c=camp(cid),p=prod(c.productId),s=seller(c.sellerId),b=brand(p.brandId);
   const left=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
-  openModal(`<h3 style="text-align:center">전시장 미리보기 — 구매자 화면</h3>
+  openModal(`<h3 style="text-align:center">공구 페이지 미리보기 — 구매자 화면</h3>
   <div class="landing">
     <div class="hero"><div class="em">${p.em}</div>
       <h3>${esc(p.name)}</h3><div class="by">${b.name} × ${s.name} ${s.handle} 단독 공구</div></div>
     <div class="body">
       <div class="pr"><span class="g">₩${fmt(p.gp)}</span><span class="c">₩${fmt(p.cp)}</span></div>
-      <div class="timer">공구 마감까지 ${left}일 — 기간 한정 전시</div>
+      <div class="timer">공구 마감까지 ${left}일 — 기간 한정 특가</div>
       <button class="pri buy" data-act="simBuy" data-k="${cid}">구매하기 (주문 시뮬레이션)</button>
       <p style="font-size:11px;color:var(--mute);text-align:center;margin:10px 0 0">결제는 셀러리(주)가 대행하며, 당사는 통신판매중개자입니다 · #광고 경제적 대가 관계 표시</p>
     </div>
