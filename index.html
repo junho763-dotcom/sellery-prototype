@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>셀러리 프로토타입</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cg%20stroke%3D%22%23141414%22%20stroke-width%3D%221.5%22%3E%3Ccircle%20cx%3D%226.5%22%20cy%3D%225.5%22%20r%3D%223%22%20fill%3D%22%239cc86a%22%2F%3E%3Ccircle%20cx%3D%2217.5%22%20cy%3D%225.5%22%20r%3D%223%22%20fill%3D%22%239cc86a%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%224.4%22%20r%3D%223.4%22%20fill%3D%22%236da33a%22%2F%3E%3Crect%20x%3D%224.6%22%20y%3D%228.2%22%20width%3D%224.2%22%20height%3D%2212.8%22%20rx%3D%222.1%22%20fill%3D%22%23cfe3a4%22%2F%3E%3Crect%20x%3D%2215.2%22%20y%3D%228.2%22%20width%3D%224.2%22%20height%3D%2212.8%22%20rx%3D%222.1%22%20fill%3D%22%23cfe3a4%22%2F%3E%3Crect%20x%3D%229.9%22%20y%3D%227.4%22%20width%3D%224.2%22%20height%3D%2213.6%22%20rx%3D%222.1%22%20fill%3D%22%23aed378%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Archivo:wght@500;600;700;800;900&display=swap">
+<style>
+/* SELLERY — neo-brutalist editorial skin (single committed theme) */
+:root{
+  --bg:#efede2;
+  --surface:#fdfcf6;
+  --surface-2:#e6e3d4;
+  --ink:#141414;
+  --mute:#6d6a5c;
+  --line:#141414;
+  --soft-line:#d6d3c2;
+  --red:#457c28; /* brand accent — warm celery-leaf green, tuned to the cream ground */
+  --red-soft:#e8efda;
+  --yellow:#f7df3e;
+  --yellow-soft:#faf3c4;
+  --money:#8f6400;
+  --money-soft:#f5ecc9;
+  --danger:#e03131;
+  --danger-soft:#fbe3e0;
+  --info:#2757a8;
+  --info-soft:#e2ebf9;
+  --brand-c:#2757a8; --brand-bg:#e2ebf9;
+  --seller-c:#c02467; --seller-bg:#fbe0ec;
+  --plat-c:#2f7d32; --plat-bg:#e2f0dd;
+  --hs:4px 4px 0 var(--ink);
+  --hs-sm:3px 3px 0 var(--ink);
+  --hs-red:4px 4px 0 var(--red);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:'IBM Plex Sans KR',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  font-size:14.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+button{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12.5px;cursor:pointer;
+  border:2px solid var(--ink);border-radius:4px;padding:9px 16px;
+  background:var(--surface);color:var(--ink);font-weight:700;letter-spacing:.02em;
+  box-shadow:var(--hs-sm);transition:transform .12s ease,box-shadow .12s ease}
+button:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+button.pri{background:var(--ink);color:var(--surface);box-shadow:var(--hs-red)}
+button.pri:hover{box-shadow:5px 5px 0 var(--red)}
+button.pri:active{box-shadow:1px 1px 0 var(--red)}
+button.ghost{background:transparent}
+button.danger{background:var(--red);color:#fff;box-shadow:var(--hs-sm)}
+button.sm{padding:6px 12px;font-size:11.5px}
+button[disabled]{cursor:not-allowed;opacity:.45;transform:none!important;box-shadow:var(--hs-sm)!important}
+input,select,textarea{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:13px;background:var(--surface);color:var(--ink);border:2px solid var(--ink);border-radius:4px;padding:9px 12px;width:100%}
+textarea{resize:vertical;font-family:'IBM Plex Sans KR',sans-serif}
+:focus{outline:none}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== app bar ===== */
+.appbar{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:2px solid var(--ink);
+  display:flex;align-items:center;gap:22px;padding:12px 24px;flex-wrap:wrap}
+.wordmark{font-family:'Archivo',sans-serif;font-weight:800;font-size:18px;letter-spacing:.06em;white-space:nowrap;
+  background:var(--surface);border:2px solid var(--ink);box-shadow:var(--hs-red);padding:5px 16px;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:8px}
+.wordmark svg{flex-shrink:0;transform:rotate(-4deg)}
+.wordmark .dot{color:var(--red);font-style:normal}
+.roletabs{display:flex;gap:8px}
+.roletabs button{background:transparent;border:2px solid transparent;box-shadow:none;color:var(--mute);
+  padding:6px 12px;font-size:12px;letter-spacing:.08em;position:relative;text-transform:uppercase}
+.roletabs button:hover{color:var(--ink);transform:none;box-shadow:none}
+.roletabs button.on{background:var(--yellow);border-color:var(--ink);color:var(--ink);box-shadow:var(--hs-sm)}
+.badge{position:absolute;top:-9px;right:-9px;background:var(--danger);color:#fff;font-size:10px;font-weight:800;
+  border:1.5px solid var(--ink);border-radius:999px;min-width:17px;height:17px;line-height:14px;padding:0 4px;text-align:center}
+.master{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--mute)}
+.master .chip-master{background:var(--ink);color:var(--yellow);font-weight:700;font-size:10px;letter-spacing:.12em;padding:4px 12px;white-space:nowrap;font-family:'IBM Plex Mono',monospace}
+.master button{box-shadow:none;border-width:1.5px}
+.master button:hover{transform:none;box-shadow:var(--hs-sm)}
+
+/* ===== ticker ===== */
+.ticker{background:var(--ink);color:var(--bg);overflow:hidden;white-space:nowrap;border-bottom:2px solid var(--ink)}
+.ticker .tk{display:inline-block;padding:7px 0;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;animation:tick 28s linear infinite}
+.ticker em{font-style:italic;color:var(--yellow);letter-spacing:.05em}
+.ticker .sp{color:var(--red);margin:0 18px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.ticker .tk{animation:none}}
+
+/* ===== sub nav ===== */
+.subnav{display:flex;gap:8px;padding:16px 24px 0;max-width:1200px;margin:0 auto;flex-wrap:wrap;align-items:center}
+.subnav button{background:transparent;border:2px solid var(--ink);box-shadow:none;padding:6px 14px;font-size:12px;color:var(--ink)}
+.subnav button:hover{box-shadow:var(--hs-sm)}
+.subnav button.on{background:var(--ink);color:var(--bg);box-shadow:var(--hs-red)}
+.persona{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute)}
+.persona select{width:auto;padding:5px 8px;font-size:12px}
+
+main{max-width:1200px;margin:0 auto;padding:26px 24px 90px}
+h2.pg{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-size:30px;font-weight:800;margin:8px 0 22px;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
+h2.pg small{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12px;color:var(--mute);font-weight:400;margin-left:12px;letter-spacing:0;text-transform:none}
+
+/* ===== hero band ===== */
+.hero-band{position:relative;background:var(--bg);padding:34px 4px 58px;margin-bottom:-30px}
+.hero-band .ey{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--red);font-weight:700;text-transform:uppercase;margin-bottom:12px}
+.hero-band .ey::before{content:'→ ';font-weight:400}
+.hero-band h1{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-size:clamp(26px,4.4vw,44px);font-weight:800;margin:0;line-height:1.32;letter-spacing:-.015em;text-wrap:balance}
+.hero-band h1 em{font-style:normal;background:var(--yellow);box-shadow:2px 2px 0 var(--ink);padding:0 8px;display:inline-block;transform:rotate(-.6deg)}
+.hero-band .sub{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12.5px;color:var(--mute);margin-top:12px}
+.hero-band .sub b{color:var(--ink)}
+.overlap{position:relative;z-index:2}
+main > *{animation:rise .4s cubic-bezier(.2,.7,.3,1) both}
+main > *:nth-child(2){animation-delay:.04s}
+main > *:nth-child(3){animation-delay:.08s}
+main > *:nth-child(4){animation-delay:.12s}
+main > *:nth-child(5){animation-delay:.16s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ===== category chips ===== */
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.catchip{background:var(--surface);border:2px solid var(--ink);border-radius:4px;padding:6px 14px;font-size:12px;color:var(--ink);font-weight:700;box-shadow:none;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
+.catchip:hover{box-shadow:var(--hs-sm)}
+.catchip.on{background:var(--yellow);box-shadow:var(--hs-sm)}
+
+/* ===== cards & grids ===== */
+.grid{display:grid;gap:18px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:2px solid var(--ink);border-radius:6px;padding:18px;box-shadow:var(--hs)}
+.kpi .lbl{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.kpi .val{font-family:'Archivo',sans-serif;font-size:29px;font-weight:800;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:11.5px;color:var(--mute);margin-top:3px}
+.sec{margin:36px 0 14px;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.sec::before{content:'';width:10px;height:10px;background:var(--red)}
+.sec::after{content:'';flex:1;height:2px;background:var(--ink)}
+.lbl-sm{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+
+/* ===== chips ===== */
+.chip{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border:1.5px solid var(--ink);border-radius:3px;white-space:nowrap;line-height:1.7;vertical-align:middle;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
+.chip.brand{color:var(--brand-c);background:var(--brand-bg)}
+.chip.seller{color:var(--seller-c);background:var(--seller-bg)}
+.chip.plat{color:var(--plat-c);background:var(--plat-bg)}
+.chip.auto{color:var(--mute);background:var(--surface-2)}
+.st{display:inline-block;font-size:10.5px;font-weight:700;padding:3px 10px;border:1.5px solid var(--ink);border-radius:3px;white-space:nowrap;line-height:1.7;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
+.st.gray{background:var(--surface-2);color:var(--mute)}
+.st.blue{background:var(--info-soft);color:var(--info)}
+.st.green{background:var(--plat-bg);color:var(--plat-c)}
+.st.amber{background:var(--yellow-soft);color:var(--money)}
+.st.red{background:var(--danger-soft);color:var(--danger)}
+.st.live{background:var(--red);color:#fff;box-shadow:2px 2px 0 var(--ink)}
+.pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:5px;animation:pu 1.4s infinite}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.25}}
+.gradebox{display:inline-block;font-family:'Archivo',sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;padding:3px 10px;background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.gradebox.sm{font-size:9.5px;padding:2px 7px;box-shadow:1.5px 1.5px 0 var(--ink)}
+.meter{height:14px;border:2px solid var(--ink);background:var(--surface);position:relative}
+.meter span{display:block;height:100%;background:repeating-linear-gradient(-45deg,var(--yellow),var(--yellow) 8px,var(--ink) 8px,var(--ink) 10px)}
+
+/* ===== tables ===== */
+.tblw{overflow-x:auto;background:var(--surface);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--hs)}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:600px}
+th{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;text-align:left;color:var(--ink);font-weight:700;background:var(--yellow-soft);padding:10px 16px;border-bottom:2px solid var(--ink);white-space:nowrap}
+td{padding:11px 16px;border-bottom:1px solid var(--soft-line);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.clickable{cursor:pointer}
+tr.clickable:hover td{background:var(--yellow-soft)}
+tr.merow td{background:var(--yellow-soft);font-weight:700}
+
+/* ===== product cards ===== */
+.prod{display:flex;flex-direction:column;gap:9px;transition:transform .14s ease,box-shadow .14s ease}
+.prod:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.prod .ph{height:128px;border:2px solid var(--ink);background:var(--surface-2);
+  background-image:repeating-linear-gradient(-45deg,transparent,transparent 14px,rgba(20,20,20,.045) 14px,rgba(20,20,20,.045) 28px);
+  display:flex;align-items:center;justify-content:center;font-size:44px;transform:rotate(-1.2deg);box-shadow:var(--hs-sm)}
+.grid > .prod:nth-child(even) .ph{transform:rotate(1deg)}
+.prod .nm{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase}
+.prod .meta{font-size:12px;color:var(--mute)}
+.prod .prices{display:flex;align-items:baseline;gap:8px}
+.prod .gp{font-family:'Archivo',sans-serif;font-size:19px;font-weight:800}
+.prod .cp{font-size:12px;color:var(--mute);text-decoration:line-through}
+.prod .rate{font-size:10.5px;font-weight:800;color:var(--ink);background:var(--yellow);border:1.5px solid var(--ink);padding:1px 7px;font-family:'IBM Plex Mono',monospace}
+
+/* ===== campaign detail ===== */
+.det-head{background:var(--surface);border:2px solid var(--ink);border-radius:6px;padding:20px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;box-shadow:var(--hs)}
+.det-head .t{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-size:19px;font-weight:800;text-transform:uppercase}
+.det-body{display:grid;grid-template-columns:1fr 350px;gap:18px;margin-top:18px;align-items:start}
+@media(max-width:900px){.det-body{grid-template-columns:1fr}}
+
+/* ===== thread ===== */
+.thread{background:var(--surface);border:2px solid var(--ink);border-radius:6px;display:flex;flex-direction:column;min-height:440px;box-shadow:var(--hs)}
+.thread .msgs{flex:1;padding:18px;display:flex;flex-direction:column;gap:11px;overflow-y:auto;max-height:540px}
+.msg{max-width:78%;padding:9px 13px;border:1.5px solid var(--ink);border-radius:4px;font-size:13.5px;background:var(--surface-2);box-shadow:2px 2px 0 var(--ink)}
+.msg .who{font-size:10.5px;font-weight:800;margin-bottom:2px;letter-spacing:.04em;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
+.msg.seller{align-self:flex-start;background:var(--seller-bg)}
+.msg.brand{align-self:flex-end;background:var(--brand-bg)}
+.msg .tm{font-size:10.5px;color:var(--mute);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+.sysline{align-self:center;font-size:11.5px;color:var(--mute);background:var(--bg);border:1.5px dashed var(--mute);border-radius:3px;padding:4px 14px;text-align:center}
+.sysline b{color:var(--ink)}
+.warnline{align-self:center;font-size:11.5px;color:#fff;background:var(--danger);border:1.5px solid var(--ink);border-radius:3px;padding:6px 13px;text-align:center;max-width:90%;box-shadow:2px 2px 0 var(--ink)}
+.composer{display:flex;gap:8px;padding:12px;border-top:2px solid var(--ink)}
+.composer .as{font-size:10.5px;color:var(--mute);white-space:nowrap;align-self:center;font-weight:700;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
+.composer button{white-space:nowrap}
+
+/* ===== action panel ===== */
+.actions .card{margin-bottom:16px}
+.actions h4{margin:0 0 8px;font-size:13.5px;font-weight:800}
+.actions .hint{font-size:12.5px;color:var(--mute);margin:0 0 12px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+.sim{border:2px dashed var(--ink);background:var(--yellow-soft);border-radius:6px;padding:14px 16px;margin-bottom:16px}
+.sim h4{margin:0 0 4px;font-size:10.5px;color:var(--ink);letter-spacing:.14em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.sim p{font-size:11.5px;color:var(--mute);margin:0 0 10px}
+
+/* ===== stepper ===== */
+.stepper{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0 0}
+.stp{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:9.5px;padding:3px 8px;border:1.5px solid var(--soft-line);background:var(--surface);color:var(--mute);white-space:nowrap;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.stp.done{background:var(--yellow-soft);border-color:var(--ink);color:var(--ink)}
+.stp.now{background:var(--ink);border-color:var(--ink);color:var(--yellow)}
+
+/* ===== calendar slots ===== */
+.slots{display:flex;flex-direction:column;gap:6px}
+.slot{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;background:var(--surface-2);border:1.5px solid var(--ink);border-radius:3px;padding:8px 13px}
+.slot .rng{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;font-weight:700}
+
+/* ===== list rows ===== */
+.rowitem{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--soft-line);cursor:pointer;flex-wrap:wrap;transition:background .1s}
+.rowitem:last-child{border-bottom:none}
+.rowitem:hover{background:var(--yellow-soft)}
+.rowitem .grow{flex:1;min-width:180px}
+.rowitem .nm{font-weight:800;font-size:14px}
+.rowitem .sub{font-size:12px;color:var(--mute)}
+.listcard{background:var(--surface);border:2px solid var(--ink);border-radius:6px;overflow:hidden;box-shadow:var(--hs)}
+.empty{padding:32px;text-align:center;color:var(--mute);font-size:13px;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
+
+/* ===== modal ===== */
+.modal-bg{position:fixed;inset:0;background:rgba(20,20,20,.5);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--surface);border:2px solid var(--ink);border-radius:6px;max-width:530px;width:100%;max-height:88vh;overflow-y:auto;padding:26px;box-shadow:8px 8px 0 var(--ink);animation:min .16s ease}
+@keyframes min{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.modal h3{margin:0 0 16px;font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;color:var(--mute);margin-bottom:5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.modal .foot{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+
+/* ===== buyer landing ===== */
+.landing{border:2px solid var(--ink);border-radius:6px;overflow:hidden;box-shadow:var(--hs)}
+.landing .hero{background:var(--yellow);padding:34px 22px 26px;text-align:center;position:relative;border-bottom:2px solid var(--ink)}
+.landing .hero::after{content:'LIMITED RUN';position:absolute;top:12px;left:50%;transform:translateX(-50%) rotate(-2deg);font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.3em;color:#fff;background:var(--red);border:1.5px solid var(--ink);padding:2px 10px;font-weight:700}
+.landing .hero .em{font-size:52px;display:block;margin-top:14px}
+.landing .hero h3{font-family:'Archivo','IBM Plex Sans KR',sans-serif;margin:10px 0 3px;font-size:22px;font-weight:800;text-transform:uppercase}
+.landing .hero .by{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:11.5px;color:var(--ink)}
+.landing .body{padding:20px 22px;background:var(--surface)}
+.landing .pr{display:flex;align-items:baseline;gap:10px;justify-content:center;margin-bottom:6px}
+.landing .pr .g{font-family:'Archivo',sans-serif;font-size:31px;font-weight:800}
+.landing .pr .c{color:var(--mute);text-decoration:line-through;font-size:13px}
+.landing .timer{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--danger);font-weight:700;margin-bottom:14px;letter-spacing:.04em}
+.landing .buy{width:100%;padding:14px;font-size:14px}
+
+/* ===== toast ===== */
+#toasts{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{background:var(--ink);color:var(--bg);font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12.5px;font-weight:700;padding:11px 20px;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--red);animation:tin .2s ease;max-width:88vw}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ===== settlement ===== */
+.stmt td:first-child{color:var(--mute)}
+.stmt .tot td{font-weight:800;background:var(--yellow-soft);border-top:2px solid var(--ink)}
+.notice{background:var(--info-soft);border:1.5px solid var(--info);border-radius:4px;padding:11px 15px;font-size:12.5px;color:var(--info);margin-bottom:16px}
+code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yellow-soft);border:1px solid var(--soft-line);padding:1px 6px;border-radius:3px}
+
+/* ===== live sales ===== */
+.feed{max-height:300px;overflow-y:auto}
+.feed .rowitem{cursor:default;padding:10px 16px}
+.bars{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:8px}
+.bars .b{flex:1;background:var(--ink);border:1.5px solid var(--ink);min-height:3px;position:relative}
+.bars .b:last-child{background:var(--red)}
+.bars .b .bl{position:absolute;top:-18px;left:0;right:0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--mute)}
+.bars .b .bd{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--mute)}
+.barwrap{padding:4px 6px 24px}
+.livegrid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:start}
+@media(max-width:900px){.livegrid{grid-template-columns:1fr}}
+.autopo{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+</style>
+</head>
+<body>
+<div class="appbar">
+  <span class="wordmark"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><g stroke="#141414" stroke-width="1.5"><circle cx="6.5" cy="5.5" r="3" fill="#9cc86a"/><circle cx="17.5" cy="5.5" r="3" fill="#9cc86a"/><circle cx="12" cy="4.4" r="3.4" fill="#6da33a"/><rect x="4.6" y="8.2" width="4.2" height="12.8" rx="2.1" fill="#cfe3a4"/><rect x="15.2" y="8.2" width="4.2" height="12.8" rx="2.1" fill="#cfe3a4"/><rect x="9.9" y="7.4" width="4.2" height="13.6" rx="2.1" fill="#aed378"/></g></svg>Sellery<span class="dot">.</span></span>
+  <nav class="roletabs" id="roletabs"></nav>
+  <div class="master">
+    <span class="chip-master">MASTER MODE — 전 창구 열람</span>
+    <button class="sm ghost" data-act="reset">데이터 초기화</button>
+  </div>
+</div>
+<div class="ticker" aria-hidden="true"><div class="tk">
+  샘플은 <em>무료</em>, 테스트 후 결정 <span class="sp">✕</span> 공구 기간 <em>독점</em> 보장 <span class="sp">✕</span> 정산 <em>D+21</em> 자동 지급 <span class="sp">✕</span> 팔리기 전엔 수수료 <em>0원</em> <span class="sp">✕</span> 셀러 등급별 <em>수수료 보너스</em> <span class="sp">✕</span> 소통·정산·발주 <em>올인원</em> <span class="sp">✕</span>
+  샘플은 <em>무료</em>, 테스트 후 결정 <span class="sp">✕</span> 공구 기간 <em>독점</em> 보장 <span class="sp">✕</span> 정산 <em>D+21</em> 자동 지급 <span class="sp">✕</span> 팔리기 전엔 수수료 <em>0원</em> <span class="sp">✕</span> 셀러 등급별 <em>수수료 보너스</em> <span class="sp">✕</span> 소통·정산·발주 <em>올인원</em> <span class="sp">✕</span>
+</div></div>
+<div class="subnav" id="subnav"></div>
+<main id="main"></main>
+<div id="modalroot"></div>
+<div id="toasts"></div>
+
+<script>
+/* ============ utils ============ */
+const $ = s => document.querySelector(s);
+const fmt = n => Math.round(n).toLocaleString('ko-KR');
+const DAY = 86400000;
+const today = () => new Date(new Date().toDateString());
+const addD = (d,n) => new Date(d.getTime()+n*DAY);
+const md = d => `${d.getMonth()+1}/${d.getDate()}`;
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const P = d => new Date(d+'T00:00:00');
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ============ status machine ============ */
+const ST = {
+  SAMPLE_REQUESTED:{l:'샘플 요청',c:'blue',turn:'brand'},
+  REJECTED:{l:'거절됨',c:'red'},
+  SAMPLE_APPROVED:{l:'샘플 발송 대기',c:'blue',turn:'brand'},
+  SAMPLE_SHIPPED:{l:'샘플 배송중',c:'blue',turn:'seller'},
+  TESTING:{l:'테스트 중',c:'amber',turn:'seller'},
+  PASSED:{l:'셀러 패스',c:'gray'},
+  SCHEDULE_PROPOSED:{l:'일정 승인 대기',c:'amber',turn:'brand'},
+  SCHEDULE_CONFIRMED:{l:'일정 확정',c:'green'},
+  LIVE:{l:'공구 진행중',c:'live'},
+  CLEARING:{l:'교환·환불 기간',c:'amber'},
+  SETTLED:{l:'정산 완료',c:'green'}
+};
+const FLOW = ['SAMPLE_REQUESTED','SAMPLE_APPROVED','SAMPLE_SHIPPED','TESTING','SCHEDULE_PROPOSED','SCHEDULE_CONFIRMED','LIVE','CLEARING','SETTLED'];
+const FLOW_L = ['샘플요청','샘플승인','배송','테스트','일정제안','일정확정','공구 LIVE','환불기간','정산'];
+const PG_RATE = 0.029, PLAT_RATE = 0.07, WHT = 0.033, CLEAR_DAYS = 21;
+
+/* ============ seed ============ */
+function seedData(){
+  const t = today();
+  const D = n => ymd(addD(t,n));
+  const data = {
+    brands:[
+      {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인'},
+      {id:'b2',name:'글로헬스',cat:'이너뷰티',manager:'박글로'}
+    ],
+    sellers:[
+      {id:'s1',name:'지유',handle:'@jiyu_beauty',followers:84300,cat:'뷰티',grade:'RISING',likesAvg:3100,m3Sales:15600000,intro:'스킨케어·이너뷰티 리뷰 전문. 평균 공구 전환율 상위 10%.'},
+      {id:'s2',name:'혜린',handle:'@hyerin_pick',followers:126000,cat:'라이프스타일',grade:'POWER',likesAvg:4200,m3Sales:22840000,intro:'라이프스타일 큐레이션. 재공구율 78%.'},
+      {id:'s3',name:'민지',handle:'@minji_diet',followers:45200,cat:'다이어트',grade:'RISING',likesAvg:1900,m3Sales:13221900,intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.'},
+      {id:'s4',name:'서아',handle:'@seoa_health',followers:118000,cat:'건기식',grade:'ELITE',likesAvg:5400,m3Sales:52000000,hidden:true,intro:'건기식 전문. 비공개 프로필.'},
+      {id:'s5',name:'로라',handle:'@lola_beauty',followers:210000,cat:'뷰티',grade:'ELITE',likesAvg:12800,m3Sales:87000000,hidden:true,intro:'뷰티 메가 셀러. 비공개 프로필.'}
+    ],
+    unlockedRefs:[],
+    products:[
+      {id:'p1',brandId:'b1',name:'버닝온',desc:'다이어트 부스터 · 30포',em:'🔥',cat:'다이어트',cp:39000,gp:29900,rate:.20,sample:'무상 1박스',stock:2000,status:'listed'},
+      {id:'p2',brandId:'b1',name:'치팅온',desc:'탄수화물 컷 · 30포',em:'🍚',cat:'다이어트',cp:35000,gp:26900,rate:.20,sample:'무상 1박스',stock:1500,status:'listed'},
+      {id:'p3',brandId:'b1',name:'벨리라잇',desc:'유산균 다이어트 · 30캡슐',em:'✨',cat:'다이어트',cp:33000,gp:24900,rate:.18,sample:'무상 1박스',stock:1200,status:'listed'},
+      {id:'p4',brandId:'b2',name:'GL-01 스킨 샷',desc:'스킨 롱제비티 액상샷 · 1개월분',em:'🍍',cat:'이너뷰티',cp:119000,gp:89000,rate:.15,sample:'무상 2주분',stock:800,status:'listed'},
+      {id:'p5',brandId:'b1',name:'플랜트프로틴',desc:'식물성 단백질 · 900g',em:'🌱',cat:'건기식',cp:42000,gp:31900,rate:.22,sample:'무상 1통',stock:900,status:'listed'},
+      {id:'p7',brandId:'b1',name:'아이클리어 루테인',desc:'마리골드 루테인 20mg · 60캡슐',em:'👁️',cat:'루테인',cp:36000,gp:27900,rate:.20,sample:'무상 1병',stock:1000,status:'listed'},
+      {id:'p8',brandId:'b1',name:'데일리 멀티비타민',desc:'비타민 13종 올인원 · 90정',em:'💊',cat:'비타민',cp:32000,gp:23900,rate:.18,sample:'무상 1병',stock:1400,status:'listed'},
+      {id:'p9',brandId:'b2',name:'글로우 시카 세럼',desc:'진정 시카 세럼 · 50ml',em:'🧴',cat:'화장품',cp:45000,gp:33900,rate:.25,sample:'무상 1개',stock:700,status:'listed'},
+      {id:'p10',brandId:'b2',name:'수분광 앰플 마스크',desc:'수분 앰플 마스크 · 10매',em:'🎭',cat:'피부',cp:24000,gp:17900,rate:.22,sample:'무상 3매',stock:1800,status:'listed'},
+      {id:'p6',brandId:'b2',name:'글로우 콜라겐 젤리',desc:'저분자 콜라겐 스틱 젤리 · 14포',em:'🍑',cat:'이너뷰티',cp:29000,gp:21900,rate:.20,sample:'무상 1박스',stock:0,status:'pending'}
+    ],
+    campaigns:[
+      {id:'c1',sellerId:'s1',productId:'p1',status:'LIVE',start:D(-2),end:D(2),qty:800,createdAt:D(-14)},
+      {id:'c2',sellerId:'s1',productId:'p4',status:'SAMPLE_REQUESTED',createdAt:D(-1)},
+      {id:'c3',sellerId:'s1',productId:'p2',status:'TESTING',testDue:D(11),createdAt:D(-6)},
+      {id:'c4',sellerId:'s2',productId:'p1',status:'SCHEDULE_CONFIRMED',start:D(7),end:D(11),qty:1000,createdAt:D(-10)},
+      {id:'c5',sellerId:'s3',productId:'p3',status:'CLEARING',start:D(-18),end:D(-13),qty:500,createdAt:D(-30)},
+      {id:'c6',sellerId:'s2',productId:'p5',status:'SETTLED',start:D(-40),end:D(-35),qty:600,createdAt:D(-55),settledAt:D(-14)}
+    ],
+    orders:[],
+    messages:{},
+    settlements:[],
+    seq:100
+  };
+  // seed orders
+  const mkOrders=(cid,gp,n,nRef,fromD,span)=>{
+    const names=['김*은','이*아','박*희','최*진','정*수','한*별','윤*서','장*미','오*랑','신*혜'];
+    for(let i=0;i<n;i++){
+      data.orders.push({id:'o'+(data.seq++),campaignId:cid,buyer:names[i%10],qty:1+(i%3===0?1:0),
+        unit:gp,status:i<nRef?'REFUNDED':'PAID',at:D(fromD+ (i%span))});
+    }
+  };
+  mkOrders('c1',29900,34,1,-2,4);
+  mkOrders('c5',24900,412,14,-18,5);
+  mkOrders('c6',31900,548,11,-40,5);
+  // seed messages
+  const sys=(cid,txt,d)=>{(data.messages[cid]=data.messages[cid]||[]).push({type:'sys',txt,at:d})};
+  const chat=(cid,role,txt,d)=>{(data.messages[cid]=data.messages[cid]||[]).push({type:'chat',role,txt,at:d})};
+  sys('c2','셀러 <b>지유(@jiyu_beauty)</b>가 샘플을 요청했습니다',D(-1));
+  chat('c2','seller','안녕하세요! GL-01 직접 한 달 먹어보고 진행 결정하고 싶어요. 성분표도 같이 받아볼 수 있을까요?',D(-1));
+  sys('c3','샘플 요청 → 승인 → 배송 완료 · 수령 확인됨',D(-3));
+  sys('c3','테스트 기한: '+md(P(D(11)))+' 까지 진행 여부 응답',D(-3));
+  chat('c3','brand','치팅온은 식전 30분 섭취 기준으로 안내 부탁드려요. 상세페이지 가이드 첨부합니다 📎 cheatingon-guide.pdf',D(-2));
+  chat('c3','seller','네! 2주 먹어보고 후기 정리해서 일정 제안드릴게요.',D(-2));
+  sys('c1','일정 확정 '+md(P(D(-2)))+' – '+md(P(D(2)))+' · 배정 재고 800',D(-7));
+  sys('c1','공구 링크 활성화 — 판매 시작',D(-2));
+  sys('c5','공구 종료 · 교환/환불 기간 시작 (정산 예정 '+md(addD(P(D(-13)),21))+')',D(-13));
+  sys('c6','정산 완료 · 명세 발행',D(-14));
+  return data;
+}
+
+/* ============ state ============ */
+const LS='sellery-proto-v3';
+const GRADES=[
+  {g:'ELITE',min:50000000,bonus:2,perk:'수수료 +2%p · 스카우트 최상단 · 전담 매니저'},
+  {g:'POWER',min:20000000,bonus:1,perk:'수수료 +1%p · 신상품 우선 제안권'},
+  {g:'RISING',min:5000000,bonus:0.5,perk:'수수료 +0.5%p · 샘플 요청 한도 확대'},
+  {g:'PARTNER',min:0,bonus:0,perk:'기본 수수료율'}
+];
+const gradeOf=m=>GRADES.find(t=>m>=t.min);
+let S;
+function load(){
+  let d=null;
+  try{const raw=localStorage.getItem(LS); if(raw) d=JSON.parse(raw);}catch(e){}
+  S={view:{role:'seller',screen:'home',cid:null},actingSeller:'s1',actingBrand:'b1',data:d||seedData()};
+}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S.data));}catch(e){}}
+load();
+let liveTimer=null;
+function dlCSV(name,rows){
+  const csv='\uFEFF'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=name;document.body.appendChild(a);a.click();a.remove();
+}
+
+/* ============ helpers ============ */
+const D_ = () => S.data;
+const prod = id => D_().products.find(p=>p.id===id);
+const brand = id => D_().brands.find(b=>b.id===id);
+const seller = id => D_().sellers.find(s=>s.id===id);
+const camp = id => D_().campaigns.find(c=>c.id===id);
+const campOrders = cid => D_().orders.filter(o=>o.campaignId===cid);
+function calc(c){
+  const os=campOrders(c.id);
+  const gross=os.filter(o=>o.status!=='CANCELED').reduce((a,o)=>a+o.unit*o.qty,0);
+  const refund=os.filter(o=>o.status==='REFUNDED').reduce((a,o)=>a+o.unit*o.qty,0);
+  const net=gross-refund;
+  const p=prod(c.productId);
+  const pg=net*PG_RATE, sf=net*p.rate, pf=net*PLAT_RATE;
+  return {gross,refund,net,pg,sf,pf,brandPay:net-pg-sf-pf,paidCnt:os.filter(o=>o.status==='PAID').length,refCnt:os.filter(o=>o.status==='REFUNDED').length};
+}
+function settleDue(c){ return addD(P(c.end),CLEAR_DAYS); }
+function pushSys(cid,txt){(D_().messages[cid]=D_().messages[cid]||[]).push({type:'sys',txt,at:ymd(today())});}
+function pushChat(cid,role,txt){
+  const msgs=D_().messages[cid]=D_().messages[cid]||[];
+  msgs.push({type:'chat',role,txt,at:ymd(today())});
+  if(/01[016789][-\s.]?\d{3,4}[-\s.]?\d{4}|카톡|카카오톡|kakao/i.test(txt)){
+    msgs.push({type:'warn',txt:'⚠ 연락처/외부 메신저 공유가 감지되었습니다. 플랫폼 밖 거래는 정산·분쟁 보호를 받지 못합니다.',at:ymd(today())});
+  }
+}
+function toast(t){
+  const el=document.createElement('div');el.className='toast';el.textContent=t;
+  $('#toasts').appendChild(el);setTimeout(()=>el.remove(),2600);
+}
+function overlaps(pid,s,e,exceptCid){
+  return D_().campaigns.some(c=>c.productId===pid&&c.id!==exceptCid&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status)
+    &&!(P(e)<P(c.start)||P(s)>P(c.end)));
+}
+/* pending counts for badges */
+function counts(){
+  const cs=D_().campaigns;
+  return {
+    seller: cs.filter(c=>['SAMPLE_SHIPPED','TESTING'].includes(c.status)).length,
+    brand: cs.filter(c=>['SAMPLE_REQUESTED','SCHEDULE_PROPOSED','SAMPLE_APPROVED'].includes(c.status)).length,
+    admin: D_().products.filter(p=>p.status==='pending').length + cs.filter(c=>c.status==='CLEARING'&&settleDue(c)<=today()).length
+  };
+}
+
+/* ============ render root ============ */
+const ROLES=[['seller','셀러 센터'],['brand','브랜드 센터'],['admin','관리자']];
+const SCREENS={
+  seller:[['home','홈'],['explore','상품 탐색'],['camps','내 캠페인'],['sales','실시간 매출'],['rank','셀러 랭킹'],['settle','정산']],
+  brand:[['home','홈'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['requests','요청함'],['sales','실시간 매출'],['orders','주문·발주'],['settle','정산']],
+  admin:[['home','대시보드'],['review','상품 검수'],['settle','정산 실행']]
+};
+function render(){
+  const cnt=counts();
+  $('#roletabs').innerHTML=ROLES.map(([k,l])=>
+    `<button data-act="role" data-k="${k}" class="${S.view.role===k?'on':''}">${l}${cnt[k]?`<span class="badge">${cnt[k]}</span>`:''}</button>`).join('');
+  const scr=SCREENS[S.view.role];
+  let personaHtml='';
+  if(S.view.role==='seller'){
+    personaHtml=`<div class="persona">접속 셀러 <select data-act="setSeller">${D_().sellers.map(s=>`<option value="${s.id}" ${s.id===S.actingSeller?'selected':''}>${s.name} ${s.handle}</option>`).join('')}</select></div>`;
+  } else if(S.view.role==='brand'){
+    personaHtml=`<div class="persona">접속 브랜드 <select data-act="setBrand">${D_().brands.map(b=>`<option value="${b.id}" ${b.id===S.actingBrand?'selected':''}>${b.name}</option>`).join('')}</select></div>`;
+  }
+  $('#subnav').innerHTML=scr.map(([k,l])=>
+    `<button data-act="screen" data-k="${k}" class="${S.view.screen===k&&!S.view.cid?'on':''}">${l}</button>`).join('')+personaHtml;
+  const m=$('#main');
+  if(S.view.cid){ m.innerHTML=vCampDetail(S.view.cid); const box=m.querySelector('.msgs'); if(box) box.scrollTop=box.scrollHeight; return; }
+  const fn={
+    'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.sales':vSales,'seller.rank':vRank,'seller.settle':vSellerSettle,
+    'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vRequests,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,
+    'admin.home':vAdminHome,'admin.review':vAdminReview,'admin.settle':vAdminSettle
+  }[S.view.role+'.'+S.view.screen]||vSellerHome;
+  m.innerHTML=fn();
+}
+
+/* ============ shared components ============ */
+function stChip(st){const m=ST[st];return `<span class="st ${m.c}">${st==='LIVE'?'<span class="pulse"></span>':''}${m.l}</span>`;}
+function stepper(status){
+  const idx=FLOW.indexOf(status);
+  return `<div class="stepper">${FLOW_L.map((l,i)=>`<span class="stp ${i<idx?'done':i===idx?'now':''}">${l}</span>`).join('')}</div>`;
+}
+function campRow(c,{who='seller'}={}){
+  const p=prod(c.productId),b=brand(p.brandId),s=seller(c.sellerId);
+  const sub = who==='seller' ? `${b.name} · 수수료 ${(p.rate*100).toFixed(0)}%` : `${s.name} ${s.handle} · 팔로워 ${fmt(s.followers)}`;
+  const when=c.start?`<span class="sub" style="font-family:'IBM Plex Mono',monospace">${md(P(c.start))}–${md(P(c.end))}</span>`:'';
+  return `<div class="rowitem" data-act="open" data-k="${c.id}">
+    <div style="font-size:24px">${p.em}</div>
+    <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${sub}</div></div>
+    ${when} ${stChip(c.status)}</div>`;
+}
+
+/* ============ SELLER ============ */
+function vSellerHome(){
+  const me=S.actingSeller;
+  const mine=D_().campaigns.filter(c=>c.sellerId===me);
+  const live=mine.filter(c=>c.status==='LIVE');
+  const liveNet=live.reduce((a,c)=>a+calc(c).net,0);
+  const pendPay=mine.filter(c=>['CLEARING'].includes(c.status)).reduce((a,c)=>{const k=calc(c);const p=prod(c.productId);return a+k.sf*(1-WHT);},0);
+  const todo=mine.filter(c=>['SAMPLE_SHIPPED','TESTING'].includes(c.status));
+  const sl=seller(me);
+  const heroLine = live.length ? `지금 공구 <em>${live.length}건</em>이 판매 중이에요.`
+    : todo.length ? `확인할 요청이 <em>${todo.length}건</em> 있어요.`
+    : `오늘은 어떤 상품을 골라볼까요?`;
+  return `<div class="hero-band">
+    <div class="ey">Seller Gallery</div>
+    <h1>${sl.name}님, 반가워요.<br>${heroLine}</h1>
+    <div class="sub">${sl.handle} · 팔로워 <b>${fmt(sl.followers)}</b> · 등급 <b>${sl.grade}</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일</div>
+  </div>
+  <div class="grid g4 overlap">
+    <div class="card kpi"><div class="lbl">진행 중 공구 매출 (확정 기준)</div><div class="val">₩${fmt(liveNet)}</div><div class="sub">공구 ${live.length}건 LIVE</div></div>
+    <div class="card kpi"><div class="lbl">정산 예정 수수료</div><div class="val" style="color:var(--money)">₩${fmt(pendPay)}</div><div class="sub">원천징수 3.3% 공제 후</div></div>
+    <div class="card kpi"><div class="lbl">내 응답 대기</div><div class="val">${todo.length}건</div><div class="sub">샘플 수령·테스트 결정</div></div>
+    <div class="card kpi"><div class="lbl">누적 공구</div><div class="val">${mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status)).length}회</div><div class="sub">마이 갤러리 아카이브</div></div>
+  </div>
+  ${todo.length?`<div class="sec">지금 할 일</div><div class="listcard">${todo.map(c=>campRow(c)).join('')}</div>`:''}
+  <div class="sec">진행 중 · 예정 공구</div>
+  <div class="listcard">${mine.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c)).join('')||'<div class="empty">진행 중인 공구가 없습니다 — 상품 탐색에서 시작해보세요</div>'}</div>
+  <div class="sec">추천 상품</div>
+  <div class="grid g3">${D_().products.filter(p=>p.status==='listed').slice(0,3).map(prodCard).join('')}</div>`;
+}
+function prodCard(p){
+  const b=brand(p.brandId);
+  const already=D_().campaigns.some(c=>c.sellerId===S.actingSeller&&c.productId===p.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status));
+  const margin=p.gp*p.rate;
+  return `<div class="card prod">
+    <div class="ph">${p.em}</div>
+    <div><span class="chip brand">${b.name}</span> <span class="sub" style="font-size:11px;color:var(--mute)">${p.cat}</span></div>
+    <div class="nm">${esc(p.name)}</div><div class="meta">${esc(p.desc)} · 샘플 ${p.sample}</div>
+    <div class="prices"><span class="gp">₩${fmt(p.gp)}</span><span class="cp">₩${fmt(p.cp)}</span><span class="rate">수수료 ${(p.rate*100).toFixed(0)}%</span></div>
+    <div class="meta">건당 예상 수수료 ₩${fmt(margin)}</div>
+    ${already?`<button disabled style="opacity:.5">진행 중인 캠페인 있음</button>`:`<button class="pri" data-act="reqSample" data-k="${p.id}">샘플 요청</button>`}
+  </div>`;
+}
+const CATS=['전체','다이어트','건기식','비타민','루테인','이너뷰티','화장품','피부'];
+function vExplore(){
+  const cur=S.catFilter||'전체';
+  const list=D_().products.filter(p=>p.status==='listed'&&(cur==='전체'||p.cat===cur));
+  return `<h2 class="pg">상품 탐색 <small>브랜드가 공구가·수수료율을 공개 책정</small></h2>
+  <div class="cats">${CATS.map(c=>`<button class="catchip ${c===cur?'on':''}" data-act="setCat" data-k="${c}">${c}</button>`).join('')}</div>
+  <div class="grid g3">${list.map(prodCard).join('')||'<div class="empty" style="grid-column:1/-1;background:var(--surface);border:1px solid var(--line);border-radius:12px">해당 카테고리에 노출 중인 상품이 없습니다</div>'}</div>`;
+}
+function vSellerCamps(){
+  const mine=D_().campaigns.filter(c=>c.sellerId===S.actingSeller).sort((a,b)=>b.createdAt<a.createdAt?-1:1);
+  return `<h2 class="pg">내 캠페인 <small>클릭하면 캠페인 스레드로 이동</small></h2>
+  <div class="listcard">${mine.map(c=>campRow(c)).join('')||'<div class="empty">캠페인이 없습니다</div>'}</div>`;
+}
+function vSellerSettle(){
+  const mine=D_().campaigns.filter(c=>c.sellerId===S.actingSeller&&['LIVE','CLEARING','SETTLED'].includes(c.status));
+  return `<h2 class="pg">정산 <small>수수료 = 확정 매출 × 수수료율, 개인 셀러 원천징수 3.3%</small></h2>
+  <div style="margin-bottom:14px"><button class="sm ghost" data-act="settleCSV">⬇ 명세 CSV 다운로드</button></div>
+  <div class="tblw"><table>
+  <thead><tr><th>공구</th><th>기간</th><th class="num">확정 매출</th><th class="num">수수료율</th><th class="num">수수료(세전)</th><th class="num">실수령(예정)</th><th>상태</th><th>지급 예정일</th></tr></thead>
+  <tbody>${mine.map(c=>{const k=calc(c),p=prod(c.productId);
+    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td><b>${esc(p.name)}</b></td>
+    <td class="num">${md(P(c.start))}–${md(P(c.end))}</td>
+    <td class="num">₩${fmt(k.net)}</td><td class="num">${(p.rate*100).toFixed(0)}%</td>
+    <td class="num">₩${fmt(k.sf)}</td><td class="num" style="color:var(--money);font-weight:700">₩${fmt(k.sf*(1-WHT))}</td>
+    <td>${stChip(c.status)}</td><td class="num">${c.status==='SETTLED'?'지급완료':md(settleDue(c))}</td></tr>`;}).join('')||'<tr><td colspan="8" class="empty">정산 내역이 없습니다</td></tr>'}
+  </tbody></table></div>`;
+}
+
+/* ============ SELLER RANK ============ */
+function vRank(){
+  const me=seller(S.actingSeller);
+  const g=gradeOf(me.m3Sales);
+  const next=GRADES[GRADES.indexOf(g)-1];
+  const pct=next?Math.min(100,Math.round(me.m3Sales/next.min*100)):100;
+  const rows=D_().sellers.slice().sort((a,b)=>b.m3Sales-a.m3Sales);
+  return `<h2 class="pg">셀러 랭킹 <small>최근 3개월 매출 기준 · 등급 보너스는 플랫폼 수수료에서 지급</small></h2>
+  <div class="grid g2">
+    <div class="card"><div class="lbl-sm">내 등급</div>
+      <div style="display:flex;align-items:center;gap:12px;margin:8px 0;flex-wrap:wrap"><span class="gradebox">${g.g}</span>
+      <span style="font-family:'Archivo',sans-serif;font-size:25px;font-weight:800">₩${fmt(me.m3Sales)}</span>
+      <span style="font-size:12px;color:var(--mute)">최근 3개월</span></div>
+      ${next?`<div class="meter"><span style="width:${pct}%"></span></div>
+      <div style="font-size:12px;color:var(--mute);margin-top:7px">다음 등급 <b>${next.g}</b>까지 <b>₩${fmt(next.min-me.m3Sales)}</b> 남음 — 달성 시 ${next.perk}</div>`
+      :`<div style="font-size:12px;color:var(--mute)">최고 등급입니다 · ${g.perk}</div>`}
+    </div>
+    <div class="card"><div class="lbl-sm">등급별 혜택</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">${GRADES.map(t=>`<div style="display:flex;gap:10px;align-items:center;font-size:12.5px;${t.g===g.g?'font-weight:800':''}">
+        <span class="gradebox sm">${t.g}</span><span style="color:var(--mute);white-space:nowrap">3개월 ₩${fmt(t.min)}+</span><span>${t.perk}</span></div>`).join('')}</div>
+    </div>
+  </div>
+  <div class="sec">리더보드 — 매출 효율 랭킹</div>
+  <div class="tblw"><table>
+  <thead><tr><th>#</th><th>셀러</th><th>카테고리</th><th class="num">3개월 매출</th><th class="num">매출/팔로워</th><th class="num">매출/좋아요</th><th>등급</th></tr></thead>
+  <tbody>${rows.map((s,i)=>{const mine=s.id===S.actingSeller;
+    return `<tr${mine?' class="merow"':''}><td class="num">${i+1}</td>
+    <td>${mine?`<b>${s.name} ${s.handle} (나)</b>`:'○○○ 셀러'}</td>
+    <td>${s.cat}</td><td class="num">₩${fmt(s.m3Sales)}</td>
+    <td class="num">₩${fmt(s.m3Sales/s.followers)}</td><td class="num">₩${fmt(s.m3Sales/s.likesAvg)}</td>
+    <td><span class="gradebox sm">${s.grade}</span></td></tr>`;}).join('')}
+  </tbody></table></div>
+  <p style="font-size:12px;color:var(--mute);margin-top:10px">※ 타 셀러는 익명(○○○)으로만 노출됩니다 — 순위와 지표만 공개, 저격 불가.</p>`;
+}
+
+/* ============ LIVE SALES (seller + brand shared) ============ */
+function vSales(){
+  let cs;
+  if(S.view.role==='seller') cs=D_().campaigns.filter(c=>c.sellerId===S.actingSeller&&c.status==='LIVE');
+  else {const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);cs=D_().campaigns.filter(c=>myP.includes(c.productId)&&c.status==='LIVE');}
+  const t=ymd(today());
+  const head=`<h2 class="pg">실시간 매출 <small>LIVE 공구의 판매 현황 — 주문이 들어오면 즉시 반영</small></h2>
+  <div style="margin-bottom:16px"><button class="${liveTimer?'danger':'pri'}" data-act="toggleLive">${liveTimer?'⏸ 실시간 판매 시뮬레이션 중지':'▶ 실시간 판매 시뮬레이션 시작'}</button>
+  <span style="font-size:12px;color:var(--mute);margin-left:10px">실서비스에선 결제 웹훅으로 자동 반영됩니다</span></div>`;
+  if(!cs.length) return head+`<div class="listcard"><div class="empty">지금 LIVE 상태인 공구가 없습니다 — 캠페인을 시작해보세요</div></div>`;
+  return head+cs.map(c=>{
+    const p=prod(c.productId),s=seller(c.sellerId),k=calc(c);
+    const os=campOrders(c.id);
+    const todayOs=os.filter(o=>o.at===t&&o.status==='PAID');
+    const todayRev=todayOs.reduce((a,o)=>a+o.unit*o.qty,0);
+    const visits=Math.round((k.paidCnt+k.refCnt)*17.3);
+    const conv=visits?((k.paidCnt+k.refCnt)/visits*100).toFixed(1):'0.0';
+    // last 7 days bars
+    const days=[...Array(7)].map((_,i)=>{const d=ymd(addD(today(),i-6));
+      const rev=os.filter(o=>o.at===d&&o.status!=='CANCELED').reduce((a,o)=>a+o.unit*o.qty,0);
+      return {d,rev};});
+    const mx=Math.max(...days.map(x=>x.rev),1);
+    const feed=os.slice(-10).reverse();
+    return `<div class="sec">${esc(p.name)} · ${s.handle} <span class="st live" style="margin-left:4px"><span class="pulse"></span>LIVE</span></div>
+    <div class="grid g4">
+      <div class="card kpi"><div class="lbl">오늘 매출</div><div class="val">₩${fmt(todayRev)}</div><div class="sub">주문 ${todayOs.length}건</div></div>
+      <div class="card kpi"><div class="lbl">누적 확정 매출</div><div class="val">₩${fmt(k.net)}</div><div class="sub">결제 ${k.paidCnt}건 · 환불 ${k.refCnt}건</div></div>
+      <div class="card kpi"><div class="lbl">${S.view.role==='seller'?'내 수수료 (실시간)':'브랜드 정산액 (실시간)'}</div><div class="val" style="color:var(--money)">₩${fmt(S.view.role==='seller'?k.sf*(1-WHT):k.brandPay)}</div><div class="sub">${S.view.role==='seller'?'원천징수 후 예상':'수수료 차감 후 예상'}</div></div>
+      <div class="card kpi"><div class="lbl">방문 → 구매 전환</div><div class="val">${conv}%</div><div class="sub">방문 ${fmt(visits)}회 (추정)</div></div>
+    </div>
+    <div class="livegrid" style="margin-top:16px">
+      <div class="card"><h4 style="margin:0 0 4px;font-size:13px">최근 7일 매출</h4>
+        <div class="barwrap"><div class="bars">${days.map(x=>`<div class="b" style="height:${Math.max(3,x.rev/mx*100)}%"><span class="bl">${x.rev?'₩'+fmt(Math.round(x.rev/1000))+'k':''}</span><span class="bd">${md(P(x.d))}</span></div>`).join('')}</div></div>
+      </div>
+      <div class="card" style="padding:0"><h4 style="margin:0;padding:14px 16px 8px;font-size:13px">주문 피드</h4>
+        <div class="feed">${feed.map(o=>`<div class="rowitem"><div class="grow"><span style="font-weight:600">${o.buyer}</span> <span class="sub">${o.qty}개 · ${md(P(o.at))}</span></div><span class="num" style="font-family:'IBM Plex Mono',monospace">₩${fmt(o.unit*o.qty)}</span>${o.status==='REFUNDED'?'<span class="st red">환불</span>':''}</div>`).join('')||'<div class="empty">아직 주문 없음</div>'}</div>
+      </div>
+    </div>
+    <div style="margin-top:12px"><button class="sm ghost" data-act="open" data-k="${c.id}">캠페인 상세 →</button></div>`;
+  }).join('');
+}
+
+/* ============ BRAND ============ */
+function vBrandHome(){
+  const me=S.actingBrand;
+  const myP=D_().products.filter(p=>p.brandId===me).map(p=>p.id);
+  const cs=D_().campaigns.filter(c=>myP.includes(c.productId));
+  const pend=cs.filter(c=>['SAMPLE_REQUESTED','SCHEDULE_PROPOSED','SAMPLE_APPROVED'].includes(c.status));
+  const live=cs.filter(c=>c.status==='LIVE');
+  const gmv=cs.reduce((a,c)=>a+calc(c).net,0);
+  const heroLine = pend.length ? `승인 대기 <em>${pend.length}건</em>부터 확인해볼까요?`
+    : live.length ? `지금 공구 <em>${live.length}건</em>이 판매 중이에요.`
+    : `새 상품을 올리고 셀러를 만나보세요.`;
+  return `<div class="hero-band">
+    <div class="ey">Brand Center</div>
+    <h1>${brand(me).name} 님, 반가워요.<br>${heroLine}</h1>
+    <div class="sub">승인 대기 <b>${pend.length}건</b> · 진행 중 공구 <b>${live.length}건</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일</div>
+  </div>
+  <div class="grid g4 overlap">
+    <div class="card kpi"><div class="lbl">누적 확정 매출 (GMV)</div><div class="val">₩${fmt(gmv)}</div></div>
+    <div class="card kpi"><div class="lbl">승인 대기</div><div class="val">${pend.length}건</div><div class="sub">샘플·일정·발송</div></div>
+    <div class="card kpi"><div class="lbl">진행 중 공구</div><div class="val">${live.length}건</div></div>
+    <div class="card kpi"><div class="lbl">등록 상품</div><div class="val">${myP.length}개</div></div>
+  </div>
+  ${pend.length?`<div class="sec">승인·처리 대기</div><div class="listcard">${pend.map(c=>campRow(c,{who:'brand'})).join('')}</div>`:''}
+  <div class="sec">진행 중 · 확정 공구</div>
+  <div class="listcard">${cs.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c,{who:'brand'})).join('')||'<div class="empty">진행 중 공구 없음</div>'}</div>`;
+}
+function vBrandProducts(){
+  const mine=D_().products.filter(p=>p.brandId===S.actingBrand);
+  return `<h2 class="pg">상품 관리 <small>공구가·수수료율은 등록 시 책정, 공구 진행 중 변경 불가</small></h2>
+  <div style="margin-bottom:14px"><button class="pri" data-act="newProduct">+ 새 상품 등록</button></div>
+  <div class="tblw"><table>
+  <thead><tr><th>상품</th><th class="num">소비자가</th><th class="num">공구가</th><th class="num">수수료율</th><th>샘플 정책</th><th class="num">재고</th><th>상태</th><th>공구 일정</th></tr></thead>
+  <tbody>${mine.map(p=>{
+    const slots=D_().campaigns.filter(c=>c.productId===p.id&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status));
+    return `<tr><td><b>${p.em} ${esc(p.name)}</b><div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)}</div></td>
+    <td class="num">₩${fmt(p.cp)}</td><td class="num">₩${fmt(p.gp)}</td><td class="num">${(p.rate*100).toFixed(0)}%</td>
+    <td>${p.sample}</td><td class="num">${fmt(p.stock)}</td>
+    <td>${p.status==='listed'?'<span class="st green">노출 중</span>':'<span class="st amber">검수 대기</span>'}</td>
+    <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||'<span style="color:var(--mute);font-size:12px">—</span>'}</td></tr>`;}).join('')}
+  </tbody></table></div>`;
+}
+function vGallery(){
+  const unlocked=D_().unlockedRefs||[];
+  const scout=D_().sellers.filter(s=>s.hidden).map(s=>{
+    const un=unlocked.includes(s.id);
+    return `<div class="card">
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="gradebox">${s.grade}</span><b>○○○ 셀러</b><span style="color:var(--mute);font-size:12px">${s.cat} 주력</span></div>
+    <div style="font-family:'Archivo',sans-serif;font-size:23px;font-weight:800;margin:8px 0 3px">₩${fmt(s.m3Sales)} <span style="font-size:11px;color:var(--mute);font-weight:500">최근 3개월 매출</span></div>
+    ${un?`<div style="font-size:12.5px;color:var(--mute)">팔로워 ${fmt(s.followers)} · 좋아요 평균 ${fmt(s.likesAvg)} · 매출/팔로워 ₩${fmt(s.m3Sales/s.followers)} · 매출/좋아요 ₩${fmt(s.m3Sales/s.likesAvg)}</div>
+     <div class="btnrow" style="margin-top:12px"><button class="pri sm" data-act="invite" data-k="${s.id}">공구 제안 보내기</button></div>`
+    :`<div style="font-size:12.5px;color:var(--mute)">팔로워 ●●●,●●● · 좋아요 평균 ●,●●● — 상세 지표 잠김</div>
+     <div class="btnrow" style="margin-top:12px"><button class="sm" data-act="unlockRef" data-k="${s.id}">🔓 레퍼런스 열람 · ₩29,000 (시뮬)</button></div>`}
+    </div>`;}).join('');
+  return `<h2 class="pg">인플루언서 갤러리 <small>셀러의 갤러리를 둘러보고 공구를 직접 제안하세요</small></h2>
+  <div class="grid g3">${D_().sellers.filter(s=>!s.hidden).map(s=>{
+    const done=D_().campaigns.filter(c=>c.sellerId===s.id&&['SETTLED','CLEARING'].includes(c.status));
+    const tot=done.reduce((a,c)=>a+calc(c).net,0);
+    return `<div class="card prod">
+      <div class="ph" style="font-size:40px">${{'s1':'💄','s2':'🛋️','s3':'🏃‍♀️'}[s.id]||'⭐'}</div>
+      <div><span class="chip seller">${s.grade}</span> <b style="font-size:15px">${s.name}</b> <span style="color:var(--mute);font-size:12px">${s.handle}</span></div>
+      <div class="meta">${s.cat} · 팔로워 ${fmt(s.followers)}</div>
+      <div class="meta">${esc(s.intro)}</div>
+      <div class="meta">아카이브: 공구 ${done.length}회 · 누적 ₩${fmt(tot)}</div>
+      <button class="pri" data-act="invite" data-k="${s.id}">공구 직접 제안</button>
+    </div>`;}).join('')}</div>
+  <div class="sec">익명 셀러 스카우트 — 유료 레퍼런스</div>
+  <p style="font-size:12.5px;color:var(--mute);margin:-2px 0 14px">프로필 비공개 셀러입니다. 레퍼런스 열람권(건당)을 구매하면 상세 지표를 확인하고 제안을 보낼 수 있습니다. <b>제안이 수락되는 순간 DM이 열리고 신원이 공개됩니다.</b></p>
+  <div class="grid g2">${scout}</div>
+  <p style="font-size:12px;color:var(--mute);margin-top:12px">※ 프로토타입에서는 제안 시 셀러가 즉시 수락한 것으로 처리되어 '샘플 발송 대기' 상태의 캠페인이 생성됩니다.</p>`;
+}
+function vRequests(){
+  const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
+  const cs=D_().campaigns.filter(c=>myP.includes(c.productId)&&['SAMPLE_REQUESTED','SAMPLE_APPROVED','SCHEDULE_PROPOSED'].includes(c.status));
+  return `<h2 class="pg">요청함 <small>샘플 요청 · 일정 제안이 이곳에 모입니다</small></h2>
+  <div class="listcard">${cs.map(c=>campRow(c,{who:'brand'})).join('')||'<div class="empty">대기 중인 요청이 없습니다</div>'}</div>`;
+}
+function vBrandOrders(){
+  const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
+  const cids=D_().campaigns.filter(c=>myP.includes(c.productId)).map(c=>c.id);
+  const os=D_().orders.filter(o=>cids.includes(o.campaignId)).slice(-40).reverse();
+  const po=D_().autoPO||{on:false,email:'orders@'+brand(S.actingBrand).name+'.co'};
+  return `<h2 class="pg">주문·발주 <small>최근 40건 · 실서비스에선 운송장 일괄 업로드 지원</small></h2>
+  <div class="grid g2" style="margin-bottom:16px">
+    <div class="card"><h4 style="margin:0 0 6px;font-size:13.5px">발주서 내보내기</h4>
+      <p style="font-size:12.5px;color:var(--mute);margin:0 0 12px">현재 주문을 엑셀(CSV)로 다운로드하거나, 물류팀 이메일로 바로 발송합니다.</p>
+      <div class="btnrow"><button class="pri sm" data-act="poCSV">⬇ 발주서 CSV 다운로드</button>
+      <button class="sm" data-act="poEmail">✉ 이메일로 발송 (시뮬)</button></div></div>
+    <div class="card"><h4 style="margin:0 0 6px;font-size:13.5px">자동 발주 ${po.on?'<span class="st green">ON</span>':'<span class="st gray">OFF</span>'}</h4>
+      <p style="font-size:12.5px;color:var(--mute);margin:0 0 12px">매일 09:00 신규 주문 발주서를 자동 발송하고, 공구 종료 시 최종 발주서를 보냅니다.</p>
+      <div class="autopo"><input id="poEmailIn" value="${esc(po.email)}" style="max-width:240px" placeholder="물류팀 이메일">
+      <button class="sm ${po.on?'danger':'pri'}" data-act="saveAutoPO">${po.on?'자동 발주 끄기':'자동 발주 켜기'}</button></div></div>
+  </div>
+  <div class="tblw"><table>
+  <thead><tr><th>주문번호</th><th>구매자</th><th>공구</th><th class="num">수량</th><th class="num">금액</th><th>일자</th><th>상태</th><th></th></tr></thead>
+  <tbody>${os.map(o=>{const c=camp(o.campaignId),p=prod(c.productId);
+    return `<tr><td class="num">${o.id.toUpperCase()}</td><td>${o.buyer}</td><td>${esc(p.name)} <span style="color:var(--mute);font-size:11px">${seller(c.sellerId).handle}</span></td>
+    <td class="num">${o.qty}</td><td class="num">₩${fmt(o.unit*o.qty)}</td><td class="num">${md(P(o.at))}</td>
+    <td>${o.status==='PAID'?'<span class="st green">결제완료</span>':'<span class="st red">환불</span>'}</td>
+    <td>${o.status==='PAID'&&camp(o.campaignId).status!=='SETTLED'?`<button class="sm ghost" data-act="refund" data-k="${o.id}">환불 처리</button>`:''}</td></tr>`;}).join('')||'<tr><td colspan="8" class="empty">주문이 없습니다</td></tr>'}
+  </tbody></table></div>`;
+}
+function vBrandSettle(){
+  const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
+  const cs=D_().campaigns.filter(c=>myP.includes(c.productId)&&['LIVE','CLEARING','SETTLED'].includes(c.status));
+  return `<h2 class="pg">정산 <small>확정 매출 − PG ${PG_RATE*100}% − 셀러 수수료 − 플랫폼 ${PLAT_RATE*100}%</small></h2>
+  <div style="margin-bottom:14px"><button class="sm ghost" data-act="settleCSV">⬇ 명세 CSV 다운로드</button></div>
+  <div class="tblw"><table>
+  <thead><tr><th>공구</th><th>셀러</th><th class="num">확정 매출</th><th class="num">셀러 수수료</th><th class="num">플랫폼+PG</th><th class="num">브랜드 정산액</th><th>상태</th><th>정산일</th></tr></thead>
+  <tbody>${cs.map(c=>{const k=calc(c),p=prod(c.productId);
+    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td><b>${esc(p.name)}</b></td><td>${seller(c.sellerId).handle}</td>
+    <td class="num">₩${fmt(k.net)}</td><td class="num">−₩${fmt(k.sf)}</td><td class="num">−₩${fmt(k.pf+k.pg)}</td>
+    <td class="num" style="font-weight:700">₩${fmt(k.brandPay)}</td>
+    <td>${stChip(c.status)}</td><td class="num">${c.status==='SETTLED'?'완료':md(settleDue(c))}</td></tr>`;}).join('')||'<tr><td colspan="8" class="empty">내역 없음</td></tr>'}
+  </tbody></table></div>`;
+}
+
+/* ============ ADMIN ============ */
+function vAdminHome(){
+  const cs=D_().campaigns;
+  const gmv=cs.reduce((a,c)=>a+calc(c).net,0);
+  const fee=cs.reduce((a,c)=>a+calc(c).pf,0);
+  const os=D_().orders;
+  const refRate=os.length?os.filter(o=>o.status==='REFUNDED').length/os.length*100:0;
+  return `<div class="hero-band">
+    <div class="ey">Sellery Operations</div>
+    <h1>셀러리 전체 <em>거래 현황</em>을 한눈에.</h1>
+    <div class="sub">전체 캠페인 <b>${cs.length}건</b> · 주문 <b>${fmt(os.length)}건</b></div>
+  </div>
+  <div class="grid g4 overlap">
+    <div class="card kpi"><div class="lbl">누적 GMV (확정)</div><div class="val">₩${fmt(gmv)}</div></div>
+    <div class="card kpi"><div class="lbl">플랫폼 수수료 수익</div><div class="val" style="color:var(--accent-ink)">₩${fmt(fee)}</div><div class="sub">테이크레이트 ${PLAT_RATE*100}%</div></div>
+    <div class="card kpi"><div class="lbl">진행 중 공구</div><div class="val">${cs.filter(c=>c.status==='LIVE').length}건</div></div>
+    <div class="card kpi"><div class="lbl">환불률</div><div class="val">${refRate.toFixed(1)}%</div><div class="sub">주문 ${fmt(os.length)}건 기준</div></div>
+  </div>
+  <div class="sec">전체 캠페인</div>
+  <div class="tblw"><table>
+  <thead><tr><th>캠페인</th><th>셀러</th><th>브랜드</th><th>기간</th><th class="num">확정 매출</th><th>상태</th></tr></thead>
+  <tbody>${cs.map(c=>{const p=prod(c.productId);const k=calc(c);
+    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td><b>${esc(p.name)}</b></td><td>${seller(c.sellerId).handle}</td><td>${brand(p.brandId).name}</td>
+    <td class="num">${c.start?md(P(c.start))+'–'+md(P(c.end)):'—'}</td><td class="num">₩${fmt(k.net)}</td><td>${stChip(c.status)}</td></tr>`;}).join('')}
+  </tbody></table></div>`;
+}
+function vAdminReview(){
+  const pend=D_().products.filter(p=>p.status==='pending');
+  return `<h2 class="pg">상품 검수 <small>금지 표현·필수 표시사항 체크 후 노출 승인</small></h2>
+  <div class="notice">건강기능식품은 표시광고 사전 심의 대상입니다. 검수 체크리스트: 질병 치료·예방 표현 금지, 기능성 문구는 식약처 인정 범위 내, 이벤트 문구의 소비자 오인 여부.</div>
+  <div class="listcard">${pend.map(p=>`<div class="rowitem">
+    <div style="font-size:24px">${p.em}</div>
+    <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${brand(p.brandId).name} · 공구가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%</div></div>
+    <button class="sm pri" data-act="approveProduct" data-k="${p.id}">승인 · 노출</button>
+    <button class="sm danger" data-act="rejectProduct" data-k="${p.id}">반려</button>
+  </div>`).join('')||'<div class="empty">검수 대기 상품이 없습니다</div>'}</div>`;
+}
+function vAdminSettle(){
+  const ready=D_().campaigns.filter(c=>c.status==='CLEARING');
+  return `<h2 class="pg">정산 실행 <small>공구 종료 + ${CLEAR_DAYS}일 경과 건 일괄 지급</small></h2>
+  <div class="listcard">${ready.map(c=>{const k=calc(c),p=prod(c.productId);const due=settleDue(c);const isDue=due<=today();
+    return `<div class="rowitem">
+    <div style="font-size:24px">${p.em}</div>
+    <div class="grow"><div class="nm">${esc(p.name)} · ${seller(c.sellerId).handle}</div>
+      <div class="sub">확정 ₩${fmt(k.net)} → 브랜드 ₩${fmt(k.brandPay)} + 셀러 ₩${fmt(k.sf*(1-WHT))} · 정산 기준일 ${md(due)}</div></div>
+    ${isDue?`<button class="sm pri" data-act="runSettle" data-k="${c.id}">정산 실행</button>`
+      :`<span class="st amber">D-${Math.ceil((due-today())/DAY)}</span> <button class="sm ghost" data-act="ffwd" data-k="${c.id}">⏩ 3주 경과(시뮬)</button>`}
+  </div>`;}).join('')||'<div class="empty">정산 대기 건이 없습니다</div>'}</div>
+  <div class="sec">정산 완료</div>
+  <div class="tblw"><table><thead><tr><th>일자</th><th>공구</th><th class="num">확정 매출</th><th class="num">브랜드 지급</th><th class="num">셀러 지급</th><th class="num">플랫폼 수익</th></tr></thead>
+  <tbody>${D_().settlements.map(s=>`<tr><td class="num">${md(P(s.at))}</td><td>${esc(s.title)}</td><td class="num">₩${fmt(s.net)}</td><td class="num">₩${fmt(s.brandPay)}</td><td class="num">₩${fmt(s.sellerPay)}</td><td class="num" style="color:var(--accent-ink)">₩${fmt(s.platFee)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">아직 없음</td></tr>'}
+  </tbody></table></div>`;
+}
+
+/* ============ CAMPAIGN DETAIL ============ */
+function vCampDetail(cid){
+  const c=camp(cid);if(!c)return '<div class="empty">캠페인을 찾을 수 없습니다</div>';
+  const p=prod(c.productId),b=brand(p.brandId),s=seller(c.sellerId);
+  const k=calc(c);
+  const msgs=(D_().messages[cid]||[]);
+  const role=S.view.role==='brand'?'brand':'seller';
+  const linkUrl=`sellery.co.kr/s/${s.handle.slice(1)}/${cid}`;
+  return `<button class="ghost sm" data-act="back">← 목록으로</button>
+  <div class="det-head" style="margin-top:12px">
+    <div style="font-size:32px">${p.em}</div>
+    <div style="flex:1;min-width:220px">
+      <div class="t">${esc(p.name)} <span style="color:var(--mute);font-weight:400;font-size:13px">· ${cid.toUpperCase()}</span></div>
+      <div style="font-size:12.5px;color:var(--mute)"><span class="chip brand">${b.name}</span> × <span class="chip seller">${s.name} ${s.handle}</span>
+      · 공구가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%
+      ${c.start?` · 기간 ${md(P(c.start))}–${md(P(c.end))}`:''}</div>
+      ${stepper(c.status)}
+    </div>
+    <div>${stChip(c.status)}</div>
+  </div>
+  <div class="det-body">
+    <div class="thread">
+      <div class="msgs">${msgs.map(m=>{
+        if(m.type==='sys')return `<div class="sysline">${m.txt} · ${md(P(m.at))}</div>`;
+        if(m.type==='warn')return `<div class="warnline">${esc(m.txt)}</div>`;
+        return `<div class="msg ${m.role}"><div class="who" style="color:var(--${m.role==='brand'?'brand':'seller'}-c)">${m.role==='brand'?b.name:s.name}</div>${esc(m.txt)}<div class="tm">${md(P(m.at))}</div></div>`;
+      }).join('')||'<div class="sysline">대화가 없습니다</div>'}</div>
+      <div class="composer">
+        <span class="as">${role==='brand'?'브랜드':'셀러'}로 발신</span>
+        <input id="chatIn" placeholder="메시지 입력… (시스템 승인·일정은 우측 버튼으로)" data-enter="sendChat">
+        <button class="pri" data-act="sendChat" data-k="${cid}">전송</button>
+      </div>
+    </div>
+    <div class="actions">
+      ${detActions(c,k,p,s,linkUrl)}
+      <div class="card stmtcard">
+        <h4>정산 미리보기</h4>
+        <table class="stmt" style="min-width:0;font-size:12.5px">
+          <tr><td>결제 ${k.paidCnt+k.refCnt}건</td><td class="num">₩${fmt(k.gross)}</td></tr>
+          <tr><td>환불 ${k.refCnt}건</td><td class="num">−₩${fmt(k.refund)}</td></tr>
+          <tr><td><b>확정 매출</b></td><td class="num"><b>₩${fmt(k.net)}</b></td></tr>
+          <tr><td>PG ${(PG_RATE*100).toFixed(1)}%</td><td class="num">−₩${fmt(k.pg)}</td></tr>
+          <tr><td>셀러 ${(p.rate*100).toFixed(0)}%</td><td class="num">−₩${fmt(k.sf)}</td></tr>
+          <tr><td>플랫폼 ${(PLAT_RATE*100).toFixed(0)}%</td><td class="num">−₩${fmt(k.pf)}</td></tr>
+          <tr class="tot"><td>브랜드 정산액</td><td class="num">₩${fmt(k.brandPay)}</td></tr>
+        </table>
+        ${c.end?`<div style="font-size:11.5px;color:var(--mute);margin-top:8px">정산 기준일(D+${CLEAR_DAYS}): <b>${md(settleDue(c))}</b></div>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+function detActions(c,k,p,s,linkUrl){
+  const A=[];
+  const card=(h,hint,btns)=>`<div class="card"><h4>${h}</h4><p class="hint">${hint}</p><div class="btnrow">${btns}</div></div>`;
+  const sim=(h,hint,btns)=>`<div class="sim" style="margin-bottom:12px"><h4>⏱ ${h}</h4><p>${hint}</p><div class="btnrow">${btns}</div></div>`;
+  switch(c.status){
+    case 'SAMPLE_REQUESTED':
+      A.push(card('샘플 요청 검토 <span class="chip brand">브랜드 액션</span>',
+        `${s.name} ${s.handle} · 팔로워 ${fmt(s.followers)} · 등급 ${s.grade}. 승인 시 배송지가 브랜드에 전달됩니다.`,
+        `<button class="pri" data-act="approveSample" data-k="${c.id}">승인</button>
+         <button class="danger" data-act="rejectSample" data-k="${c.id}">거절</button>`));
+      break;
+    case 'SAMPLE_APPROVED':
+      A.push(card('샘플 발송 <span class="chip brand">브랜드 액션</span>','운송장 번호를 입력하면 배송 추적이 시작됩니다.',
+        `<input id="trackIn" placeholder="운송장 번호 (예: 6890-1234-5678)" style="margin-bottom:8px">
+         <button class="pri" data-act="shipSample" data-k="${c.id}">발송 처리</button>`));
+      break;
+    case 'SAMPLE_SHIPPED':
+      A.push(card('샘플 수령 확인 <span class="chip seller">셀러 액션</span>',`운송장 ${c.tracking||'—'} · 수령 확인 시 테스트 기한 14일이 시작됩니다.`,
+        `<button class="pri" data-act="receiveSample" data-k="${c.id}">수령 확인</button>`));
+      break;
+    case 'TESTING':
+      A.push(card('테스트 후 진행 결정 <span class="chip seller">셀러 액션</span>',
+        `기한 ${c.testDue?md(P(c.testDue)):'—'} 까지. 진행 시 공구 일정을 제안합니다.`,
+        `<button class="pri" data-act="openSchedule" data-k="${c.id}">진행할게요 → 일정 제안</button>
+         <button data-act="passCamp" data-k="${c.id}">이번엔 패스</button>`));
+      break;
+    case 'SCHEDULE_PROPOSED':
+      A.push(card('일정 승인 <span class="chip brand">브랜드 액션</span>',
+        `제안 기간: <b>${md(P(c.propStart))} – ${md(P(c.propEnd))}</b> · 배정 재고 ${fmt(c.propQty)}개. 승인 시 이 기간이 캘린더에 잠깁니다(기간 독점).`,
+        `<button class="pri" data-act="confirmSchedule" data-k="${c.id}">일정 승인</button>
+         <button class="danger" data-act="rejectSchedule" data-k="${c.id}">반려 (재제안 요청)</button>`));
+      break;
+    case 'SCHEDULE_CONFIRMED':{
+      const dday=Math.ceil((P(c.start)-today())/DAY);
+      A.push(card('공구 대기 중',`시작 ${md(P(c.start))} (D-${Math.max(dday,0)}) — 시작 시각에 링크가 자동 활성화됩니다.`,''));
+      A.push(sim('시뮬레이션','실서비스에선 스케줄러가 자동 처리합니다.',
+        `<button class="sm" data-act="goLive" data-k="${c.id}">공구 시작 처리</button>`));
+      break;}
+    case 'LIVE':
+      A.push(card('공구 링크 <span class="st live"><span class="pulse"></span>LIVE</span>',
+        `<code style="font-size:11.5px">${linkUrl}</code> · 종료 ${md(P(c.end))}`,
+        `<button class="pri" data-act="preview" data-k="${c.id}">전시장(구매 페이지) 미리보기</button>
+         <button data-act="copyLink" data-k="${linkUrl}">링크 복사</button>`));
+      A.push(sim('판매 시뮬레이션','구매자 주문을 흉내내 정산 숫자가 움직이는 걸 확인하세요.',
+        `<button class="sm" data-act="simOrders" data-k="${c.id}">주문 +5건</button>
+         <button class="sm" data-act="simOrders20" data-k="${c.id}">주문 +20건</button>
+         <button class="sm" data-act="endCamp" data-k="${c.id}">공구 종료 처리</button>`));
+      break;
+    case 'CLEARING':{
+      const due=settleDue(c);
+      A.push(card('교환·환불 처리 기간',
+        `종료 ${md(P(c.end))} → 정산 기준일 <b>${md(due)}</b> (D+${CLEAR_DAYS}). 이 기간의 환불은 정산액에서 차감됩니다. 정산 실행은 관리자 탭에서.`,''));
+      A.push(sim('시뮬레이션','',`<button class="sm" data-act="ffwd" data-k="${c.id}">⏩ 3주 경과 처리</button>`));
+      break;}
+    case 'SETTLED':
+      A.push(card('정산 완료 ✓',`셀러 지급 ₩${fmt(k.sf*(1-WHT))} (원천징수 후) · 브랜드 지급 ₩${fmt(k.brandPay)}. 성과가 좋았다면 같은 조합으로 바로 재공구를 열 수 있습니다.`,
+        `<button class="pri" data-act="regongu" data-k="${c.id}">🔁 재공구 제안 (샘플 생략)</button>
+         <button data-act="settleCSV">명세 CSV</button>`));
+      break;
+    case 'REJECTED': A.push(card('거절된 요청','브랜드가 이번 요청을 승인하지 않았습니다.','')); break;
+    case 'PASSED': A.push(card('셀러 패스','셀러가 테스트 후 진행하지 않기로 했습니다.','')); break;
+  }
+  return A.join('');
+}
+
+/* ============ modals ============ */
+function openModal(html){$('#modalroot').innerHTML=`<div class="modal-bg" data-act="closeModal"><div class="modal" onclick="event.stopPropagation()">${html}</div></div>`;}
+function closeModal(){$('#modalroot').innerHTML='';}
+function scheduleModal(cid){
+  const c=camp(cid),p=prod(c.productId);
+  const slots=D_().campaigns.filter(x=>x.productId===p.id&&['SCHEDULE_CONFIRMED','LIVE'].includes(x.status));
+  openModal(`<h3>공구 일정 제안 — ${esc(p.name)}</h3>
+  <div class="fld"><label>이미 확정된 기간 (선택 불가 · 기간 독점)</label>
+    <div class="slots">${slots.map(x=>`<div class="slot"><span class="rng">${md(P(x.start))} – ${md(P(x.end))}</span><span>${seller(x.sellerId).handle} 확정</span></div>`).join('')||'<div class="slot">아직 확정된 기간 없음</div>'}</div></div>
+  <div class="fld"><label>시작일</label><input type="date" id="schStart" value="${ymd(addD(today(),7))}" min="${ymd(addD(today(),1))}"></div>
+  <div class="fld"><label>기간</label><select id="schLen"><option value="3">3일</option><option value="5" selected>5일</option><option value="7">7일</option></select></div>
+  <div class="fld"><label>희망 배정 재고</label><input type="number" id="schQty" value="500" min="50" step="50"></div>
+  <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="proposeSchedule" data-k="${cid}">승인 요청 보내기</button></div>`);
+}
+function inviteModal(sid){
+  const s=seller(sid);
+  const disp=s.hidden?'○○○ 셀러 (익명)':s.name+' '+s.handle;
+  const myP=D_().products.filter(p=>p.brandId===S.actingBrand&&p.status==='listed');
+  if(!myP.length){toast('노출 중인 상품이 없습니다 — 상품을 먼저 등록하세요');return;}
+  openModal(`<h3>공구 직접 제안 — ${disp}</h3>
+  <div class="fld"><label>제안할 상품</label><select id="invProd">${myP.map(p=>`<option value="${p.id}">${p.name} · 공구가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%</option>`).join('')}</select></div>
+  <div class="fld"><label>제안 메시지</label><textarea id="invMsg" rows="3">안녕하세요${s.hidden?'':' '+s.name+'님'}, ${brand(S.actingBrand).name}입니다. 채널 결이 저희 상품과 잘 맞아 공구를 제안드려요. 샘플부터 보내드릴게요!</textarea></div>
+  <p style="font-size:12px;color:var(--mute)">셀러 수락 시 샘플 발송 단계부터 시작됩니다.</p>
+  <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="confirmInvite" data-k="${sid}">제안 보내기</button></div>`);
+}
+function productModal(){
+  openModal(`<h3>새 상품 등록</h3>
+  <div class="fld"><label>상품명</label><input id="npName" placeholder="예: 콜라겐 부스터 샷"></div>
+  <div class="fld"><label>한 줄 설명</label><input id="npDesc" placeholder="예: 저분자 콜라겐 · 30포"></div>
+  <div class="fld"><label>카테고리</label><select id="npCat">${CATS.filter(c=>c!=='전체').map(c=>`<option>${c}</option>`).join('')}</select></div>
+  <div class="grid g2">
+    <div class="fld"><label>소비자가 (₩)</label><input id="npCp" type="number" value="39000" step="1000"></div>
+    <div class="fld"><label>공구가 (₩)</label><input id="npGp" type="number" value="29900" step="100"></div>
+    <div class="fld"><label>셀러 수수료율 (%)</label><input id="npRate" type="number" value="20" min="5" max="40"></div>
+    <div class="fld"><label>재고</label><input id="npStock" type="number" value="1000" step="100"></div>
+  </div>
+  <div class="fld"><label>샘플 정책</label><input id="npSample" value="무상 1개"></div>
+  <p style="font-size:12px;color:var(--mute)">등록 후 플랫폼 검수(관리자 탭)를 통과하면 셀러에게 노출됩니다. 상세페이지 에디터는 실서비스에서 제공.</p>
+  <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="createProduct">검수 요청</button></div>`);
+}
+function previewModal(cid){
+  const c=camp(cid),p=prod(c.productId),s=seller(c.sellerId),b=brand(p.brandId);
+  const left=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
+  openModal(`<h3 style="text-align:center">전시장 미리보기 — 구매자 화면</h3>
+  <div class="landing">
+    <div class="hero"><div class="em">${p.em}</div>
+      <h3>${esc(p.name)}</h3><div class="by">${b.name} × ${s.name} ${s.handle} 단독 공구</div></div>
+    <div class="body">
+      <div class="pr"><span class="g">₩${fmt(p.gp)}</span><span class="c">₩${fmt(p.cp)}</span></div>
+      <div class="timer">공구 마감까지 ${left}일 — 기간 한정 전시</div>
+      <button class="pri buy" data-act="simBuy" data-k="${cid}">구매하기 (주문 시뮬레이션)</button>
+      <p style="font-size:11px;color:var(--mute);text-align:center;margin:10px 0 0">결제는 셀러리(주)가 대행하며, 당사는 통신판매중개자입니다 · #광고 경제적 대가 관계 표시</p>
+    </div>
+  </div>
+  <div class="foot"><button data-act="closeModal">닫기</button></div>`);
+}
+
+/* ============ actions ============ */
+function transition(cid,st,sysTxt){const c=camp(cid);c.status=st;if(sysTxt)pushSys(cid,sysTxt);save();render();}
+const ACT={
+  role(k){S.view={role:k,screen:'home',cid:null};render();},
+  screen(k){S.view.screen=k;S.view.cid=null;render();},
+  open(k){S.view.cid=k;render();},
+  back(){S.view.cid=null;render();},
+  setSeller(k,el){S.actingSeller=el.value;render();},
+  setBrand(k,el){S.actingBrand=el.value;render();},
+  setCat(k){S.catFilter=k;render();},
+  reset(){if(confirm('시드 데이터로 초기화할까요? 테스트 중 만든 데이터가 사라집니다.')){try{localStorage.removeItem(LS);}catch(e){};S.data=seedData();save();S.view.cid=null;render();toast('초기화 완료');}},
+  closeModal(){closeModal();},
+
+  reqSample(pid){
+    const id='c'+(D_().seq++);
+    D_().campaigns.push({id,sellerId:S.actingSeller,productId:pid,status:'SAMPLE_REQUESTED',createdAt:ymd(today())});
+    const s=seller(S.actingSeller);
+    pushSys(id,`셀러 <b>${s.name}(${s.handle})</b>가 샘플을 요청했습니다`);
+    save();S.view={role:'seller',screen:'camps',cid:id};render();toast('샘플 요청 완료 — 브랜드 승인 대기');
+  },
+  invite(sid){inviteModal(sid);},
+  unlockRef(sid){
+    (D_().unlockedRefs=D_().unlockedRefs||[]).push(sid);
+    save();render();toast('레퍼런스 열람권 결제 완료 (시뮬레이션) — 상세 지표가 공개되었습니다');
+  },
+  confirmInvite(sid){
+    const pid=$('#invProd').value;const msg=$('#invMsg').value.trim();
+    const id='c'+(D_().seq++);
+    D_().campaigns.push({id,sellerId:sid,productId:pid,status:'SAMPLE_APPROVED',createdAt:ymd(today())});
+    pushSys(id,`브랜드 <b>${brand(S.actingBrand).name}</b>가 <b>${prod(pid).name}</b> 공구를 직접 제안했고, 셀러가 수락했습니다 (프로토타입 자동 수락)`);
+    if(seller(sid).hidden)pushSys(id,`🔓 익명 셀러가 제안을 수락해 신원이 공개되었습니다 — <b>${seller(sid).name} ${seller(sid).handle}</b>. 지금부터 이 스레드(DM)로 소통하세요`);
+    if(msg)pushChat(id,'brand',msg);
+    closeModal();save();S.view.cid=id;render();toast(`${seller(sid).name}님에게 제안 발송 → 수락됨`);
+  },
+  toggleLive(){
+    if(liveTimer){clearInterval(liveTimer);liveTimer=null;toast('실시간 시뮬레이션 중지');render();return;}
+    liveTimer=setInterval(()=>{
+      const ls=D_().campaigns.filter(c=>c.status==='LIVE');
+      if(!ls.length)return;
+      if(Math.random()<.8){
+        const c=ls[Math.floor(Math.random()*ls.length)];
+        const p=prod(c.productId);
+        const names=['김*은','이*아','박*희','최*진','정*수','한*별','윤*서','장*미'];
+        D_().orders.push({id:'o'+(D_().seq++),campaignId:c.id,buyer:names[Math.floor(Math.random()*8)],qty:Math.random()<.2?2:1,unit:p.gp,status:'PAID',at:ymd(today())});
+        save();
+        const ae=document.activeElement;
+        if(!(ae&&['INPUT','TEXTAREA','SELECT'].includes(ae.tagName))&&!document.querySelector('.modal-bg'))render();
+      }
+    },3500);
+    toast('실시간 판매 시뮬레이션 시작 — 3~4초마다 주문 발생');render();
+  },
+  poCSV(){
+    const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
+    const cids=D_().campaigns.filter(c=>myP.includes(c.productId)).map(c=>c.id);
+    const os=D_().orders.filter(o=>cids.includes(o.campaignId));
+    const rows=[['주문번호','일자','상품','셀러','구매자','수량','단가','금액','상태']];
+    os.forEach(o=>{const c=camp(o.campaignId),p=prod(c.productId);
+      rows.push([o.id.toUpperCase(),o.at,p.name,seller(c.sellerId).handle,o.buyer,o.qty,o.unit,o.unit*o.qty,o.status==='PAID'?'결제완료':'환불']);});
+    dlCSV(`발주서_${brand(S.actingBrand).name}_${ymd(today())}.csv`,rows);
+    toast(`발주서 CSV 다운로드 — 주문 ${os.length}건`);
+  },
+  poEmail(){
+    const po=D_().autoPO||{};
+    const email=($('#poEmailIn')&&$('#poEmailIn').value.trim())||po.email||'logistics@brand.co';
+    toast(`✉ 발주서가 ${email}(으)로 발송되었습니다 (시뮬레이션)`);
+  },
+  saveAutoPO(){
+    const email=$('#poEmailIn').value.trim()||'logistics@brand.co';
+    const cur=D_().autoPO||{on:false};
+    D_().autoPO={on:!cur.on,email};
+    save();render();toast(D_().autoPO.on?`자동 발주 ON — 매일 09:00 ${email} 발송`:'자동 발주 OFF');
+  },
+  regongu(cid){
+    const old=camp(cid);
+    const id='c'+(D_().seq++);
+    D_().campaigns.push({id,sellerId:old.sellerId,productId:old.productId,status:'TESTING',testDue:ymd(addD(today(),14)),createdAt:ymd(today())});
+    pushSys(id,`🔁 <b>재공구</b> — 지난 공구(${cid.toUpperCase()}) 성과 기반. 샘플 단계 생략, 일정 제안부터 시작합니다`);
+    save();S.view.cid=id;render();toast('재공구 캠페인 생성 — 일정 제안부터 시작');
+  },
+  settleCSV(){
+    let cs;
+    if(S.view.role==='seller') cs=D_().campaigns.filter(c=>c.sellerId===S.actingSeller&&['LIVE','CLEARING','SETTLED'].includes(c.status));
+    else {const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);cs=D_().campaigns.filter(c=>myP.includes(c.productId)&&['LIVE','CLEARING','SETTLED'].includes(c.status));}
+    const rows=[['캠페인','상품','셀러','시작','종료','확정매출','PG수수료','셀러수수료','플랫폼수수료','브랜드정산액','상태']];
+    cs.forEach(c=>{const k=calc(c),p=prod(c.productId);
+      rows.push([c.id.toUpperCase(),p.name,seller(c.sellerId).handle,c.start||'',c.end||'',k.net,Math.round(k.pg),Math.round(k.sf),Math.round(k.pf),Math.round(k.brandPay),ST[c.status].l]);});
+    dlCSV(`정산명세_${ymd(today())}.csv`,rows);
+    toast('정산 명세 CSV 다운로드');
+  },
+  approveSample(cid){transition(cid,'SAMPLE_APPROVED','브랜드가 샘플 요청을 <b>승인</b>했습니다 · 배송지 전달됨');toast('샘플 승인');},
+  rejectSample(cid){transition(cid,'REJECTED','브랜드가 샘플 요청을 거절했습니다');toast('거절 처리');},
+  shipSample(cid){
+    const t=($('#trackIn')&&$('#trackIn').value.trim())||'6890-'+Math.floor(1000+Math.random()*9000)+'-'+Math.floor(1000+Math.random()*9000);
+    const c=camp(cid);c.tracking=t;
+    transition(cid,'SAMPLE_SHIPPED',`샘플 발송 · 운송장 <b>${t}</b>`);toast('발송 처리 완료');
+  },
+  receiveSample(cid){
+    const c=camp(cid);c.testDue=ymd(addD(today(),14));
+    transition(cid,'TESTING',`셀러가 샘플을 수령했습니다 · 테스트 기한 <b>${md(P(c.testDue))}</b>`);toast('수령 확인 — 테스트 시작');
+  },
+  passCamp(cid){transition(cid,'PASSED','셀러가 테스트 후 <b>패스</b>를 선택했습니다');toast('패스 처리');},
+  openSchedule(cid){scheduleModal(cid);},
+  proposeSchedule(cid){
+    const st=$('#schStart').value,len=+$('#schLen').value,qty=+$('#schQty').value;
+    if(!st){toast('시작일을 선택하세요');return;}
+    const en=ymd(addD(P(st),len-1));
+    const c=camp(cid);
+    if(overlaps(c.productId,st,en,cid)){toast('⚠ 이미 확정된 기간과 겹칩니다 — 다른 날짜를 선택하세요');return;}
+    c.propStart=st;c.propEnd=en;c.propQty=qty;
+    closeModal();
+    transition(cid,'SCHEDULE_PROPOSED',`셀러가 공구 일정을 제안했습니다 · <b>${md(P(st))} – ${md(P(en))}</b> · 재고 ${fmt(qty)}`);
+    toast('일정 제안 완료 — 브랜드 승인 대기');
+  },
+  confirmSchedule(cid){
+    const c=camp(cid);c.start=c.propStart;c.end=c.propEnd;c.qty=c.propQty;
+    transition(cid,'SCHEDULE_CONFIRMED',`브랜드가 일정을 <b>승인</b>했습니다 · ${md(P(c.start))} – ${md(P(c.end))} 기간 독점 확정`);
+    toast('일정 확정 — 캘린더 잠금');
+  },
+  rejectSchedule(cid){transition(cid,'TESTING','브랜드가 일정을 반려했습니다 · 다른 기간으로 재제안해주세요');toast('반려 — 셀러 재제안 대기');},
+  goLive(cid){
+    const c=camp(cid);
+    if(P(c.start)>today()){c.start=ymd(today());if(P(c.end)<P(c.start))c.end=ymd(addD(today(),4));}
+    transition(cid,'LIVE','공구 링크 활성화 — <b>판매 시작</b>');toast('공구 LIVE! 링크가 활성화되었습니다');
+  },
+  simOrders(cid){simSell(cid,5);},
+  simOrders20(cid){simSell(cid,20);},
+  simBuy(cid){simSell(cid,1);closeModal();},
+  endCamp(cid){
+    const c=camp(cid);c.end=ymd(today());
+    transition(cid,'CLEARING',`공구 종료 · 교환/환불 기간 시작 (정산 예정 <b>${md(settleDue(c))}</b>)`);
+    const po=D_().autoPO;
+    if(po&&po.on){pushSys(cid,`📦 최종 발주서 자동 발송 완료 — ${esc(po.email)} (자동 발주)`);save();render();}
+    toast('공구 종료 — D+21 클리어링 시작'+(po&&po.on?' · 최종 발주서 자동 발송됨':''));
+  },
+  ffwd(cid){
+    const c=camp(cid);c.end=ymd(addD(today(),-CLEAR_DAYS));
+    pushSys(cid,'⏩ (시뮬레이션) 3주 경과 — 정산 기준일 도래');
+    save();render();toast('3주 경과 처리 — 관리자 탭에서 정산 실행 가능');
+  },
+  refund(oid){
+    const o=D_().orders.find(x=>x.id===oid);o.status='REFUNDED';
+    pushSys(o.campaignId,`환불 처리 · ${o.buyer} · ₩${fmt(o.unit*o.qty)} (정산액 차감)`);
+    save();render();toast('환불 처리 — 정산 기준액에서 차감됨');
+  },
+  runSettle(cid){
+    const c=camp(cid),k=calc(c),p=prod(c.productId);
+    c.status='SETTLED';c.settledAt=ymd(today());
+    D_().settlements.push({at:ymd(today()),title:`${p.name} · ${seller(c.sellerId).handle}`,net:k.net,brandPay:k.brandPay,sellerPay:k.sf*(1-WHT),platFee:k.pf});
+    pushSys(cid,`<b>정산 완료</b> · 브랜드 ₩${fmt(k.brandPay)} · 셀러 ₩${fmt(k.sf*(1-WHT))} (원천징수 3.3% 공제) · 명세 발행`);
+    save();render();toast('정산 실행 완료 — 양측 지급 및 명세 발행');
+  },
+  approveProduct(pid){const p=prod(pid);p.status='listed';p.stock=p.stock||500;save();render();toast(`${p.name} 노출 승인`);},
+  rejectProduct(pid){const p=prod(pid);D_().products=D_().products.filter(x=>x.id!==pid);save();render();toast('반려 처리');},
+  newProduct(){productModal();},
+  createProduct(){
+    const nm=$('#npName').value.trim();if(!nm){toast('상품명을 입력하세요');return;}
+    D_().products.push({id:'p'+(D_().seq++),brandId:S.actingBrand,name:nm,desc:$('#npDesc').value.trim()||'—',em:'📦',cat:$('#npCat').value||'건기식',
+      cp:+$('#npCp').value||0,gp:+$('#npGp').value||0,rate:(+$('#npRate').value||20)/100,sample:$('#npSample').value||'무상 1개',stock:+$('#npStock').value||0,status:'pending'});
+    closeModal();save();render();toast('검수 요청 완료 — 관리자 승인 후 노출');
+  },
+  preview(cid){previewModal(cid);},
+  copyLink(url){
+    try{navigator.clipboard.writeText('https://'+url);toast('링크 복사됨');}catch(e){toast('복사 실패 — 수동으로 복사해주세요');}
+  },
+  sendChat(cid){
+    const inp=$('#chatIn');const t=inp.value.trim();if(!t)return;
+    pushChat(cid,S.view.role==='brand'?'brand':'seller',t);
+    save();render();
+  }
+};
+function simSell(cid,n){
+  const c=camp(cid),p=prod(c.productId);
+  const names=['김*은','이*아','박*희','최*진','정*수','한*별','윤*서','장*미'];
+  for(let i=0;i<n;i++){
+    D_().orders.push({id:'o'+(D_().seq++),campaignId:cid,buyer:names[Math.floor(Math.random()*8)],
+      qty:Math.random()<.25?2:1,unit:p.gp,status:'PAID',at:ymd(today())});
+  }
+  save();render();toast(`주문 ${n}건 발생 (시뮬레이션)`);
+}
+
+/* ============ events ============ */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');if(!el)return;
+  const fn=ACT[el.dataset.act];if(fn)fn(el.dataset.k,el);
+});
+document.addEventListener('change',e=>{
+  const el=e.target.closest('select[data-act]');if(!el)return;
+  const fn=ACT[el.dataset.act];if(fn)fn(el.value,el);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.id==='chatIn'){const b=document.querySelector('[data-act="sendChat"]');if(b)b.click();}
+  if(e.key==='Escape')closeModal();
+});
+render();
+</script>
