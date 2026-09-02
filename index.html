@@ -299,6 +299,7 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 /* ===== avatars & platform icons ===== */
 .plic{vertical-align:-2px;margin-right:1px}
 .gi{vertical-align:-1.5px;margin-right:2px}
+.mebadge{display:inline-block;font-family:'Archivo',sans-serif;font-size:8.5px;font-weight:800;background:var(--ink);color:var(--yellow);padding:1px 6px;letter-spacing:.14em;vertical-align:1.5px;line-height:1.6}
 .hero-av{position:absolute;top:30px;right:6px;width:88px;height:88px;object-fit:cover;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transform:rotate(2deg);background:var(--surface)}
 @media(max-width:640px){.hero-av{position:static;display:block;width:64px;height:64px;margin:0 0 12px;transform:rotate(-2deg)}}
 .ph.av{background-size:cover;background-position:center;transform:none!important}
@@ -619,7 +620,7 @@ function vSellerHome(){
   const pyr=`<div class="card">
     <div class="lbl-sm">내 셀러 그레이드 — 상위 ${g.pct}%</div>
     <div class="pyr">${GRADES.map((t,i)=>{const w=26+i*12.3;const mine=t.g===g.g;
-      return `<div class="pyr-row ${mine?'me':''}" style="width:${w}%"><span>${GICON[t.g]} ${t.g}${mine?' · 나':''}</span><span class="pct">상위 ${t.pct}%</span></div>`;}).join('')}</div>
+      return `<div class="pyr-row ${mine?'me':''}" style="width:${w}%"><span>${GICON[t.g]} ${t.g}${mine?' <span class="mebadge">MY</span>':''}</span><span class="pct">상위 ${t.pct}%</span></div>`;}).join('')}</div>
     ${next?`<div class="meter" style="margin-top:14px"><span style="width:${pct}%"></span></div>
     <div style="font-size:12px;color:var(--mute);margin-top:7px">최근 3개월 <b>₩${fmt(sl.m3Sales)}</b> — 다음 등급 <b>${next.g}</b>까지 <b style="color:var(--red)">₩${fmt(next.min-sl.m3Sales)}</b> 남음 · 달성 시 ${next.perk.split('·')[0].trim()}</div>`
     :`<div style="font-size:12px;color:var(--mute);margin-top:10px">최고 등급 달성 · ${g.perk}</div>`}
@@ -746,7 +747,7 @@ function vRank(){
   <thead><tr><th>#</th><th>셀러</th><th>카테고리</th><th class="num">3개월 매출</th><th class="num">매출/팔로워</th><th class="num">매출/좋아요</th><th>등급</th></tr></thead>
   <tbody>${rows.map((s,i)=>{const mine=s.id===S.actingSeller;
     return `<tr${mine?' class="merow"':''}><td class="num">${i+1}</td>
-    <td>${platIcon(s)} ${mine?`<b>${s.name} ${s.handle} (나)</b>`:'○○○ 셀러'}</td>
+    <td>${platIcon(s)} ${mine?`<b>${s.name} ${s.handle}</b> <span class="mebadge">MY</span>`:'○○○ 셀러'}</td>
     <td>${s.cat}</td><td class="num">₩${fmt(s.m3Sales)}</td>
     <td class="num">₩${fmt(s.m3Sales/s.followers)}</td><td class="num">₩${fmt(s.m3Sales/s.likesAvg)}</td>
     <td><span class="gradebox sm">${gfull(gname(s))}</span></td></tr>`;}).join('')}
