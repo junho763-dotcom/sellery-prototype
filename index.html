@@ -299,7 +299,7 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 /* ===== avatars & platform icons ===== */
 .plic{vertical-align:-2px;margin-right:1px}
 .hero-av{position:absolute;top:30px;right:6px;width:88px;height:88px;object-fit:cover;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transform:rotate(2deg);background:var(--surface)}
-@media(max-width:640px){.hero-av{display:none}}
+@media(max-width:640px){.hero-av{position:static;display:block;width:64px;height:64px;margin:0 0 12px;transform:rotate(-2deg)}}
 .ph.av{background-size:cover;background-position:center;transform:none!important}
 
 </style>
@@ -425,13 +425,13 @@ function seedData(){
 /* ============ state ============ */
 const LS='sellery-proto-v5';
 const GRADES=[
-  {g:'LEGEND',min:100000000,bonus:3,pct:1,perk:'수수료 +3%p · 전담 매니저 · 독점권 우선 협상'},
-  {g:'ELITE',min:50000000,bonus:2,pct:3,perk:'수수료 +2%p · 독점권 신청 · 스카우트 최상단'},
-  {g:'POWER',min:30000000,bonus:1.5,pct:8,perk:'수수료 +1.5%p · 신상품 우선 제안권'},
-  {g:'DRIVE',min:15000000,bonus:1,pct:18,perk:'수수료 +1%p · 샘플 무제한'},
-  {g:'RISING',min:8000000,bonus:0.5,pct:35,perk:'수수료 +0.5%p · 샘플 한도 확대'},
-  {g:'SPROUT',min:3000000,bonus:0.3,pct:60,perk:'수수료 +0.3%p'},
-  {g:'SEED',min:0,bonus:0,pct:100,perk:'기본 수수료율'}
+  {g:'블랙',min:100000000,bonus:3,pct:1,perk:'수수료 +3%p · 전담 매니저 · 독점권 우선 협상'},
+  {g:'다이아',min:50000000,bonus:2,pct:3,perk:'수수료 +2%p · 독점권 신청 · 스카우트 최상단'},
+  {g:'플래티넘',min:30000000,bonus:1.5,pct:8,perk:'수수료 +1.5%p · 신상품 우선 제안권'},
+  {g:'골드',min:15000000,bonus:1,pct:18,perk:'수수료 +1%p · 샘플 무제한'},
+  {g:'실버',min:8000000,bonus:0.5,pct:35,perk:'수수료 +0.5%p · 샘플 한도 확대'},
+  {g:'브론즈',min:3000000,bonus:0.3,pct:60,perk:'수수료 +0.3%p'},
+  {g:'스타터',min:0,bonus:0,pct:100,perk:'기본 수수료율'}
 ];
 const gradeOf=m=>GRADES.find(t=>m>=t.min);
 const gname=s=>gradeOf(s.m3Sales).g;
@@ -537,7 +537,7 @@ function counts(){
 /* ============ render root ============ */
 const ROLES=[['seller','인플루언서 센터'],['brand','브랜드 센터'],['admin','관리자']];
 const SCREENS={
-  seller:[['home','홈'],['explore','상품 탐색'],['camps','내 캠페인'],['sales','실시간 매출'],['rank','랭킹·등급'],['ref','추천 프로그램'],['settle','정산']],
+  seller:[['home','홈'],['explore','상품 탐색'],['camps','내 캠페인'],['sales','실시간 매출'],['rank','랭킹·등급'],['ref','추천 프로그램'],['settle','정산'],['my','마이페이지']],
   brand:[['home','홈'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['requests','요청함'],['sales','실시간 매출'],['orders','주문·발주'],['settle','정산']],
   admin:[['home','대시보드'],['review','상품 검수'],['settle','정산 실행']]
 };
@@ -557,7 +557,7 @@ function render(){
   const m=$('#main');
   if(S.view.cid){ m.innerHTML=vCampDetail(S.view.cid); const box=m.querySelector('.msgs'); if(box) box.scrollTop=box.scrollHeight; return; }
   const fn={
-    'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,
+    'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
     'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vRequests,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,
     'admin.home':vAdminHome,'admin.review':vAdminReview,'admin.settle':vAdminSettle
   }[S.view.role+'.'+S.view.screen]||vSellerHome;
@@ -683,7 +683,10 @@ function vSellerCamps(){
 }
 function vSellerSettle(){
   const mine=D_().campaigns.filter(c=>c.sellerId===S.actingSeller&&['LIVE','CLEARING','SETTLED'].includes(c.status));
+  const si=seller(S.actingSeller).settleInfo||{};
+  const noAcct=!(si.bank&&si.account);
   return `<h2 class="pg">정산 <small>수수료 = 확정 매출 × 수수료율, 개인 셀러 원천징수 3.3%</small></h2>
+  ${noAcct?`<div class="card" style="border-color:var(--danger);margin-bottom:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><b style="color:var(--danger)">⚠ 정산 계좌 미등록</b><span style="font-size:13px;color:var(--mute)">계좌를 등록해야 D+21 지급이 실행됩니다.</span><button class="pri sm" data-act="screen" data-k="my">마이페이지에서 등록</button></div>`:''}
   <div style="margin-bottom:14px"><button class="sm ghost" data-act="settleCSV">⬇ 명세 CSV 다운로드</button></div>
   <div class="tblw"><table>
   <thead><tr><th>공구</th><th>기간</th><th class="num">확정 매출</th><th class="num">수수료율</th><th class="num">수수료(세전)</th><th class="num">실수령(예정)</th><th>상태</th><th>지급 예정일</th></tr></thead>
@@ -729,6 +732,57 @@ function vRank(){
     <td><span class="gradebox sm">${gname(s)}</span></td></tr>`;}).join('')}
   </tbody></table></div>
   <p style="font-size:12px;color:var(--mute);margin-top:10px">※ 타 셀러는 익명(○○○)으로만 노출됩니다 — 순위와 지표만 공개, 저격 불가.</p>`;
+}
+
+/* ============ MY PAGE ============ */
+function vMy(){
+  const me=seller(S.actingSeller);
+  const si=me.settleInfo||{};
+  const g=gradeOf(me.m3Sales);
+  const ok=si.bank&&si.account&&si.holder&&(si.type!=='biz'||si.bizNo);
+  return `<h2 class="pg">마이페이지 <small>프로필과 정산 정보를 관리합니다</small></h2>
+  <div class="grid g2">
+    <div class="card">
+      <div class="lbl-sm">프로필</div>
+      <div style="display:flex;gap:16px;align-items:center;margin-top:12px;flex-wrap:wrap">
+        ${me.img?`<img src="${me.img}" alt="프로필" style="width:84px;height:84px;object-fit:cover;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink)">`
+          :`<div style="width:84px;height:84px;display:flex;align-items:center;justify-content:center;font-size:32px;border:2px dashed var(--mute)">👤</div>`}
+        <div>
+          <div style="font-weight:800;font-size:16px">${me.name} <span style="font-weight:400;color:var(--mute);font-size:13px">${platIcon(me)} ${me.handle}</span></div>
+          <div style="font-size:12.5px;color:var(--mute)">팔로워 ${fmt(me.followers)} · ${me.cat} · 등급 <span class="gradebox sm">${g.g}</span></div>
+          <div class="btnrow" style="margin-top:10px"><button class="sm" data-act="avatarPick">${me.img?'프로필 사진 변경':'프로필 사진 등록'}</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="lbl-sm">내 추천 코드</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap">
+        <span style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;letter-spacing:.1em;background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 14px">${me.refCode}</span>
+        <button class="sm" data-act="copyRef" data-k="${me.refCode}">복사</button>
+        <button class="sm ghost" data-act="screen" data-k="ref">추천 프로그램 →</button>
+      </div>
+    </div>
+  </div>
+  <div class="sec">정산 정보 ${ok?'<span class="st green">등록 완료</span>':'<span class="st red">미등록 — 등록 전까지 정산 지급 보류</span>'}</div>
+  <div class="card">
+    <div class="grid g2">
+      <div class="fld"><label>정산 유형</label>
+        <select id="siType">
+          <option value="personal" ${si.type!=='biz'?'selected':''}>개인 — 사업소득 원천징수 3.3% 공제</option>
+          <option value="biz" ${si.type==='biz'?'selected':''}>사업자 — 세금계산서 발행</option>
+        </select></div>
+      <div class="fld"><label>은행</label>
+        <select id="siBank">${['선택','국민','신한','우리','하나','농협','카카오뱅크','토스뱅크','기업','SC제일'].map(b=>`<option ${si.bank===b?'selected':''}>${b}</option>`).join('')}</select></div>
+      <div class="fld"><label>계좌번호</label><input id="siAccount" inputmode="numeric" value="${esc(si.account||'')}" placeholder="'-' 없이 숫자만"></div>
+      <div class="fld"><label>예금주</label><input id="siHolder" value="${esc(si.holder||me.name)}"></div>
+      <div class="fld"><label>사업자등록번호 <span style="font-weight:400">(사업자만)</span></label><input id="siBizNo" value="${esc(si.bizNo||'')}" placeholder="000-00-00000"></div>
+      <div class="fld"><label>사업자등록증 <span style="font-weight:400">(사업자만)</span></label>
+        <div class="btnrow"><button class="sm ghost" data-act="bizDocPick">${si.bizDoc?'파일 변경':'파일 업로드'}</button>
+        ${si.bizDoc?`<span style="font-size:12px;color:var(--mute);align-self:center">📎 ${esc(si.bizDoc)} <span class="st green">첨부됨</span></span>`:''}</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--mute)">계좌 1원 인증과 사업자 진위 확인은 실서비스에서 자동 처리됩니다. 정산 정보가 없으면 D+21 지급이 보류됩니다.</p>
+    <button class="pri" data-act="saveSettleInfo">정산 정보 저장</button>
+  </div>`;
 }
 
 /* ============ REFERRAL ============ */
@@ -1238,6 +1292,29 @@ const ACT={
   rejectExcl(rid){
     const r=D_().exclusiveReqs.find(x=>x.id===rid);if(!r)return;
     r.status='REJECTED';save();render();toast('독점권 신청을 거절했습니다');
+  },
+  saveSettleInfo(){
+    const me=seller(S.actingSeller);
+    const type=$('#siType').value,bank=$('#siBank').value,account=$('#siAccount').value.trim(),holder=$('#siHolder').value.trim(),bizNo=$('#siBizNo').value.trim();
+    if(bank==='선택'||!account||!holder){toast('은행·계좌번호·예금주를 입력해주세요');return;}
+    if(type==='biz'&&!bizNo){toast('사업자 정산은 사업자등록번호가 필요합니다');return;}
+    me.settleInfo={...(me.settleInfo||{}),type,bank,account,holder,bizNo};
+    save();render();toast('정산 정보 저장 완료 — 다음 정산부터 이 계좌로 지급됩니다');
+  },
+  bizDocPick(){
+    let inp=document.getElementById('bizFile');
+    if(!inp){
+      inp=document.createElement('input');inp.type='file';inp.accept='image/*,.pdf';inp.id='bizFile';inp.hidden=true;
+      document.body.appendChild(inp);
+      inp.addEventListener('change',()=>{
+        const f=inp.files[0];if(!f)return;
+        const me=seller(S.actingSeller);
+        me.settleInfo={...(me.settleInfo||{}),bizDoc:f.name};
+        save();render();toast('사업자등록증 첨부 완료 (프로토타입: 파일명만 저장)');
+        inp.value='';
+      });
+    }
+    inp.click();
   },
   avatarPick(){
     let inp=document.getElementById('avFile');
