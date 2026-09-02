@@ -382,12 +382,12 @@ const ST = {
   PASSED:{l:'셀러 패스',c:'gray'},
   SCHEDULE_PROPOSED:{l:'일정 승인 대기',c:'amber',turn:'brand'},
   SCHEDULE_CONFIRMED:{l:'일정 확정',c:'green'},
-  LIVE:{l:'공구 진행중',c:'live'},
+  LIVE:{l:'판매 진행중',c:'live'},
   CLEARING:{l:'교환·환불 기간',c:'amber'},
   SETTLED:{l:'정산 완료',c:'green'}
 };
 const FLOW = ['SAMPLE_REQUESTED','SAMPLE_APPROVED','SAMPLE_SHIPPED','TESTING','SCHEDULE_PROPOSED','SCHEDULE_CONFIRMED','LIVE','CLEARING','SETTLED'];
-const FLOW_L = ['샘플요청','샘플승인','배송','테스트','일정제안','일정확정','공구 LIVE','환불기간','정산'];
+const FLOW_L = ['샘플요청','샘플승인','배송','테스트','일정제안','일정확정','판매 LIVE','환불기간','정산'];
 const PG_RATE = 0.029, PLAT_RATE = 0.07, WHT = 0.033, CLEAR_DAYS = 21;
 
 /* ============ seed ============ */
@@ -401,12 +401,12 @@ function seedData(){
       {id:'b2',name:'글로헬스',cat:'이너뷰티',manager:'박글로'}
     ],
     sellers:[
-      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:typeof AV1!=='undefined'?AV1:null,followers:84300,cat:'뷰티',likesAvg:3100,m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 공구 전환율 상위 10%.',
+      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:typeof AV1!=='undefined'?AV1:null,followers:84300,cat:'뷰티',likesAvg:3100,m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 판매 전환율 상위 10%.',
         channels:[
           {id:'ch1',platform:'instagram',handle:'@jiyu_beauty',url:'instagram.com/jiyu_beauty',followers:84300,verified:true,primary:true},
           {id:'ch2',platform:'youtube',handle:'지유의 뷰티랩',url:'youtube.com/@jiyulab',followers:12400,verified:false}
         ]},
-      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',followers:126000,cat:'라이프스타일',likesAvg:4200,m3Sales:22840000,refCode:'HYERIN',intro:'라이프스타일 큐레이션. 재공구율 78%.',
+      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',followers:126000,cat:'라이프스타일',likesAvg:4200,m3Sales:22840000,refCode:'HYERIN',intro:'라이프스타일 큐레이션. 재판매율 78%.',
         channels:[{id:'ch3',platform:'instagram',handle:'@hyerin_pick',url:'instagram.com/hyerin_pick',followers:126000,verified:true,primary:true}]},
       {id:'s3',name:'민지',handle:'@minji_diet',platform:'naver',followers:45200,cat:'다이어트',likesAvg:1900,m3Sales:13221900,refCode:'MINJI5',referredBy:'s1',intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.',
         channels:[{id:'ch4',platform:'naver',handle:'@minji_diet',url:'blog.naver.com/minji_diet',followers:45200,verified:true,primary:true}]},
@@ -418,13 +418,13 @@ function seedData(){
     unlockedRefs:[],
     exclusiveReqs:[],
     refEarnings:[
-      {at:D(-24),referrerId:'s1',fromSellerId:'s3',campaignId:'(지난 공구)',amt:186400}
+      {at:D(-24),referrerId:'s1',fromSellerId:'s3',campaignId:'(지난 판매)',amt:186400}
     ],
     products:[
-      {id:'p1',brandId:'b1',name:'버닝온',desc:'다이어트 부스터 · 30포',em:'🔥',cat:'다이어트',cp:39000,gp:29900,rate:.20,sample:'무상 1박스',stock:2000,status:'listed',t:{g:'+240%',note:'분기 매출 급등'},exclusive:{min:50000000,label:'인스타그램 공구 독점권 · 3개월'}},
+      {id:'p1',brandId:'b1',name:'버닝온',desc:'다이어트 부스터 · 30포',em:'🔥',cat:'다이어트',cp:39000,gp:29900,rate:.20,sample:'무상 1박스',stock:2000,status:'listed',t:{g:'+240%',note:'분기 매출 급등'},exclusive:{min:50000000,label:'인스타그램 판매 독점권 · 3개월'}},
       {id:'p2',brandId:'b1',name:'치팅온',desc:'탄수화물 컷 · 30포',em:'🍚',cat:'다이어트',cp:35000,gp:26900,rate:.20,sample:'무상 1박스',stock:1500,status:'listed'},
       {id:'p3',brandId:'b1',name:'벨리라잇',desc:'유산균 다이어트 · 30캡슐',em:'✨',cat:'다이어트',cp:33000,gp:24900,rate:.18,sample:'무상 1박스',stock:1200,status:'listed'},
-      {id:'p4',brandId:'b2',name:'GL-01 스킨 샷',desc:'스킨 롱제비티 액상샷 · 1개월분',em:'🍍',cat:'이너뷰티',cp:119000,gp:89000,rate:.15,sample:'무상 2주분',stock:800,status:'listed',t:{g:'+38%',note:'이너뷰티 상승세'},exclusive:{min:30000000,label:'이너뷰티 단독 공구권 · 2개월'}},
+      {id:'p4',brandId:'b2',name:'GL-01 스킨 샷',desc:'스킨 롱제비티 액상샷 · 1개월분',em:'🍍',cat:'이너뷰티',cp:119000,gp:89000,rate:.15,sample:'무상 2주분',stock:800,status:'listed',t:{g:'+38%',note:'이너뷰티 상승세'},exclusive:{min:30000000,label:'이너뷰티 단독 판매권 · 2개월'}},
       {id:'p5',brandId:'b1',name:'플랜트프로틴',desc:'식물성 단백질 · 900g',em:'🌱',cat:'건기식',cp:42000,gp:31900,rate:.22,sample:'무상 1통',stock:900,status:'listed'},
       {id:'p7',brandId:'b1',name:'아이클리어 루테인',desc:'마리골드 루테인 20mg · 60캡슐',em:'👁️',cat:'루테인',cp:36000,gp:27900,rate:.20,sample:'무상 1병',stock:1000,status:'listed',t:{g:'+112%',note:'루테인 카테고리 급상승'}},
       {id:'p8',brandId:'b1',name:'데일리 멀티비타민',desc:'비타민 13종 올인원 · 90정',em:'💊',cat:'비타민',cp:32000,gp:23900,rate:.18,sample:'무상 1병',stock:1400,status:'listed'},
@@ -466,8 +466,8 @@ function seedData(){
   chat('c3','brand','치팅온은 식전 30분 섭취 기준으로 안내 부탁드려요. 상세페이지 가이드 첨부합니다 📎 cheatingon-guide.pdf',D(-2));
   chat('c3','seller','네! 2주 먹어보고 후기 정리해서 일정 제안드릴게요.',D(-2));
   sys('c1','일정 확정 '+md(P(D(-2)))+' – '+md(P(D(2)))+' · 배정 재고 800',D(-7));
-  sys('c1','공구 링크 활성화 — 판매 시작',D(-2));
-  sys('c5','공구 종료 · 교환/환불 기간 시작 (정산 예정 '+md(addD(P(D(-13)),21))+')',D(-13));
+  sys('c1','판매 링크 활성화 — 판매 시작',D(-2));
+  sys('c5','판매 종료 · 교환/환불 기간 시작 (정산 예정 '+md(addD(P(D(-13)),21))+')',D(-13));
   sys('c6','정산 완료 · 명세 발행',D(-14));
   return data;
 }
@@ -659,7 +659,7 @@ function vSellerHome(){
   const pendPay=mine.filter(c=>['CLEARING'].includes(c.status)).reduce((a,c)=>{const k=calc(c);return a+k.sfTotal*(1-WHT);},0);
   const todo=mine.filter(c=>['SAMPLE_SHIPPED','TESTING'].includes(c.status));
   const sl=seller(me);
-  const heroLine = live.length ? `지금 공구 <em>${live.length}건</em>이 판매 중이에요.`
+  const heroLine = live.length ? `지금 판매 <em>${live.length}건</em>이 진행 중이에요.`
     : todo.length ? `확인할 요청이 <em>${todo.length}건</em> 있어요.`
     : `오늘은 어떤 상품을 골라볼까요?`;
   // grade pyramid
@@ -697,14 +697,14 @@ function vSellerHome(){
   <div class="grid g2 overlap">${pyr}${newsHtml}</div>
   <div class="sec">내 현황</div>
   <div class="grid g4">
-    <div class="card kpi"><div class="lbl">진행 중 공구 매출 (확정 기준)</div><div class="val">₩${fmt(liveNet)}</div><div class="sub">공구 ${live.length}건 LIVE</div></div>
+    <div class="card kpi"><div class="lbl">진행 중 판매 매출 (확정 기준)</div><div class="val">₩${fmt(liveNet)}</div><div class="sub">판매 ${live.length}건 LIVE</div></div>
     <div class="card kpi"><div class="lbl">정산 예정 수수료</div><div class="val" style="color:var(--money)">₩${fmt(pendPay)}</div><div class="sub">원천징수 3.3% 공제 후</div></div>
     <div class="card kpi"><div class="lbl">내 응답 대기</div><div class="val">${todo.length}건</div><div class="sub">샘플 수령·테스트 결정</div></div>
-    <div class="card kpi"><div class="lbl">누적 공구</div><div class="val">${mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status)).length}회</div><div class="sub">마이 갤러리 아카이브</div></div>
+    <div class="card kpi"><div class="lbl">누적 판매</div><div class="val">${mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status)).length}회</div><div class="sub">마이 갤러리 아카이브</div></div>
   </div>
   ${todo.length?`<div class="sec">지금 할 일</div><div class="listcard">${todo.map(c=>campRow(c)).join('')}</div>`:''}
-  <div class="sec">진행 중 · 예정 공구</div>
-  <div class="listcard">${mine.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c)).join('')||'<div class="empty">진행 중인 공구가 없습니다 — 상품 탐색에서 시작해보세요</div>'}</div>
+  <div class="sec">진행 중 · 예정 판매</div>
+  <div class="listcard">${mine.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c)).join('')||'<div class="empty">진행 중인 판매가 없습니다 — 상품 탐색에서 시작해보세요</div>'}</div>
   <div class="sec">추천 상품</div>
   <div class="grid g3">${D_().products.filter(p=>p.status==='listed').slice(0,3).map(prodCard).join('')}</div>`;
 }
@@ -745,7 +745,7 @@ function vExplore(){
   const top=Object.entries(sums).map(([pid,v])=>({p:prod(pid),v})).filter(x=>x.p&&x.p.status==='listed')
     .sort((a,b)=>b.v-a.v).slice(0,5);
   const mx=top.length?top[0].v:1;
-  return `<h2 class="pg">상품 탐색 <small>브랜드가 공구가·수수료율을 공개 책정</small></h2>
+  return `<h2 class="pg">상품 탐색 <small>브랜드가 판매가·수수료율을 공개 책정</small></h2>
   <div class="grid g2" style="margin-bottom:18px">
     <div class="card">
       <div class="lbl-sm" style="margin-bottom:4px">${gfull(myTier.g)} 등급 이상 셀러 베스트셀링 TOP5</div>
@@ -802,7 +802,7 @@ function calHtml(){
     cells+=`<div class="cal-cell ${ymd(date)===ymd(today())?'today':''}"><span class="dn">${d}</span>
       ${evs.map(ev=>`<div class="cal-ev ${ev.type}" data-act="open" data-k="${ev.cid}" title="${esc(ev.name)}">${ev.first?esc(ev.name):'&nbsp;'}</div>`).join('')}</div>`;
   }
-  return `<div class="sec">공구 캘린더 — 내 스케줄 한눈에</div>
+  return `<div class="sec">판매 캘린더 — 내 스케줄 한눈에</div>
   <div class="card" style="padding:0;overflow:hidden">
     <div class="cal-head">
       <button class="sm ghost" data-act="calNav" data-k="-1">‹</button>
@@ -823,7 +823,7 @@ function vSellerSettle(){
   ${noAcct?`<div class="card" style="border-color:var(--danger);margin-bottom:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><b style="color:var(--danger)">⚠ 정산 계좌 미등록</b><span style="font-size:13px;color:var(--mute)">계좌를 등록해야 D+21 지급이 실행됩니다.</span><button class="pri sm" data-act="screen" data-k="my">마이페이지에서 등록</button></div>`:''}
   <div style="margin-bottom:14px"><button class="sm ghost" data-act="settleCSV">⬇ 명세 CSV 다운로드</button></div>
   <div class="tblw"><table>
-  <thead><tr><th>공구</th><th>기간</th><th class="num">확정 매출</th><th class="num">수수료율</th><th class="num">수수료(세전)</th><th class="num">실수령(예정)</th><th>상태</th><th>지급 예정일</th></tr></thead>
+  <thead><tr><th>판매</th><th>기간</th><th class="num">확정 매출</th><th class="num">수수료율</th><th class="num">수수료(세전)</th><th class="num">실수령(예정)</th><th>상태</th><th>지급 예정일</th></tr></thead>
   <tbody>${mine.map(c=>{const k=calc(c),p=prod(c.productId);
     return `<tr class="clickable" data-act="open" data-k="${c.id}"><td><b>${esc(p.name)}</b></td>
     <td class="num">${md(P(c.start))}–${md(P(c.end))}</td>
@@ -979,7 +979,7 @@ function vRef(){
   let boostBanner='';
   if(me.referredBy){
     const left=Math.max(0,REF_TIMES-usedOf(me.id));
-    boostBanner=`<div class="card" style="border-color:var(--red);margin-bottom:18px"><b>🌱 추천 부스트 적용 중</b> — ${seller(me.referredBy).name}님 추천으로 가입했어요. 첫 ${REF_TIMES}회 공구 수수료 <b>+1%p</b> (남은 횟수 ${left}회). 기본 수수료율은 그대로 — 보상은 셀러리가 부담합니다.</div>`;
+    boostBanner=`<div class="card" style="border-color:var(--red);margin-bottom:18px"><b>🌱 추천 부스트 적용 중</b> — ${seller(me.referredBy).name}님 추천으로 가입했어요. 첫 ${REF_TIMES}회 판매 수수료 <b>+1%p</b> (남은 횟수 ${left}회). 기본 수수료율은 그대로 — 보상은 셀러리가 부담합니다.</div>`;
   }
   return `<h2 class="pg">추천 프로그램 <small>인플루언서가 인플루언서를 데려오면 둘 다 이득 — 전액 셀러리 부담</small></h2>
   ${boostBanner}
@@ -991,18 +991,18 @@ function vRef(){
       <p style="font-size:12.5px;color:var(--mute);margin:0">동료 셀러가 가입할 때 이 코드를 입력하면 보상이 시작됩니다.</p></div>
     <div class="card"><div class="lbl-sm">보상 구조</div>
       <ul style="font-size:13px;margin:10px 0 0;padding-left:18px;line-height:2.1">
-        <li><b>나 (추천인)</b> — 새 셀러의 첫 ${REF_TIMES}회 공구, <b>확정 매출의 2%</b> 지급</li>
-        <li><b>새 셀러</b> — 첫 ${REF_TIMES}회 공구, 수수료 <b>+1%p</b></li>
+        <li><b>나 (추천인)</b> — 새 셀러의 첫 ${REF_TIMES}회 판매, <b>확정 매출의 2%</b> 지급</li>
+        <li><b>새 셀러</b> — 첫 ${REF_TIMES}회 판매, 수수료 <b>+1%p</b></li>
         <li>새 셀러의 수수료율은 <b>절대 깎이지 않음</b> — 보상은 플랫폼 수수료에서 지급</li>
       </ul></div>
   </div>
   <div class="grid g2" style="margin-top:18px">
-    <div class="card kpi"><div class="lbl">누적 추천 수익</div><div class="val" style="color:var(--money)">₩${fmt(total)}</div><div class="sub">정산 완료 기준 · 진행 중 공구는 정산 시 지급</div></div>
-    <div class="card kpi"><div class="lbl">내가 추천한 셀러</div><div class="val">${myRefs.length}명</div><div class="sub">셀러당 최대 ${REF_TIMES}회 공구까지 보상</div></div>
+    <div class="card kpi"><div class="lbl">누적 추천 수익</div><div class="val" style="color:var(--money)">₩${fmt(total)}</div><div class="sub">정산 완료 기준 · 진행 중 판매는 정산 시 지급</div></div>
+    <div class="card kpi"><div class="lbl">내가 추천한 셀러</div><div class="val">${myRefs.length}명</div><div class="sub">셀러당 최대 ${REF_TIMES}회 판매까지 보상</div></div>
   </div>
   <div class="sec">추천 현황</div>
   <div class="tblw"><table>
-  <thead><tr><th>셀러</th><th class="num">보상 공구 진행</th><th class="num">발생 수익</th></tr></thead>
+  <thead><tr><th>셀러</th><th class="num">보상 판매 진행</th><th class="num">발생 수익</th></tr></thead>
   <tbody>${myRefs.map(s=>{const u=usedOf(s.id);const e=earns.filter(x=>x.fromSellerId===s.id).reduce((a,x)=>a+x.amt,0);
     return `<tr><td><b>${s.name}</b> ${s.handle}</td><td class="num">${Math.min(u,REF_TIMES)} / ${REF_TIMES}회</td><td class="num">₩${fmt(e)}</td></tr>`;}).join('')||'<tr><td colspan="3" class="empty">아직 추천한 셀러가 없습니다 — 코드를 공유해보세요</td></tr>'}
   </tbody></table></div>`;
@@ -1030,12 +1030,12 @@ function productDetailModal(pid){
     </div>`;
   }
   openModal(`<h3>${p.em} ${esc(p.name)}</h3>
-  <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px"><span class="chip brand">${b.name}</span> ${p.cat} · 공구가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> · 수수료 ${(p.rate*100).toFixed(0)}% · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
+  <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px"><span class="chip brand">${b.name}</span> ${p.cat} · 판매가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> · 수수료 ${(p.rate*100).toFixed(0)}% · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
   ${excl}
-  <div class="lbl-sm" style="margin:16px 0 8px">이 상품의 공구 실적 — 셀러 익명</div>
+  <div class="lbl-sm" style="margin:16px 0 8px">이 상품의 판매 실적 — 셀러 익명</div>
   <div class="tblw" style="box-shadow:none"><table style="min-width:480px">
   <thead><tr><th class="num">팔로워</th><th class="num">좋아요 평균</th><th class="num">참여율</th><th class="num">기간</th><th class="num">확정 매출</th><th>상태</th></tr></thead>
-  <tbody>${rows||'<tr><td colspan="6" class="empty">아직 진행된 공구가 없습니다 — 첫 셀러가 되어보세요</td></tr>'}</tbody></table></div>
+  <tbody>${rows||'<tr><td colspan="6" class="empty">아직 진행된 판매가 없습니다 — 첫 셀러가 되어보세요</td></tr>'}</tbody></table></div>
   <div class="foot">
     ${isSeller&&!(p.exclusiveSellerId&&p.exclusiveSellerId!==S.actingSeller)?`<button class="pri" data-act="reqSampleM" data-k="${pid}">샘플 요청</button>`:''}
     <button data-act="closeModal">닫기</button>
@@ -1048,10 +1048,10 @@ function vSales(){
   if(S.view.role==='seller') cs=D_().campaigns.filter(c=>c.sellerId===S.actingSeller&&c.status==='LIVE');
   else {const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);cs=D_().campaigns.filter(c=>myP.includes(c.productId)&&c.status==='LIVE');}
   const t=ymd(today());
-  const head=`<h2 class="pg">실시간 매출 <small>LIVE 공구의 판매 현황 — 주문이 들어오면 즉시 반영</small></h2>
+  const head=`<h2 class="pg">실시간 매출 <small>LIVE 판매의 판매 현황 — 주문이 들어오면 즉시 반영</small></h2>
   <div style="margin-bottom:16px"><button class="${liveTimer?'danger':'pri'}" data-act="toggleLive">${liveTimer?'⏸ 실시간 판매 시뮬레이션 중지':'▶ 실시간 판매 시뮬레이션 시작'}</button>
   <span style="font-size:12px;color:var(--mute);margin-left:10px">실서비스에선 결제 웹훅으로 자동 반영됩니다</span></div>`;
-  if(!cs.length) return head+`<div class="listcard"><div class="empty">지금 LIVE 상태인 공구가 없습니다 — 캠페인을 시작해보세요</div></div>`;
+  if(!cs.length) return head+`<div class="listcard"><div class="empty">지금 LIVE 상태인 판매가 없습니다 — 캠페인을 시작해보세요</div></div>`;
   return head+cs.map(c=>{
     const p=prod(c.productId),s=seller(c.sellerId),k=calc(c);
     const os=campOrders(c.id);
@@ -1093,29 +1093,29 @@ function vBrandHome(){
   const live=cs.filter(c=>c.status==='LIVE');
   const gmv=cs.reduce((a,c)=>a+calc(c).net,0);
   const heroLine = pend.length ? `승인 대기 <em>${pend.length}건</em>부터 확인해볼까요?`
-    : live.length ? `지금 공구 <em>${live.length}건</em>이 판매 중이에요.`
+    : live.length ? `지금 판매 <em>${live.length}건</em>이 진행 중이에요.`
     : `새 상품을 올리고 셀러를 만나보세요.`;
   return `<div class="hero-band">
     <div class="ey">Brand Center</div>
     <h1>${brand(me).name} 님, 반가워요.<br>${heroLine}</h1>
-    <div class="sub">승인 대기 <b>${pend.length}건</b> · 진행 중 공구 <b>${live.length}건</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일</div>
+    <div class="sub">승인 대기 <b>${pend.length}건</b> · 진행 중 판매 <b>${live.length}건</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일</div>
   </div>
   <div class="grid g4 overlap">
     <div class="card kpi"><div class="lbl">누적 확정 매출 (GMV)</div><div class="val">₩${fmt(gmv)}</div></div>
     <div class="card kpi"><div class="lbl">승인 대기</div><div class="val">${pend.length}건</div><div class="sub">샘플·일정·발송</div></div>
-    <div class="card kpi"><div class="lbl">진행 중 공구</div><div class="val">${live.length}건</div></div>
+    <div class="card kpi"><div class="lbl">진행 중 판매</div><div class="val">${live.length}건</div></div>
     <div class="card kpi"><div class="lbl">등록 상품</div><div class="val">${myP.length}개</div></div>
   </div>
   ${pend.length?`<div class="sec">승인·처리 대기</div><div class="listcard">${pend.map(c=>campRow(c,{who:'brand'})).join('')}</div>`:''}
-  <div class="sec">진행 중 · 확정 공구</div>
-  <div class="listcard">${cs.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c,{who:'brand'})).join('')||'<div class="empty">진행 중 공구 없음</div>'}</div>`;
+  <div class="sec">진행 중 · 확정 판매</div>
+  <div class="listcard">${cs.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c,{who:'brand'})).join('')||'<div class="empty">진행 중 판매 없음</div>'}</div>`;
 }
 function vBrandProducts(){
   const mine=D_().products.filter(p=>p.brandId===S.actingBrand);
-  return `<h2 class="pg">상품 관리 <small>공구가·수수료율은 등록 시 책정, 공구 진행 중 변경 불가</small></h2>
+  return `<h2 class="pg">상품 관리 <small>판매가·수수료율은 등록 시 책정, 판매 진행 중 변경 불가</small></h2>
   <div style="margin-bottom:14px"><button class="pri" data-act="newProduct">+ 새 상품 등록</button></div>
   <div class="tblw"><table>
-  <thead><tr><th>상품</th><th class="num">소비자가</th><th class="num">공구가</th><th class="num">수수료율</th><th>샘플 정책</th><th class="num">재고</th><th>상태</th><th>공구 일정</th></tr></thead>
+  <thead><tr><th>상품</th><th class="num">소비자가</th><th class="num">판매가</th><th class="num">수수료율</th><th>샘플 정책</th><th class="num">재고</th><th>상태</th><th>판매 일정</th></tr></thead>
   <tbody>${mine.map(p=>{
     const slots=D_().campaigns.filter(c=>c.productId===p.id&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status));
     return `<tr><td><b>${p.em} ${esc(p.name)}</b><div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)}</div></td>
@@ -1133,11 +1133,11 @@ function vGallery(){
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="gradebox">${gfull(gname(s))}</span>${platIcon(s)}<b>○○○ 셀러</b><span style="color:var(--mute);font-size:12px">${s.cat} 주력</span></div>
     <div style="font-family:'Archivo',sans-serif;font-size:23px;font-weight:800;margin:8px 0 3px">₩${fmt(s.m3Sales)} <span style="font-size:11px;color:var(--mute);font-weight:500">최근 3개월 매출</span></div>
     ${un?`<div style="font-size:12.5px;color:var(--mute)">팔로워 ${fmt(s.followers)} · 좋아요 평균 ${fmt(s.likesAvg)} · 매출/팔로워 ₩${fmt(s.m3Sales/s.followers)} · 매출/좋아요 ₩${fmt(s.m3Sales/s.likesAvg)}</div>
-     <div class="btnrow" style="margin-top:12px"><button class="pri sm" data-act="invite" data-k="${s.id}">공구 제안 보내기</button></div>`
+     <div class="btnrow" style="margin-top:12px"><button class="pri sm" data-act="invite" data-k="${s.id}">판매 제안 보내기</button></div>`
     :`<div style="font-size:12.5px;color:var(--mute)">팔로워 ●●●,●●● · 좋아요 평균 ●,●●● — 상세 지표 잠김</div>
      <div class="btnrow" style="margin-top:12px"><button class="sm" data-act="unlockRef" data-k="${s.id}">🔓 레퍼런스 열람 · ₩29,000 (시뮬)</button></div>`}
     </div>`;}).join('');
-  return `<h2 class="pg">인플루언서 갤러리 <small>셀러의 갤러리를 둘러보고 공구를 직접 제안하세요</small></h2>
+  return `<h2 class="pg">인플루언서 갤러리 <small>셀러의 갤러리를 둘러보고 판매를 직접 제안하세요</small></h2>
   <div class="grid g3">${D_().sellers.filter(s=>!s.hidden).map(s=>{
     const done=D_().campaigns.filter(c=>c.sellerId===s.id&&['SETTLED','CLEARING'].includes(c.status));
     const tot=done.reduce((a,c)=>a+calc(c).net,0);
@@ -1146,8 +1146,8 @@ function vGallery(){
       <div><span class="gradebox sm">${gfull(gname(s))}</span> <b style="font-size:15px">${s.name}</b> <span style="color:var(--mute);font-size:12px">${platIcon(s)} ${s.handle}</span></div>
       <div class="meta">${s.cat} · 팔로워 ${fmt(s.followers)}</div>
       <div class="meta">${esc(s.intro)}</div>
-      <div class="meta">아카이브: 공구 ${done.length}회 · 누적 ₩${fmt(tot)}</div>
-      <button class="pri" data-act="invite" data-k="${s.id}">공구 직접 제안</button>
+      <div class="meta">아카이브: 판매 ${done.length}회 · 누적 ₩${fmt(tot)}</div>
+      <button class="pri" data-act="invite" data-k="${s.id}">판매 직접 제안</button>
     </div>`;}).join('')}</div>
   <div class="sec">익명 셀러 스카우트 — 유료 레퍼런스</div>
   <p style="font-size:12.5px;color:var(--mute);margin:-2px 0 14px">프로필 비공개 셀러입니다. 레퍼런스 열람권(건당)을 구매하면 상세 지표를 확인하고 제안을 보낼 수 있습니다. <b>제안이 수락되는 순간 DM이 열리고 신원이 공개됩니다.</b></p>
@@ -1179,12 +1179,12 @@ function vBrandOrders(){
       <div class="btnrow"><button class="pri sm" data-act="poCSV">⬇ 발주서 CSV 다운로드</button>
       <button class="sm" data-act="poEmail">✉ 이메일로 발송 (시뮬)</button></div></div>
     <div class="card"><h4 style="margin:0 0 6px;font-size:13.5px">자동 발주 ${po.on?'<span class="st green">ON</span>':'<span class="st gray">OFF</span>'}</h4>
-      <p style="font-size:12.5px;color:var(--mute);margin:0 0 12px">매일 09:00 신규 주문 발주서를 자동 발송하고, 공구 종료 시 최종 발주서를 보냅니다.</p>
+      <p style="font-size:12.5px;color:var(--mute);margin:0 0 12px">매일 09:00 신규 주문 발주서를 자동 발송하고, 판매 종료 시 최종 발주서를 보냅니다.</p>
       <div class="autopo"><input id="poEmailIn" value="${esc(po.email)}" style="max-width:240px" placeholder="물류팀 이메일">
       <button class="sm ${po.on?'danger':'pri'}" data-act="saveAutoPO">${po.on?'자동 발주 끄기':'자동 발주 켜기'}</button></div></div>
   </div>
   <div class="tblw"><table>
-  <thead><tr><th>주문번호</th><th>구매자</th><th>공구</th><th class="num">수량</th><th class="num">금액</th><th>일자</th><th>상태</th><th></th></tr></thead>
+  <thead><tr><th>주문번호</th><th>구매자</th><th>판매</th><th class="num">수량</th><th class="num">금액</th><th>일자</th><th>상태</th><th></th></tr></thead>
   <tbody>${os.map(o=>{const c=camp(o.campaignId),p=prod(c.productId);
     return `<tr><td class="num">${o.id.toUpperCase()}</td><td>${o.buyer}</td><td>${esc(p.name)} <span style="color:var(--mute);font-size:11px">${seller(c.sellerId).handle}</span></td>
     <td class="num">${o.qty}</td><td class="num">₩${fmt(o.unit*o.qty)}</td><td class="num">${md(P(o.at))}</td>
@@ -1198,7 +1198,7 @@ function vBrandSettle(){
   return `<h2 class="pg">정산 <small>확정 매출 − PG ${PG_RATE*100}% − 셀러 수수료 − 플랫폼 ${PLAT_RATE*100}%</small></h2>
   <div style="margin-bottom:14px"><button class="sm ghost" data-act="settleCSV">⬇ 명세 CSV 다운로드</button></div>
   <div class="tblw"><table>
-  <thead><tr><th>공구</th><th>셀러</th><th class="num">확정 매출</th><th class="num">셀러 수수료</th><th class="num">플랫폼+PG</th><th class="num">브랜드 정산액</th><th>상태</th><th>정산일</th></tr></thead>
+  <thead><tr><th>판매</th><th>셀러</th><th class="num">확정 매출</th><th class="num">셀러 수수료</th><th class="num">플랫폼+PG</th><th class="num">브랜드 정산액</th><th>상태</th><th>정산일</th></tr></thead>
   <tbody>${cs.map(c=>{const k=calc(c),p=prod(c.productId);
     return `<tr class="clickable" data-act="open" data-k="${c.id}"><td><b>${esc(p.name)}</b></td><td>${seller(c.sellerId).handle}</td>
     <td class="num">₩${fmt(k.net)}</td><td class="num">−₩${fmt(k.sf)}</td><td class="num">−₩${fmt(k.pf+k.pg)}</td>
@@ -1222,7 +1222,7 @@ function vAdminHome(){
   <div class="grid g4 overlap">
     <div class="card kpi"><div class="lbl">누적 GMV (확정)</div><div class="val">₩${fmt(gmv)}</div></div>
     <div class="card kpi"><div class="lbl">플랫폼 수수료 수익</div><div class="val" style="color:var(--accent-ink)">₩${fmt(fee)}</div><div class="sub">테이크레이트 ${PLAT_RATE*100}%</div></div>
-    <div class="card kpi"><div class="lbl">진행 중 공구</div><div class="val">${cs.filter(c=>c.status==='LIVE').length}건</div></div>
+    <div class="card kpi"><div class="lbl">진행 중 판매</div><div class="val">${cs.filter(c=>c.status==='LIVE').length}건</div></div>
     <div class="card kpi"><div class="lbl">환불률</div><div class="val">${refRate.toFixed(1)}%</div><div class="sub">주문 ${fmt(os.length)}건 기준</div></div>
   </div>
   <div class="sec">전체 캠페인</div>
@@ -1239,14 +1239,14 @@ function vAdminReview(){
   <div class="notice">건강기능식품은 표시광고 사전 심의 대상입니다. 검수 체크리스트: 질병 치료·예방 표현 금지, 기능성 문구는 식약처 인정 범위 내, 이벤트 문구의 소비자 오인 여부.</div>
   <div class="listcard">${pend.map(p=>`<div class="rowitem">
     <div style="font-size:24px">${p.em}</div>
-    <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${brand(p.brandId).name} · 공구가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%</div></div>
+    <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${brand(p.brandId).name} · 판매가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%</div></div>
     <button class="sm pri" data-act="approveProduct" data-k="${p.id}">승인 · 노출</button>
     <button class="sm danger" data-act="rejectProduct" data-k="${p.id}">반려</button>
   </div>`).join('')||'<div class="empty">검수 대기 상품이 없습니다</div>'}</div>`;
 }
 function vAdminSettle(){
   const ready=D_().campaigns.filter(c=>c.status==='CLEARING');
-  return `<h2 class="pg">정산 실행 <small>공구 종료 + ${CLEAR_DAYS}일 경과 건 일괄 지급</small></h2>
+  return `<h2 class="pg">정산 실행 <small>판매 종료 + ${CLEAR_DAYS}일 경과 건 일괄 지급</small></h2>
   <div class="listcard">${ready.map(c=>{const k=calc(c),p=prod(c.productId);const due=settleDue(c);const isDue=due<=today();
     return `<div class="rowitem">
     <div style="font-size:24px">${p.em}</div>
@@ -1256,7 +1256,7 @@ function vAdminSettle(){
       :`<span class="st amber">D-${Math.ceil((due-today())/DAY)}</span> <button class="sm ghost" data-act="ffwd" data-k="${c.id}">⏩ 3주 경과(시뮬)</button>`}
   </div>`;}).join('')||'<div class="empty">정산 대기 건이 없습니다</div>'}</div>
   <div class="sec">정산 완료</div>
-  <div class="tblw"><table><thead><tr><th>일자</th><th>공구</th><th class="num">확정 매출</th><th class="num">브랜드 지급</th><th class="num">셀러 지급</th><th class="num">플랫폼 수익</th></tr></thead>
+  <div class="tblw"><table><thead><tr><th>일자</th><th>판매</th><th class="num">확정 매출</th><th class="num">브랜드 지급</th><th class="num">셀러 지급</th><th class="num">플랫폼 수익</th></tr></thead>
   <tbody>${D_().settlements.map(s=>`<tr><td class="num">${md(P(s.at))}</td><td>${esc(s.title)}</td><td class="num">₩${fmt(s.net)}</td><td class="num">₩${fmt(s.brandPay)}</td><td class="num">₩${fmt(s.sellerPay)}</td><td class="num" style="color:var(--accent-ink)">₩${fmt(s.platFee)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">아직 없음</td></tr>'}
   </tbody></table></div>`;
 }
@@ -1275,7 +1275,7 @@ function vCampDetail(cid){
     <div style="flex:1;min-width:220px">
       <div class="t">${esc(p.name)} <span style="color:var(--mute);font-weight:400;font-size:13px">· ${cid.toUpperCase()}</span></div>
       <div style="font-size:12.5px;color:var(--mute)"><span class="chip brand">${b.name}</span> × <span class="chip seller">${platIcon(s)} ${s.name} ${s.handle}</span>
-      · 공구가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%
+      · 판매가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%
       ${c.start?` · 기간 ${md(P(c.start))}–${md(P(c.end))}`:''}</div>
       ${stepper(c.status)}
     </div>
@@ -1341,7 +1341,7 @@ function detActions(c,k,p,s,linkUrl){
     case 'TESTING':
       if(V==='brand') A.push(wait('셀러 테스트 중',`셀러가 샘플을 사용해보고 있어요. 기한 ${c.testDue?md(P(c.testDue)):'—'} 까지 진행 여부를 응답합니다.`));
       else A.push(card('테스트 후 진행 결정 <span class="chip seller">셀러 액션</span>',
-        `기한 ${c.testDue?md(P(c.testDue)):'—'} 까지. 진행 시 공구 일정을 제안합니다.`,
+        `기한 ${c.testDue?md(P(c.testDue)):'—'} 까지. 진행 시 판매 일정을 제안합니다.`,
         `<button class="pri" data-act="openSchedule" data-k="${c.id}">진행할게요 → 일정 제안</button>
          <button data-act="passCamp" data-k="${c.id}">이번엔 패스</button>`));
       break;
@@ -1354,19 +1354,19 @@ function detActions(c,k,p,s,linkUrl){
       break;
     case 'SCHEDULE_CONFIRMED':{
       const dday=Math.ceil((P(c.start)-today())/DAY);
-      A.push(card('공구 대기 중',`시작 ${md(P(c.start))} (D-${Math.max(dday,0)}) — 시작 시각에 링크가 자동 활성화됩니다.`,''));
+      A.push(card('판매 대기 중',`시작 ${md(P(c.start))} (D-${Math.max(dday,0)}) — 시작 시각에 링크가 자동 활성화됩니다.`,''));
       if(V==='admin') A.push(sim('시뮬레이션','실서비스에선 스케줄러가 자동 처리합니다.',
-        `<button class="sm" data-act="goLive" data-k="${c.id}">공구 시작 처리</button>`));
+        `<button class="sm" data-act="goLive" data-k="${c.id}">판매 시작 처리</button>`));
       break;}
     case 'LIVE':
-      A.push(card('공구 링크 <span class="st live"><span class="pulse"></span>LIVE</span>',
+      A.push(card('판매 링크 <span class="st live"><span class="pulse"></span>LIVE</span>',
         `<code style="font-size:11.5px">${linkUrl}</code> · 종료 ${md(P(c.end))}`,
-        `<button class="pri" data-act="preview" data-k="${c.id}">공구 페이지 미리보기</button>
+        `<button class="pri" data-act="preview" data-k="${c.id}">판매 페이지 미리보기</button>
          <button data-act="copyLink" data-k="${linkUrl}">링크 복사</button>`));
       if(V==='admin') A.push(sim('판매 시뮬레이션','구매자 주문을 흉내내 정산 숫자가 움직이는 걸 확인하세요.',
         `<button class="sm" data-act="simOrders" data-k="${c.id}">주문 +5건</button>
          <button class="sm" data-act="simOrders20" data-k="${c.id}">주문 +20건</button>
-         <button class="sm" data-act="endCamp" data-k="${c.id}">공구 종료 처리</button>`));
+         <button class="sm" data-act="endCamp" data-k="${c.id}">판매 종료 처리</button>`));
       break;
     case 'CLEARING':{
       const due=settleDue(c);
@@ -1375,8 +1375,8 @@ function detActions(c,k,p,s,linkUrl){
       if(V==='admin') A.push(sim('시뮬레이션','',`<button class="sm" data-act="ffwd" data-k="${c.id}">⏩ 3주 경과 처리</button>`));
       break;}
     case 'SETTLED':
-      A.push(card('정산 완료 ✓',`셀러 지급 ₩${fmt(k.sfTotal*(1-WHT))} (원천징수 후) · 브랜드 지급 ₩${fmt(k.brandPay)}. 성과가 좋았다면 같은 조합으로 바로 재공구를 열 수 있습니다.`,
-        `${V!=='brand'?`<button class="pri" data-act="regongu" data-k="${c.id}">🔁 재공구 제안 (샘플 생략)</button>`:''}
+      A.push(card('정산 완료 ✓',`셀러 지급 ₩${fmt(k.sfTotal*(1-WHT))} (원천징수 후) · 브랜드 지급 ₩${fmt(k.brandPay)}. 성과가 좋았다면 같은 조합으로 바로 재판매를 열 수 있습니다.`,
+        `${V!=='brand'?`<button class="pri" data-act="regongu" data-k="${c.id}">🔁 재판매 제안 (샘플 생략)</button>`:''}
          <button data-act="settleCSV">명세 CSV</button>`));
       break;
     case 'REJECTED': A.push(card('거절된 요청','브랜드가 이번 요청을 승인하지 않았습니다.','')); break;
@@ -1391,7 +1391,7 @@ function closeModal(){$('#modalroot').innerHTML='';}
 function scheduleModal(cid){
   const c=camp(cid),p=prod(c.productId);
   const slots=D_().campaigns.filter(x=>x.productId===p.id&&['SCHEDULE_CONFIRMED','LIVE'].includes(x.status));
-  openModal(`<h3>공구 일정 제안 — ${esc(p.name)}</h3>
+  openModal(`<h3>판매 일정 제안 — ${esc(p.name)}</h3>
   <div class="fld"><label>이미 확정된 기간 (선택 불가 · 기간 독점)</label>
     <div class="slots">${slots.map(x=>`<div class="slot"><span class="rng">${md(P(x.start))} – ${md(P(x.end))}</span><span>${seller(x.sellerId).handle} 확정</span></div>`).join('')||'<div class="slot">아직 확정된 기간 없음</div>'}</div></div>
   <div class="fld"><label>시작일</label><input type="date" id="schStart" value="${ymd(addD(today(),7))}" min="${ymd(addD(today(),1))}"></div>
@@ -1404,9 +1404,9 @@ function inviteModal(sid){
   const disp=s.hidden?'○○○ 셀러 (익명)':s.name+' '+s.handle;
   const myP=D_().products.filter(p=>p.brandId===S.actingBrand&&p.status==='listed');
   if(!myP.length){toast('노출 중인 상품이 없습니다 — 상품을 먼저 등록하세요');return;}
-  openModal(`<h3>공구 직접 제안 — ${disp}</h3>
-  <div class="fld"><label>제안할 상품</label><select id="invProd">${myP.map(p=>`<option value="${p.id}">${p.name} · 공구가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%</option>`).join('')}</select></div>
-  <div class="fld"><label>제안 메시지</label><textarea id="invMsg" rows="3">안녕하세요${s.hidden?'':' '+s.name+'님'}, ${brand(S.actingBrand).name}입니다. 채널 결이 저희 상품과 잘 맞아 공구를 제안드려요. 샘플부터 보내드릴게요!</textarea></div>
+  openModal(`<h3>판매 직접 제안 — ${disp}</h3>
+  <div class="fld"><label>제안할 상품</label><select id="invProd">${myP.map(p=>`<option value="${p.id}">${p.name} · 판매가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%</option>`).join('')}</select></div>
+  <div class="fld"><label>제안 메시지</label><textarea id="invMsg" rows="3">안녕하세요${s.hidden?'':' '+s.name+'님'}, ${brand(S.actingBrand).name}입니다. 채널 결이 저희 상품과 잘 맞아 판매를 제안드려요. 샘플부터 보내드릴게요!</textarea></div>
   <p style="font-size:12px;color:var(--mute)">셀러 수락 시 샘플 발송 단계부터 시작됩니다.</p>
   <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="confirmInvite" data-k="${sid}">제안 보내기</button></div>`);
 }
@@ -1417,7 +1417,7 @@ function productModal(){
   <div class="fld"><label>카테고리</label><select id="npCat">${CATS.filter(c=>c!=='전체').map(c=>`<option>${c}</option>`).join('')}</select></div>
   <div class="grid g2">
     <div class="fld"><label>소비자가 (₩)</label><input id="npCp" type="number" value="39000" step="1000"></div>
-    <div class="fld"><label>공구가 (₩)</label><input id="npGp" type="number" value="29900" step="100"></div>
+    <div class="fld"><label>판매가 (₩)</label><input id="npGp" type="number" value="29900" step="100"></div>
     <div class="fld"><label>셀러 수수료율 (%)</label><input id="npRate" type="number" value="20" min="5" max="40"></div>
     <div class="fld"><label>재고</label><input id="npStock" type="number" value="1000" step="100"></div>
   </div>
@@ -1428,13 +1428,13 @@ function productModal(){
 function previewModal(cid){
   const c=camp(cid),p=prod(c.productId),s=seller(c.sellerId),b=brand(p.brandId);
   const left=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
-  openModal(`<h3 style="text-align:center">공구 페이지 미리보기 — 구매자 화면</h3>
+  openModal(`<h3 style="text-align:center">판매 페이지 미리보기 — 구매자 화면</h3>
   <div class="landing">
     <div class="hero"><div class="em">${p.em}</div>
-      <h3>${esc(p.name)}</h3><div class="by">${b.name} × ${s.name} ${s.handle} 단독 공구</div></div>
+      <h3>${esc(p.name)}</h3><div class="by">${b.name} × ${s.name} ${s.handle} 단독 판매</div></div>
     <div class="body">
       <div class="pr"><span class="g">₩${fmt(p.gp)}</span><span class="c">₩${fmt(p.cp)}</span></div>
-      <div class="timer">공구 마감까지 ${left}일 — 기간 한정 특가</div>
+      <div class="timer">판매 마감까지 ${left}일 — 기간 한정 특가</div>
       <button class="pri buy" data-act="simBuy" data-k="${cid}">구매하기 (주문 시뮬레이션)</button>
       <p style="font-size:11px;color:var(--mute);text-align:center;margin:10px 0 0">결제는 셀러리(주)가 대행하며, 당사는 통신판매중개자입니다 · #광고 경제적 대가 관계 표시</p>
     </div>
@@ -1578,14 +1578,14 @@ const ACT={
     inp.click();
   },
   copyRef(code){
-    try{navigator.clipboard.writeText(`셀러리에서 같이 공구해요! 가입할 때 추천 코드 ${code} 입력하면 첫 5회 공구 수수료 +1% → sellery.co.kr`);toast('추천 메시지 복사됨 — DM으로 공유하세요');}
+    try{navigator.clipboard.writeText(`셀러리에서 같이 판매해요! 가입할 때 추천 코드 ${code} 입력하면 첫 5회 판매 수수료 +1% → sellery.co.kr`);toast('추천 메시지 복사됨 — DM으로 공유하세요');}
     catch(e){toast('복사 실패 — 코드: '+code);}
   },
   confirmInvite(sid){
     const pid=$('#invProd').value;const msg=$('#invMsg').value.trim();
     const id='c'+(D_().seq++);
     D_().campaigns.push({id,sellerId:sid,productId:pid,status:'SAMPLE_APPROVED',createdAt:ymd(today())});
-    pushSys(id,`브랜드 <b>${brand(S.actingBrand).name}</b>가 <b>${prod(pid).name}</b> 공구를 직접 제안했고, 셀러가 수락했습니다 (프로토타입 자동 수락)`);
+    pushSys(id,`브랜드 <b>${brand(S.actingBrand).name}</b>가 <b>${prod(pid).name}</b> 판매를 직접 제안했고, 셀러가 수락했습니다 (프로토타입 자동 수락)`);
     if(seller(sid).hidden)pushSys(id,`🔓 익명 셀러가 제안을 수락해 신원이 공개되었습니다 — <b>${seller(sid).name} ${seller(sid).handle}</b>. 지금부터 이 스레드(DM)로 소통하세요`);
     if(msg)pushChat(id,'brand',msg);
     closeModal();save();S.view.cid=id;render();toast(`${seller(sid).name}님에게 제안 발송 → 수락됨`);
@@ -1632,8 +1632,8 @@ const ACT={
     const old=camp(cid);
     const id='c'+(D_().seq++);
     D_().campaigns.push({id,sellerId:old.sellerId,productId:old.productId,status:'TESTING',testDue:ymd(addD(today(),14)),createdAt:ymd(today())});
-    pushSys(id,`🔁 <b>재공구</b> — 지난 공구(${cid.toUpperCase()}) 성과 기반. 샘플 단계 생략, 일정 제안부터 시작합니다`);
-    save();S.view.cid=id;render();toast('재공구 캠페인 생성 — 일정 제안부터 시작');
+    pushSys(id,`🔁 <b>재판매</b> — 지난 판매(${cid.toUpperCase()}) 성과 기반. 샘플 단계 생략, 일정 제안부터 시작합니다`);
+    save();S.view.cid=id;render();toast('재판매 캠페인 생성 — 일정 제안부터 시작');
   },
   settleCSV(){
     let cs;
@@ -1666,7 +1666,7 @@ const ACT={
     if(overlaps(c.productId,st,en,cid)){toast('⚠ 이미 확정된 기간과 겹칩니다 — 다른 날짜를 선택하세요');return;}
     c.propStart=st;c.propEnd=en;c.propQty=qty;
     closeModal();
-    transition(cid,'SCHEDULE_PROPOSED',`셀러가 공구 일정을 제안했습니다 · <b>${md(P(st))} – ${md(P(en))}</b> · 재고 ${fmt(qty)}`);
+    transition(cid,'SCHEDULE_PROPOSED',`셀러가 판매 일정을 제안했습니다 · <b>${md(P(st))} – ${md(P(en))}</b> · 재고 ${fmt(qty)}`);
     toast('일정 제안 완료 — 브랜드 승인 대기');
   },
   confirmSchedule(cid){
@@ -1678,17 +1678,17 @@ const ACT={
   goLive(cid){
     const c=camp(cid);
     if(P(c.start)>today()){c.start=ymd(today());if(P(c.end)<P(c.start))c.end=ymd(addD(today(),4));}
-    transition(cid,'LIVE','공구 링크 활성화 — <b>판매 시작</b>');toast('공구 LIVE! 링크가 활성화되었습니다');
+    transition(cid,'LIVE','판매 링크 활성화 — <b>판매 시작</b>');toast('판매 LIVE! 링크가 활성화되었습니다');
   },
   simOrders(cid){simSell(cid,5);},
   simOrders20(cid){simSell(cid,20);},
   simBuy(cid){simSell(cid,1);closeModal();},
   endCamp(cid){
     const c=camp(cid);c.end=ymd(today());
-    transition(cid,'CLEARING',`공구 종료 · 교환/환불 기간 시작 (정산 예정 <b>${md(settleDue(c))}</b>)`);
+    transition(cid,'CLEARING',`판매 종료 · 교환/환불 기간 시작 (정산 예정 <b>${md(settleDue(c))}</b>)`);
     const po=D_().autoPO;
     if(po&&po.on){pushSys(cid,`📦 최종 발주서 자동 발송 완료 — ${esc(po.email)} (자동 발주)`);save();render();}
-    toast('공구 종료 — D+21 클리어링 시작'+(po&&po.on?' · 최종 발주서 자동 발송됨':''));
+    toast('판매 종료 — D+21 클리어링 시작'+(po&&po.on?' · 최종 발주서 자동 발송됨':''));
   },
   ffwd(cid){
     const c=camp(cid);c.end=ymd(addD(today(),-CLEAR_DAYS));
