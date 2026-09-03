@@ -944,7 +944,7 @@ function seedData(){
     ],
     celeryLedger:[
       {who:'s1',at:D(-30),delta:3,memo:'가입 축하 지급'},
-      {who:'s1',at:D(-6),delta:-1,memo:'샘플 요청 횟수 +1 구매'},
+      {who:'s1',at:D(-6),delta:-2,memo:'매출 데이터 확인권 구매'},
       {who:'s2',at:D(-40),delta:3,memo:'가입 축하 지급'},
       {who:'s3',at:D(-25),delta:3,memo:'가입 축하 지급'},
       {who:'s6',at:D(-5),delta:3,memo:'가입 축하 지급'},{who:'s7',at:D(-4),delta:3,memo:'가입 축하 지급'},{who:'s8',at:D(-9),delta:3,memo:'가입 축하 지급'},
@@ -1016,7 +1016,7 @@ function seedData(){
     ],
     campaigns:[
       {id:'c1',sellerId:'s1',productId:'p1',status:'LIVE',start:D(-2),end:D(2),qty:800,createdAt:D(-14)},
-      {id:'c2',sellerId:'s1',productId:'p4',status:'SAMPLE_REQUESTED',createdAt:D(-1)},
+      {id:'c2',sellerId:'s1',productId:'p4',status:'SAMPLE_PURCHASED',createdAt:D(-1),purchased:true,samplePaid:{price:75650,cel:0,cash:75650,method:'cash'}},
       {id:'c3',sellerId:'s1',productId:'p2',status:'TESTING',testDue:D(11),createdAt:D(-6)},
       {id:'c4',sellerId:'s2',productId:'p1',status:'SCHEDULE_CONFIRMED',start:D(7),end:D(11),qty:1000,createdAt:D(-10)},
       {id:'c5',sellerId:'s3',productId:'p3',status:'CLEARING',start:D(-18),end:D(-13),qty:500,createdAt:D(-30)},
@@ -1045,13 +1045,14 @@ function seedData(){
   mkOrders('c12',26900,57,2,-3,5);
   mkOrders('c5',24900,412,14,-18,5);
   mkOrders('c6',31900,548,11,-40,5);
+  data.orders.push({id:'o'+(data.seq++),campaignId:'c2',buyer:'지유 (샘플 구매)',qty:1,unit:75650,status:'PAID',at:D(-1),sample:true});
   // 시드 배송 상태: 종료·정산 판매(c5,c6)는 전량 발송 완료, 진행 중(c1,c12)은 어제까지 주문만 발송 (오늘 주문은 미발송)
   const couriers=['CJ대한통운','우체국택배','한진택배','롯데택배'];
   data.orders.forEach((o,i)=>{if(o.status!=='PAID')return;const shipped=['c5','c6'].includes(o.campaignId)||o.at<D(0);if(shipped){o.tracking='6890-'+String(1000+(i*37)%9000).padStart(4,'0')+'-'+String(1000+(i*53)%9000).padStart(4,'0');o.courier=couriers[i%4];}});
   // seed messages
   const sys=(cid,txt,d)=>{(data.messages[cid]=data.messages[cid]||[]).push({type:'sys',txt,at:d})};
   const chat=(cid,role,txt,d)=>{(data.messages[cid]=data.messages[cid]||[]).push({type:'chat',role,txt,at:d})};
-  sys('c2','인플루언서 <b>지유(@jiyu_beauty)</b>가 샘플을 요청했습니다',D(-1));
+  sys('c2','🧾 인플루언서 <b>지유(@jiyu_beauty)</b>가 샘플을 <b>구매</b>했습니다 · ₩75,650 (현금) · 무상 기준 플래티넘 미달 → 구매 · 판매 확정 시 환급 상품',D(-1));
   chat('c2','seller','안녕하세요! GL-01 직접 한 달 먹어보고 진행 결정하고 싶어요. 성분표도 같이 받아볼 수 있을까요?',D(-1));
   sys('c3','샘플 요청 → 승인 → 배송 완료 · 수령 확인됨',D(-3));
   sys('c3','테스트 기한: '+md(P(D(11)))+' 까지 진행 여부 응답',D(-3));
@@ -1077,7 +1078,7 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v21';
+const LS='sellery-proto-v22';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
@@ -2410,7 +2411,7 @@ function vBrandOrders(){
 }
 function vBrandSettle(){
   const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
-  const cs=D_().campaigns.filter(c=>myP.includes(c.productId)&&['LIVE','CLEARING','SETTLED'].includes(c.status));
+  const cs=D_().campaigns.filter(c=>myP.includes(c.productId)&&(['LIVE','CLEARING','SETTLED'].includes(c.status)||c.samplePaid));
   const bsi=brand(S.actingBrand).settleInfo||{};
   const bNoAcct=!(bsi.bank&&bsi.account&&bsi.bizNo);
   return `<h2 class="pg">정산 <small>확정 매출 − PG ${(PG_RATE*100).toFixed(1)}% − 인플루언서 수수료 − 플랫폼 ${(PLAT_RATE*100).toFixed(0)}%</small></h2>
@@ -2692,7 +2693,7 @@ function vAdminMatch(){
   <div class="listcard">${autoCs.map(c=>campRow(c,{who:'brand'})).join('')||'<div class="empty">아직 자동 제안이 없습니다 — 위에서 실행해보세요</div>'}</div>`;
 }
 function vAdminRevenue(){
-  const cs=D_().campaigns.filter(c=>['LIVE','CLEARING','SETTLED'].includes(c.status));
+  const cs=D_().campaigns.filter(c=>['LIVE','CLEARING','SETTLED'].includes(c.status)||c.samplePaid);
   const T={gross:0,refund:0,net:0,sampleNet:0,pg:0,sf:0,brandPay:0,pfGross:0,gBonus:0,ref:0,bref:0,bDisc:0,costs:0,pf:0,vat:0,pfNet:0};
   cs.forEach(c=>{const k=calc(c);T.gross+=k.gross;T.refund+=k.refund;T.net+=k.net;T.sampleNet+=k.sampleNet||0;T.pg+=k.pg;T.sf+=k.sfTotal;T.brandPay+=k.brandPay;T.pfGross+=k.pfGross;T.gBonus+=k.gBonus;T.ref+=k.boost+k.refReward;T.bref+=k.bBoost+k.bReward;T.bDisc+=k.bDisc;T.costs+=k.costs;T.pf+=k.pf;T.vat+=k.vat;T.pfNet+=k.pfNet;});
   const led=D_().celeryLedger||[];
