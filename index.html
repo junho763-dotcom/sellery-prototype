@@ -639,6 +639,39 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 .boot-logo span{color:var(--red)}
 .boot-logo .celogo{shape-rendering:auto}
 @media(max-width:640px){.wordmark{font-size:16px;padding:6px 12px 6px 10px}.wordmark .celogo{width:20px;height:24px}}
+/* ==== v7 정돈 (2026-09-03, 대표 피드백 반영): 픽셀 셀러리 컨셉 유지 + 장식 밀도 축소 + 위계 회복.
+   원복: 이 v7 블록 삭제 또는 `git checkout skin-pixel-v2 -- index.html` ==== */
+/* 1) 위계: 카드는 흰색으로 배경과 분리, 서브 서피스는 연한 셀러리 */
+:root{--surface:#ffffff;--surface-2:#f3f7e6;--soft-line:#cfdcb6}
+/* 2) 타이틀바·파일명은 히어로(페이지당 1개)만 남기고 일반 카드·모달에서는 제거 */
+.card::before,.listcard::before,.tblw::before,.thread::before,.det-head::before,.modal::before,
+.card::after,.listcard::after,.tblw::after,.thread::after,.det-head::after,.modal::after{display:none!important}
+.card,.det-head,.thread{padding-top:18px}
+.card[style*="padding:0"]{padding-top:0!important}
+.listcard,.tblw{padding-top:0}
+.modal{padding-top:22px}
+/* 3) 장식 1겹만: 노치 테두리 + 드롭섀도 (베벨·체커 스트립 제거) */
+.card,.listcard,.tblw,.det-head,.thread,.modal,.landing,.sim,.exclbox,.mini-stats>div{box-shadow:var(--pxb),4px 4px 0 0 var(--ink)}
+.mini-stats>div,.sc-av,.prod .ph{box-shadow:var(--pxb2)}
+.kpi .val{color:var(--ink)}
+.wordmark{box-shadow:var(--pxb2),4px 4px 0 0 var(--ink)}
+.celery-bal,.iconbtn{box-shadow:var(--pxb2),3px 3px 0 0 var(--ink)}
+/* 4) 픽셀 폰트는 3곳만: 히어로 타이틀바, 셀러리 포인트 칩·가격, 섹션 헤더 화살표. 태그·뱃지·등급은 원래 모노/산세리프로 */
+.st,.badge,.mebadge,.nb,.trendbadge,.exclbadge,.stp,.cal-ev,.chip-master,.disc,.rowitem > span.sub{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace!important;font-weight:700!important;letter-spacing:.04em!important;font-size:10.5px;line-height:1.7}
+.gradebox{font-family:'Archivo','IBM Plex Sans KR',sans-serif!important;font-weight:800!important;letter-spacing:.04em!important;font-size:11px}
+.badge{font-size:10.5px}
+.st{padding:3px 10px;margin:2px 4px}
+.st::before{animation:none;width:6px;height:6px;box-shadow:none}
+.st.live::before{animation:led 1s steps(1) infinite}
+.disc{animation:none}
+.rowitem > span.sub{background:var(--surface-2)}
+/* 5) 재미 포인트는 남김: 히어로 윈도우(◼◼◼ SELLERY.EXE) + 라임 마커 + 점멸 커서, 픽셀 이모지 썸네일, 셀러리 커서, 부팅 화면(짧게), XP 게이지, LIVE 점멸 */
+.boot-prog i{animation-duration:.85s}
+.boot{transition-duration:.2s}
+/* 6) 표·리스트 가독성: 헤더 배경 연한 셀러리, 행 구분선 부드럽게 */
+th{background:var(--surface-2)}
+td{border-bottom-color:var(--soft-line)}
+.hb-track{background:var(--surface-2)}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
