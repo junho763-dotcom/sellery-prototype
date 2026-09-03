@@ -801,6 +801,17 @@ input:focus,select:focus,textarea:focus{box-shadow:var(--pxbl)!important}
 .modal{overflow:visible}
 .card,.listcard,.tblw,.det-head,.thread,.landing{overflow:visible}
 .card[style*="overflow:hidden"],.listcard{overflow:hidden}
+/* v8-c 호버: 검정 그림자 전부 연한 그린으로 */
+.card:hover,.prod:hover,.card.prod:hover,.kpi.go:hover{transform:translate(-2px,-2px);box-shadow:var(--pxbl),3px 6px 0 0 var(--line-sh),6px 3px 0 0 var(--line-sh),6px 6px 0 0 var(--line-sh)}
+.card:hover:not(.prod):not(.kpi.go){transform:none;box-shadow:var(--pxbl),var(--pxdl)}
+button:hover,button.pri:hover,button.ghost:hover,button.danger:hover,button.sm:hover{transform:translate(-1px,-1px);box-shadow:var(--pxbl),2px 3px 0 0 var(--line-sh),3px 2px 0 0 var(--line-sh),3px 3px 0 0 var(--line-sh)}
+button.danger:hover{box-shadow:0 -2px 0 0 #d98b8b,0 2px 0 0 #d98b8b,-2px 0 0 0 #d98b8b,2px 0 0 0 #d98b8b,3px 3px 0 0 #efd0d0}
+.subnav button:hover{box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh)}
+.subnav button.on:hover{box-shadow:0 -2px 0 0 var(--bar),0 2px 0 0 var(--bar),-2px 0 0 0 var(--bar),2px 0 0 0 var(--bar),2px 2px 0 0 var(--line-sh)}
+.catchip:hover{box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh)}
+.sc-hist:hover{box-shadow:var(--pxbl)}
+.rowitem:hover,.news-item:hover,tr.clickable:hover td{background:#f3f7e6}
+.iconbtn:hover,.celery-bal:hover{background:#f3f7e6}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
