@@ -770,6 +770,37 @@ button,button.pri,button.ghost,button.sm,button.danger,.btnrow button,.foot butt
 .nb.new{background:var(--line);color:#fff;border-color:var(--line)!important}
 .news-item b{color:var(--ink)}
 .news-item{border-bottom:1.5px solid #e3ecd2}
+/* v8-b 노치 모서리 (사용자: 색은 유지, 모서리는 픽셀식 노치) — border 대신 4방향 box-shadow 프레임 (귀 한 칸 파임) */
+:root{--pxbl:0 -2px 0 0 var(--line),0 2px 0 0 var(--line),-2px 0 0 0 var(--line),2px 0 0 0 var(--line);
+      --pxbl-soft:0 -1.5px 0 0 var(--line-soft),0 1.5px 0 0 var(--line-soft),-1.5px 0 0 0 var(--line-soft),1.5px 0 0 0 var(--line-soft);
+      --pxdl:2px 4px 0 0 var(--line-sh),4px 2px 0 0 var(--line-sh),4px 4px 0 0 var(--line-sh)}
+.card,.listcard,.tblw,.det-head,.thread,.modal,.landing,.sim,.exclbox,.hero-band{border:none!important;box-shadow:var(--pxbl),var(--pxdl);margin:3px 6px 6px 3px}
+.card.prod:hover,.kpi.go:hover{box-shadow:var(--pxbl),3px 6px 0 0 var(--line-sh),6px 3px 0 0 var(--line-sh),6px 6px 0 0 var(--line-sh)}
+.hero-av{border:none!important;box-shadow:var(--pxbl),2px 3px 0 0 var(--line-sh),3px 2px 0 0 var(--line-sh),3px 3px 0 0 var(--line-sh)!important}
+.mini-stats>div,.sc-av,.prod .ph,.meter,.pyr-row,.hb-track,.slot,.notice,.sc-hist{border:none!important;box-shadow:var(--pxbl-soft);margin:2px 3px}
+.pyr-row.me{border:none!important;box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh)}
+.st,.gradebox,.chip,.nb,.trendbadge,.exclbadge,.stp,.cal-ev,.disc,.catchip,.rowitem > span.sub,.celprice{border:none!important;box-shadow:var(--pxbl-soft);margin:2px 4px}
+.nb.hot,.st.live{box-shadow:0 -1.5px 0 0 var(--bar),0 1.5px 0 0 var(--bar),-1.5px 0 0 0 var(--bar),1.5px 0 0 0 var(--bar)}
+.nb.new{box-shadow:var(--pxbl)}
+.catchip.on{box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh)}
+button,button.pri,button.ghost,button.sm,button.danger{border:none!important;box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh);margin:3px 5px 4px 3px}
+button:hover{box-shadow:var(--pxbl),3px 3px 0 0 var(--line-sh)}
+button:active{box-shadow:var(--pxbl),1px 1px 0 0 var(--line-sh)}
+button.danger{box-shadow:0 -2px 0 0 #d98b8b,0 2px 0 0 #d98b8b,-2px 0 0 0 #d98b8b,2px 0 0 0 #d98b8b,2px 2px 0 0 #efd0d0}
+.subnav button{box-shadow:var(--pxbl);margin:3px 5px}
+.subnav button.on{box-shadow:0 -2px 0 0 var(--bar),0 2px 0 0 var(--bar),-2px 0 0 0 var(--bar),2px 0 0 0 var(--bar),2px 2px 0 0 var(--line-sh)}
+.roletabs button.on{border:none!important;box-shadow:var(--pxbl),3px 3px 0 0 var(--line-sh)!important}
+input,select,textarea{border:none!important;box-shadow:var(--pxbl-soft)!important;margin:3px}
+input:focus,select:focus,textarea:focus{box-shadow:var(--pxbl)!important}
+.wordmark,.celery-bal,.iconbtn{border:none!important;box-shadow:var(--pxbl),3px 3px 0 0 var(--line-sh)}
+.qty{border:none;box-shadow:var(--pxbl);margin:3px}
+.qty button{box-shadow:none!important}
+.opt{border:none;box-shadow:var(--pxbl-soft);margin:2px 3px}
+.opt.on{box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh)}
+.boot-win{border:none;box-shadow:var(--pxbl),var(--pxdl)}
+.modal{overflow:visible}
+.card,.listcard,.tblw,.det-head,.thread,.landing{overflow:visible}
+.card[style*="overflow:hidden"],.listcard{overflow:hidden}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
