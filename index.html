@@ -376,25 +376,75 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
   --plat-c:#2f6a1e; --plat-bg:#dfeccc;
   --seller-c:#b0326a; --seller-bg:#f7e2ec;
 }
-/* 픽셀 감 — 모서리 각지게 */
-.card,.listcard,.tblw,.det-head,.thread,.modal,.landing,.sim,.exclbox,.notice,.mini-stats>div,.sc-hist,.slot,.msg,.hb-track,.cal-ev,.wordmark,.prod .ph{border-radius:0}
-button,.catchip,input,select,textarea,.st,.chip,.toast,.gradebox,.nb,.stp{border-radius:0}
-/* 픽셀 폰트는 영문 로고·라벨·숫자 뱃지에만 (한글 가독성 유지) */
-.wordmark{font-family:'Press Start 2P','IBM Plex Sans KR',monospace;font-size:12px;letter-spacing:.1em;padding:9px 14px;box-shadow:var(--hs-red)}
-.hero-band .ey{font-family:'Press Start 2P',monospace;font-size:8.5px;letter-spacing:.18em}
-.mebadge{font-family:'Press Start 2P',monospace;font-size:6.5px;padding:2px 6px;color:var(--yellow)}
-.badge{font-family:'Press Start 2P',monospace;font-size:7px;line-height:17px}
-/* 주요 액션 = 셀러리 라임 CTA */
-button.pri{background:var(--yellow);color:var(--ink);box-shadow:var(--hs)}
-button.pri:hover{box-shadow:5px 5px 0 var(--ink)}
-button.pri:active{box-shadow:1px 1px 0 var(--ink)}
-.subnav button.on{background:var(--ink);color:var(--yellow);box-shadow:var(--hs-red)}
+/* --- 픽셀 그리드 그라운드 --- */
+body{background-image:linear-gradient(rgba(28,42,20,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(28,42,20,.075) 1px,transparent 1px);background-size:16px 16px}
+.appbar{background:var(--surface);border-bottom:3px solid var(--ink)}
+/* --- 픽셀 윈도우: 모서리 파인(notched) 테두리 + 베벨 + 픽셀 드롭섀도 --- */
+:root{
+  --pxb:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink);
+  --pxd:3px 6px 0 0 var(--ink),6px 3px 0 0 var(--ink),6px 6px 0 0 var(--ink);
+  --bevel:inset 0 3px 0 rgba(255,255,255,.75),inset 3px 0 0 rgba(255,255,255,.75),inset 0 -3px 0 rgba(28,42,20,.14),inset -3px 0 0 rgba(28,42,20,.14);
+  --pxb2:0 -2px 0 0 var(--ink),0 2px 0 0 var(--ink),-2px 0 0 0 var(--ink),2px 0 0 0 var(--ink);
+  --pxd2:2px 4px 0 0 var(--ink),4px 2px 0 0 var(--ink),4px 4px 0 0 var(--ink);
+  --bevel2:inset 0 2px 0 rgba(255,255,255,.7),inset 2px 0 0 rgba(255,255,255,.7),inset 0 -2px 0 rgba(28,42,20,.18),inset -2px 0 0 rgba(28,42,20,.18);
+}
+.card,.listcard,.tblw,.det-head,.thread,.modal,.landing,.sim,.exclbox,.hero-av,.sc-av,.mini-stats>div,.wordmark,.prod .ph{
+  border:none!important;border-radius:0;margin:3px 6px 6px 3px;
+  box-shadow:var(--pxb),var(--pxd),var(--bevel)}
+.grid{gap:20px}
+.sim{background:var(--yellow-soft)}
+.modal{box-shadow:var(--pxb),var(--pxd),var(--bevel);border-radius:0}
+.notice,.sc-hist,.slot,.msg,.hb-track,.cal-ev,.pyr-row,.stp,.nb,.chip,.st,.gradebox,.catchip,input,select,textarea,.toast{border-radius:0}
+.pyr-row.me,.gradebox,.chip,.st.live,.msg{box-shadow:var(--pxb2)!important;border:none!important;margin:2px 4px}
+/* --- 버튼: 픽셀 베벨 버튼 --- */
+button{border:none;border-radius:0;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2);margin:2px 4px 4px 2px}
+button:hover{transform:none;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2),0 0 0 2px rgba(79,138,44,.25)}
+button:active{transform:translate(2px,2px);box-shadow:var(--pxb2),inset 0 -2px 0 rgba(255,255,255,.5),inset 2px 2px 0 rgba(28,42,20,.2)}
+button.pri{background:var(--yellow);color:var(--ink)}
+button.ghost{background:var(--surface)}
+button.danger{background:var(--danger);color:#fff}
+.subnav button{background:var(--surface);color:var(--ink)}
+.subnav button.on{background:var(--ink);color:var(--yellow)}
+.roletabs button{box-shadow:none;margin:0}
+.roletabs button.on{background:var(--yellow);box-shadow:var(--pxb2)}
+.iconbtn{background:var(--surface);width:36px;height:36px}
+.catchip{border:none;box-shadow:var(--pxb2);margin:2px 4px;background:var(--surface)}
 .catchip.on{background:var(--yellow)}
-.hero-band h1 em{background:#d8ee9a;box-shadow:3px 3px 0 var(--ink)}
+input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28,42,20,.12);background:#fff;margin:2px}
+/* --- 픽셀 폰트: 영문 로고·KPI 숫자·가격·LIVE 태그·뱃지 (한글은 고딕 유지) --- */
+.wordmark{font-family:'Press Start 2P','IBM Plex Sans KR',monospace;font-size:12px;letter-spacing:.1em;padding:9px 14px;background:var(--surface)}
+.wordmark .dot{color:var(--red)}
+.hero-band .ey{font-family:'Press Start 2P',monospace;font-size:8.5px;letter-spacing:.18em}
+.kpi .val{font-family:'Press Start 2P',monospace;font-size:15px;letter-spacing:0;color:var(--ink);margin-top:10px;line-height:1.4}
+.prod .gp{font-family:'Press Start 2P',monospace;font-size:13px;letter-spacing:0}
+.landing .pr .g{font-family:'Press Start 2P',monospace;font-size:20px}
+.mebadge{font-family:'Press Start 2P',monospace;font-size:6.5px;padding:2px 6px;color:var(--yellow)}
+.badge{font-family:'Press Start 2P',monospace;font-size:7px;line-height:17px;border-radius:0}
 .st.live{background:var(--red);color:#fff}
+.st.live .pulse{display:none}
+.st.live::before{content:'LIVE';font-family:'Press Start 2P',monospace;font-size:7px;margin-right:6px;letter-spacing:.05em;vertical-align:1px}
+.gradebox{font-family:'IBM Plex Sans KR',sans-serif;background:var(--yellow)}
+/* --- 섹션 헤더: 픽셀 점선 --- */
+.sec::before{width:8px;height:8px;background:var(--red);box-shadow:8px 0 0 var(--ink)}
+.sec::after{height:3px;background:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 8px)}
+/* --- 히어로 형광펜 --- */
+.hero-band h1 em{background:#d8ee9a;box-shadow:var(--pxb2);transform:none;padding:0 8px}
+/* --- 상품 썸네일: 사선/기울임 제거 → 픽셀 체커보드 --- */
+.prod .ph,.grid > .prod:nth-child(even) .ph{transform:none;background:conic-gradient(#e2ead0 25%,#f3f6e6 0 50%,#e2ead0 0 75%,#f3f6e6 0) 0 0/16px 16px;image-rendering:pixelated}
+.prod .ph img{image-rendering:auto}
+.prod:hover{transform:none;box-shadow:var(--pxb),var(--pxd),var(--bevel),0 0 0 3px rgba(79,138,44,.25)}
+.hero-av{transform:none;border-radius:0}
+.sc-av{border-radius:0}
+.trendbadge,.exclbadge{transform:none;border:none;box-shadow:var(--pxb2);font-family:'Press Start 2P',monospace;font-size:6.5px;padding:3px 6px}
+.exclbadge{font-family:'IBM Plex Sans KR',sans-serif;font-size:9.5px;font-weight:800}
+/* --- 스텝퍼/게이지: 픽셀 블록 --- */
 .stp.now{color:var(--yellow)}
-.kpi .val{color:var(--ink)}
-.spark span{background:var(--red)}
+.meter{border:none;box-shadow:var(--pxb2);height:12px;margin:3px}
+.meter span{background:repeating-linear-gradient(90deg,var(--red) 0 8px,var(--yellow) 8px 12px)}
+.hb-bar{background:repeating-linear-gradient(90deg,var(--ink) 0 6px,#3a5230 6px 8px)}
+.hb-bar.top{background:repeating-linear-gradient(90deg,var(--red) 0 6px,var(--yellow) 6px 8px)}
+.bars .b{border:none;box-shadow:var(--pxb2);background:var(--red)}
+.spark span{background:var(--red);border:none;box-shadow:1px 0 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink)}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
