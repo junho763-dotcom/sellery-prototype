@@ -445,6 +445,23 @@ input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28
 .hb-bar.top{background:repeating-linear-gradient(90deg,var(--red) 0 6px,var(--yellow) 6px 8px)}
 .bars .b{border:none;box-shadow:var(--pxb2);background:var(--red)}
 .spark span{background:var(--red);border:none;box-shadow:1px 0 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink)}
+/* --- 버튼 변형들도 픽셀 베벨로 통일 (기존 스킨 섀도 덮어쓰기) --- */
+button.pri,button.ghost,button.danger,button.sm,.master button{border:none;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2)}
+button.pri:hover,button.ghost:hover,button.danger:hover,button.sm:hover{transform:none;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2),0 0 0 2px rgba(79,138,44,.28)}
+button.pri:active,button.ghost:active,button.danger:active,button.sm:active{transform:translate(2px,2px);box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28,42,20,.2)}
+button.ghost:hover{border:none}
+button[disabled]{box-shadow:var(--pxb2)!important;opacity:.45}
+/* --- 상태 태그: 픽셀 LED 태그 (상태별 채움색 + 인디케이터 점) --- */
+.st{border:none!important;box-shadow:var(--pxb2),2px 2px 0 0 var(--ink);padding:4px 10px 4px 8px;font-weight:800;letter-spacing:.03em;margin:2px 4px;font-family:'IBM Plex Sans KR',sans-serif;font-size:10.5px;line-height:1.6}
+.st::before{content:'';display:inline-block;width:6px;height:6px;margin-right:7px;vertical-align:1px;background:currentColor;box-shadow:inset 1px 1px 0 rgba(255,255,255,.55)}
+.st.blue{background:#2f63b8;color:#fff}
+.st.amber{background:#e3b93c;color:#1c2a14}
+.st.green{background:var(--red);color:#fff}
+.st.gray{background:#7a876b;color:#fff}
+.st.red{background:var(--danger);color:#fff}
+.st.live{background:var(--ink);color:var(--yellow)}
+.st.live::before{content:'LIVE';width:auto;height:auto;background:none;box-shadow:none;font-family:'Press Start 2P',monospace;font-size:7px;margin-right:7px;letter-spacing:.05em;vertical-align:1px}
+.cal-ev,.nb{box-shadow:var(--pxb2);border:none!important;margin:3px 3px 2px}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
