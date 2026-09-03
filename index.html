@@ -163,6 +163,26 @@ main > *:nth-child(5){animation-delay:.16s}
 .meter{height:14px;border:2px solid var(--ink);background:var(--surface);position:relative}
 .meter span{display:block;height:100%;background:repeating-linear-gradient(-45deg,var(--yellow),var(--yellow) 8px,var(--ink) 8px,var(--ink) 10px)}
 
+/* ===== customer store (sellery.co.kr 구매 페이지) ===== */
+.store{max-width:760px;margin:0 auto}
+.store-trust{background:var(--ink);color:var(--yellow);font-size:12px;padding:8px 14px;margin:0 6px 10px 3px;cursor:pointer;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.store-hero{position:relative;height:280px;display:flex;align-items:center;justify-content:center;background:conic-gradient(#f0f5e2 25%,#f7faee 0 50%,#f0f5e2 0 75%,#f7faee 0) 0 0/16px 16px;border-bottom:2px solid var(--ink)}
+.store-hero .store-em{font-size:120px;line-height:1}
+.store-hero .pxemoji{width:160px;height:160px}
+.store-detail{text-align:center;padding:20px 10px}
+.store-detail .store-em{display:flex;justify-content:center;margin-bottom:12px;font-size:64px}
+.store-detail .pxemoji{width:96px;height:96px}
+.store .meta,.store-ul{font-size:12.5px;color:var(--mute);line-height:1.6}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 14px;background:var(--surface);border:2px solid var(--soft-line);font-size:13px;cursor:pointer}
+.opt.on{border-color:var(--ink);background:var(--yellow-soft);box-shadow:3px 3px 0 var(--ink)}
+.opt b{font-family:'IBM Plex Mono',monospace;font-size:13px}
+.qty{display:inline-flex;align-items:center;border:2px solid var(--ink);background:var(--surface)}
+.qty button{width:38px;height:38px;border:none;background:transparent;font-size:18px;box-shadow:none;margin:0}
+.qty span{min-width:40px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700}
+.store .buy{width:100%;padding:15px;font-size:15px}
+.store-ul{margin:0;padding-left:18px;color:var(--ink);line-height:1.9}
+.store-foot{font-size:11px;color:var(--mute);text-align:center;padding:18px 10px 30px;line-height:1.7}
 /* ===== tables ===== */
 .tblw{overflow-x:auto;background:var(--surface);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--hs)}
 table{border-collapse:collapse;width:100%;font-size:13px;min-width:600px}
@@ -664,7 +684,7 @@ function seedData(){
   const D = n => ymd(addD(t,n));
   const data = {
     brands:[
-      {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인',email:'partner@vyneherb.co',gmvBase:52000000,logo:BLOGO1,refCode:'VYNE-01'},
+      {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인',email:'partner@vyneherb.co',gmvBase:52000000,logo:BLOGO1,refCode:'VYNE-01',autoPropose:true},
       {id:'b2',name:'글로헬스',cat:'이너뷰티',manager:'박글로',email:'official@weglow.biz',gmvBase:382000000,logo:BLOGO2,refCode:'GLO-002',referredBy:'b1'}
     ],
     brandRefEarnings:[
@@ -728,10 +748,13 @@ function seedData(){
       {at:D(-24),referrerId:'s1',fromSellerId:'s3',campaignId:'(지난 판매)',amt:186400}
     ],
     products:[
-      {id:'p1',brandId:'b1',name:'버닝온',desc:'다이어트 부스터 · 30포',em:'🔥',cat:'다이어트',cp:39000,gp:29900,rate:.20,sample:'무상 1박스',stock:2000,status:'listed',t:{g:'+240%',note:'분기 매출 급등'},exclusive:{grade:'다이아',label:'인스타그램 판매 독점권 · 3개월'}},
-      {id:'p2',brandId:'b1',name:'치팅온',desc:'탄수화물 컷 · 30포',em:'🍚',cat:'다이어트',cp:35000,gp:26900,rate:.20,sample:'무상 1박스',stock:1500,status:'listed'},
+      {id:'p1',brandId:'b1',name:'버닝온',desc:'다이어트 부스터 · 30포',em:'🔥',cat:'다이어트',cp:39000,gp:29900,rate:.20,sample:'무상 1박스',stock:2000,status:'listed',t:{g:'+240%',note:'분기 매출 급등'},exclusive:{grade:'다이아',label:'인스타그램 판매 독점권 · 3개월'},
+        options:[{n:'1박스 (30포)',price:29900},{n:'2박스 세트 (60포)',price:56800},{n:'3박스 + 쉐이커 증정',price:79900}]},
+      {id:'p2',brandId:'b1',name:'치팅온',desc:'탄수화물 컷 · 30포',em:'🍚',cat:'다이어트',cp:35000,gp:26900,rate:.20,sample:'무상 1박스',stock:1500,status:'listed',
+        options:[{n:'1박스 · 오리지널',price:26900},{n:'1박스 · 레몬맛',price:26900},{n:'2박스 세트 (맛 선택 혼합)',price:49900}]},
       {id:'p3',brandId:'b1',name:'벨리라잇',desc:'유산균 다이어트 · 30캡슐',em:'✨',cat:'다이어트',cp:33000,gp:24900,rate:.18,sample:'무상 1박스',stock:1200,status:'listed'},
-      {id:'p4',brandId:'b2',name:'GL-01 스킨 샷',desc:'스킨 롱제비티 액상샷 · 1개월분',em:'🍍',cat:'이너뷰티',cp:119000,gp:89000,rate:.15,sample:'무상 2주분',stock:800,status:'listed',t:{g:'+38%',note:'이너뷰티 상승세'},exclusive:{grade:'플래티넘',label:'이너뷰티 단독 판매권 · 2개월'}},
+      {id:'p4',brandId:'b2',name:'GL-01 스킨 샷',desc:'스킨 롱제비티 액상샷 · 1개월분',em:'🍍',cat:'이너뷰티',cp:119000,gp:89000,rate:.15,sample:'무상 2주분',stock:800,status:'listed',t:{g:'+38%',note:'이너뷰티 상승세'},exclusive:{grade:'플래티넘',label:'이너뷰티 단독 판매권 · 2개월'},
+        options:[{n:'1개월분 (30포)',price:89000},{n:'3개월분 (90포) · 12% 할인',price:235000},{n:'6개월분 (180포) · 20% 할인',price:427000}]},
       {id:'p5',brandId:'b1',name:'플랜트프로틴',desc:'식물성 단백질 · 900g',em:'🌱',cat:'건기식',cp:42000,gp:31900,rate:.22,sample:'무상 1통',stock:900,status:'listed'},
       {id:'p7',brandId:'b1',name:'아이클리어 루테인',desc:'마리골드 루테인 20mg · 60캡슐',em:'👁️',cat:'루테인',cp:36000,gp:27900,rate:.20,sample:'무상 1병',stock:1000,status:'listed',t:{g:'+112%',note:'루테인 카테고리 급상승'}},
       {id:'p8',brandId:'b1',name:'데일리 멀티비타민',desc:'비타민 13종 올인원 · 90정',em:'💊',cat:'비타민',cp:32000,gp:23900,rate:.18,sample:'무상 1병',stock:1400,status:'listed'},
@@ -799,28 +822,74 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v15';
+const LS='sellery-proto-v16';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
 /* 인플루언서 데이터 열람 가격 — 등급이 높을수록 비쌈 */
 const DATA_PRICE={'스타터':1,'브론즈':1,'실버':2,'골드':2,'플래티넘':3,'다이아':4,'블랙':5};
 function dataPrice(s){return DATA_PRICE[gname(s)]||2;}
+/* 등급 혜택을 정산에 실제 반영: 인플루언서 등급 보너스(%p, 플랫폼 부담) · 브랜드 등급 수수료 할인(플랫폼 부담) */
+const BG_DISC={'블랙':0.02,'다이아':0.015,'플래티넘':0.01,'골드':0.005};
+function gradeBonusOf(s){const t=GRADES.find(t=>t.g===gname(s));return t?t.bonus/100:0;}
+function bDiscOf(b){return BG_DISC[bgname(b)]||0;}
+/* 브랜드 다이아·블랙: 인플루언서 데이터/레퍼런스 열람 월 5회 무료 */
+function freeRefLeft(b){const g=bgname(b);if(g!=='다이아'&&g!=='블랙')return 0;const ym=ymd(today()).slice(0,7);return Math.max(0,5-(((b.freeRefUsed||{})[ym])||0));}
+function spendData(bid,s,memo){
+  const b=brand(bid);
+  if(freeRefLeft(b)>0){const ym=ymd(today()).slice(0,7);b.freeRefUsed={...(b.freeRefUsed||{}),[ym]:((((b.freeRefUsed||{})[ym])||0)+1)};return 0;}
+  const pr=dataPrice(s);return celSpend(bid,pr,memo)?pr:false;
+}
+/* 상품 옵션: 브랜드 미등록 시 기본 묶음 옵션 자동 생성 */
+function optsOf(p){
+  if(p.options&&p.options.length)return p.options;
+  const r=v=>Math.round(v/100)*100;
+  return [{n:'1개',price:p.gp},{n:'2개 세트 · 5% 추가 할인',price:r(p.gp*2*.95)},{n:'3개 세트 · 10% 추가 할인',price:r(p.gp*3*.9)}];
+}
+function soldQty(cid){return campOrders(cid).filter(o=>o.status==='PAID').reduce((a,o)=>a+o.qty,0);}
+/* 성장세(최근 좋아요 후반 vs 전반) — "요즘 뜨는 인플루언서" */
+function growthOf(s){const r=s.recentLikes||[];if(r.length<2)return 0;const h=Math.ceil(r.length/2);const m=x=>x.reduce((a,b)=>a+b,0)/x.length;return (m(r.slice(h))/m(r.slice(0,h))-1)*100;}
+const CATMAP={'건강기능식품':['건기식','다이어트','루테인','비타민'],'이너뷰티':['뷰티','이너뷰티','피부','화장품']};
+function catFit(p,s){const g=Object.values(CATMAP).find(x=>x.includes(p.cat));return !!g&&g.includes(s.cat);}
+/* 자동 제안 후보 (브랜드가 자동 제안 ON인 상품 × 카테고리 적합 인플루언서, 진행 중 캠페인 제외) */
+function autoMatches(){
+  const out=[];
+  D_().brands.filter(b=>b.autoPropose).forEach(b=>{
+    D_().products.filter(p=>p.brandId===b.id&&p.status==='listed'&&!p.exclusiveSellerId).forEach(p=>{
+      const cands=D_().sellers.filter(s=>catFit(p,s)&&!D_().campaigns.some(c=>c.productId===p.id&&c.sellerId===s.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status)))
+        .map(s=>({b,p,s,growth:growthOf(s),score:Math.round(growthOf(s)*0.6+(s.m3Sales/s.followers)/10+(s.hidden?0:5))}))
+        .sort((a,b)=>b.score-a.score).slice(0,2);
+      out.push(...cands);
+    });
+  });
+  return out.sort((a,b)=>b.score-a.score);
+}
+/* 스케줄러 대행: 시작일 도래 → LIVE, 종료일 경과 → CLEARING */
+function autoTick(){
+  let ch=false;
+  D_().campaigns.forEach(c=>{
+    if(c.status==='SCHEDULE_CONFIRMED'&&c.start&&P(c.start)<=today()){c.status='LIVE';pushSys(c.id,'판매 시작 시각 도래 — 판매 링크 자동 활성화 (스케줄러)');ch=true;}
+    if(c.status==='LIVE'&&c.end&&P(c.end)<today()){c.status='CLEARING';pushSys(c.id,`판매 기간 종료 (스케줄러) · 교환/환불 기간 시작 · 정산 예정 <b>${md(settleDue(c))}</b>`);ch=true;}
+  });
+  if(ch)save();
+}
 const CELOGO=`<svg class="celic" viewBox="0 0 12 14" width="11" height="15" shape-rendering="crispEdges" aria-label="셀러리"><rect x="4" y="0" width="1" height="1" fill="#6da33a"/><rect x="8" y="0" width="1" height="1" fill="#6da33a"/><rect x="3" y="1" width="3" height="1" fill="#8fc74a"/><rect x="7" y="1" width="3" height="1" fill="#8fc74a"/><rect x="2" y="2" width="4" height="1" fill="#8fc74a"/><rect x="7" y="2" width="4" height="1" fill="#8fc74a"/><rect x="4" y="2" width="1" height="1" fill="#3f7a24"/><rect x="9" y="2" width="1" height="1" fill="#3f7a24"/><rect x="3" y="3" width="7" height="1" fill="#6da33a"/><rect x="4" y="4" width="1" height="1" fill="#3f7a24"/><rect x="5" y="4" width="3" height="1" fill="#8fc74a"/><rect x="8" y="4" width="1" height="1" fill="#3f7a24"/><rect x="3" y="5" width="1" height="8" fill="#2f5a1a"/><rect x="4" y="5" width="1" height="8" fill="#d8ecb0"/><rect x="5" y="5" width="1" height="8" fill="#aed378"/><rect x="6" y="5" width="1" height="8" fill="#d8ecb0"/><rect x="7" y="5" width="1" height="8" fill="#aed378"/><rect x="8" y="5" width="1" height="8" fill="#d8ecb0"/><rect x="9" y="5" width="1" height="8" fill="#2f5a1a"/><rect x="3" y="13" width="7" height="1" fill="#2f5a1a"/></svg>`;
 const CEL=CELOGO.replace('width="11" height="15"','width="13" height="15"');
 const SHOP={
   seller:[
     {id:'sample',name:'샘플 요청 횟수 +1',price:1,desc:'이번 달 샘플 요청 가능 횟수를 1회 추가 — 기본 월 한도: 스타터·브론즈 1회 / 실버·골드 2회 / 플래티넘 이상 5회 (등급 혜택)',repeat:true},
     {id:'datapass',name:'매출 데이터 확인권',price:2,desc:'상품별 익명 판매 실적(팔로워·참여율·매출) 전체 열람 — 1회 구매로 계정에 영구 적용'},
-    {id:'featured',name:'프로필 상단 노출 (7일)',price:3,desc:'브랜드 인플루언서 갤러리 최상단 고정 + 추천 뱃지'},
-    {id:'regongu',name:'재판매 우선권',price:2,desc:'같은 상품 재판매 일정 제안 시 우선 승인 큐 배정'}
+    {id:'featured',name:'프로필 상단 노출 (7일)',price:3,desc:'브랜드 인플루언서 갤러리 추천 카드 최상단 고정 + 추천 뱃지'},
+    {id:'homefeature',name:'고객 홈 상단 노출 (7일)',price:3,desc:'sellery.co.kr 고객 홈 "진행 중인 판매" 최상단에 내 진행 중·예정 판매 고정 + 추천 뱃지'},
+    {id:'regongu',name:'재판매 우선권 (30일)',price:2,desc:'같은 상품 재판매 시 일정 제안이 브랜드 승인 없이 즉시 확정 (겹치는 기간 제외)'}
   ],
   brand:[
     {id:'diamond',name:'다이아↑ 인플루언서 제안권',price:10,desc:'다이아·블랙 등급 인플루언서에게 판매 제안 1회 — 제안 시 자동 차감',auto:true},
     {id:'ref',name:'익명 레퍼런스 열람권',price:'1–5',desc:'비공개 인플루언서의 상세 지표 열람 후 바로 제안 — 등급별 가격 (스타터·브론즈 1 / 실버·골드 2 / 플래티넘 3 / 다이아 4 / 블랙 5), 스카우트·홈 TOP5에서 자동 사용',auto:true},
     {id:'sdata',name:'인플루언서 데이터 확인',price:'1–5',desc:'갤러리에서 인플루언서 1명의 매출·판매당 평균·참여율·이력·외부 판매 예상 열람 — 등급별 가격 (스타터·브론즈 1 / 실버·골드 2 / 플래티넘 3 / 다이아 4 / 블랙 5), 카드에서 자동 사용. 함께 판매한 인플루언서는 무료',auto:true},
     {id:'datapass',name:'인플루언서 데이터 패스 (30일)',price:30,desc:'30일간 갤러리 전체 인플루언서 데이터 무제한 열람 — 만료 후 재구매',days:30},
-    {id:'boost',name:'상품 상단 부스트 (24h)',price:3,desc:'내 대표 상품을 상품 갤러리 최상단에 고정 + 부스트 뱃지'},
+    {id:'boost',name:'상품 상단 부스트 (7일)',price:3,desc:'내 대표 상품을 인플루언서 상품 갤러리 최상단에 고정 + 부스트 뱃지'},
+    {id:'homefeature',name:'고객 홈 상단 노출 (7일)',price:5,desc:'sellery.co.kr 고객 홈 "진행 중인 판매" 최상단에 내 상품의 진행 중·예정 판매 고정 + 추천 뱃지'},
     {id:'fastreview',name:'우선 검수권',price:1,desc:'검수 대기 상품을 즉시 노출 승인'}
   ]
 };
@@ -886,8 +955,10 @@ const BGRADES=[
 ];
 function bGmv(b){
   const myP=D_().products.filter(p=>p.brandId===b.id).map(p=>p.id);
-  return (b.gmvBase||0)+D_().campaigns.filter(c=>myP.includes(c.productId)).reduce((a,c)=>a+calc(c).net,0);
+  return (b.gmvBase||0)+D_().campaigns.filter(c=>myP.includes(c.productId)).reduce((a,c)=>a+netOf(c),0);
 }
+/* 확정 매출(주문 기준) — calc()와 순환 참조 없이 등급 계산에 사용 */
+function netOf(c){const os=campOrders(c.id);return os.filter(o=>o.status==='PAID').reduce((a,o)=>a+o.unit*o.qty,0);}
 const bgradeOf=v=>BGRADES.find(t=>v>=t.min);
 const bgname=b=>bgradeOf(bGmv(b)).g;
 function pyrHtml(tiers,cur){
@@ -919,12 +990,15 @@ load();
 /* center-specific links: index.html#influencer / #brand / #admin lock the UI to one center */
 (function(){
   const h=(location.hash||'').replace('#','').toLowerCase();
-  const map={influencer:'seller',seller:'seller',brand:'brand',admin:'admin'};
+  const map={influencer:'seller',seller:'seller',brand:'brand',admin:'admin',customer:'customer',shop:'customer'};
   if(map[h]){S.view.role=map[h];S.lockedRole=true;}
+  const lm=h.match(/^(?:s|link)\/(c\d+)$/); if(lm&&camp(lm[1])){S.view={role:'customer',screen:'home',cid:null,store:lm[1]};S.lockedRole=true;S.linkCtx={cid:lm[1]};}  // 공구 링크 진입: index.html#s/c1
 })();
 window.addEventListener('hashchange',()=>{
   const h=(location.hash||'').replace('#','').toLowerCase();
-  const map={influencer:'seller',seller:'seller',brand:'brand',admin:'admin'};
+  const map={influencer:'seller',seller:'seller',brand:'brand',admin:'admin',customer:'customer',shop:'customer'};
+  const lm=h.match(/^(?:s|link)\/(c\d+)$/);
+  if(lm&&camp(lm[1])){S.view={role:'customer',screen:'home',cid:null,store:lm[1]};S.lockedRole=true;S.linkCtx={cid:lm[1]};render();return;}
   if(map[h]){S.view={role:map[h],screen:'home',cid:null};S.lockedRole=true;}
   else S.lockedRole=false;
   render();
@@ -966,16 +1040,23 @@ function calc(c){
   const gross=os.filter(o=>o.status!=='CANCELED').reduce((a,o)=>a+o.unit*o.qty,0);
   const refund=os.filter(o=>o.status==='REFUNDED').reduce((a,o)=>a+o.unit*o.qty,0);
   const net=gross-refund;
-  const p=prod(c.productId);
+  const p=prod(c.productId), s=seller(c.sellerId), b=brand(p.brandId);
   const rb=isRefBoost(c), bb=isBrandRefBoost(c);
   const pg=net*PG_RATE, sf=net*p.rate;
+  const gBonus=net*gradeBonusOf(s);                       // 인플루언서 등급 보너스 (플랫폼 부담)
   const boost=rb?net*REF_BOOST:0, refReward=rb?net*REF_RATE:0;
   const bBoost=bb?net*BREF_DISC:0, bReward=bb?net*BREF_RATE:0;
-  const pf=net*PLAT_RATE-boost-refReward-bBoost-bReward;
-  return {gross,refund,net,pg,sf,sfTotal:sf+boost,boost,refReward,rb,bb,bBoost,bReward,pf,
-    brandPay:net-pg-sf-net*PLAT_RATE+bBoost,
+  const bDisc=net*bDiscOf(b);                             // 브랜드 등급 수수료 할인 (플랫폼 부담)
+  const pfGross=net*PLAT_RATE;
+  const costs=gBonus+boost+refReward+bBoost+bReward+bDisc;
+  const pf=pfGross-costs;                                 // 플랫폼 수수료 (보상·할인 차감 후, VAT 포함)
+  const vat=pf>0?pf-pf/1.1:0;                             // 수수료 매출에 내포된 부가세 10%
+  const pfNet=pf-vat;                                     // 플랫폼 순수익 (PG는 브랜드 정산에서 차감 — 플랫폼 수익 아님)
+  return {gross,refund,net,pg,sf,gBonus,sfTotal:sf+gBonus+boost,boost,refReward,rb,bb,bBoost,bReward,bDisc,pfGross,costs,pf,vat,pfNet,
+    brandPay:net-pg-sf-pfGross+bBoost+bDisc,
     paidCnt:os.filter(o=>o.status==='PAID').length,refCnt:os.filter(o=>o.status==='REFUNDED').length};
 }
+function sellerWht(s){return s.settleInfo&&s.settleInfo.type==='biz'?0:WHT;}   // 사업자 정산은 원천징수 없음(세금계산서)
 function settleDue(c){ return addD(P(c.end),CLEAR_DAYS); }
 function pushSys(cid,txt){(D_().messages[cid]=D_().messages[cid]||[]).push({type:'sys',txt,at:ymd(today())});}
 function pushChat(cid,role,txt){
@@ -1005,13 +1086,15 @@ function counts(){
 }
 
 /* ============ render root ============ */
-const ROLES=[['seller','인플루언서 센터'],['brand','브랜드 센터'],['admin','관리자']];
+const ROLES=[['seller','인플루언서 센터'],['brand','브랜드 센터'],['admin','관리자'],['customer','고객 화면']];
 const SCREENS={
   seller:[['home','홈'],['explore','상품 갤러리'],['camps','내 캠페인'],['dm','DM'],['sales','실시간 매출'],['rank','랭킹·등급'],['ref','추천 프로그램'],['shop','셀러리 샵'],['settle','정산']],
   brand:[['home','홈'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['requests','요청함'],['dm','DM'],['sales','실시간 매출'],['orders','주문·발주'],['shop','셀러리 샵'],['settle','정산']],
-  admin:[['home','대시보드'],['review','상품 검수'],['settle','정산 실행']]
+  admin:[['home','대시보드'],['match','매칭·자동 제안'],['revenue','매출·순수익'],['review','상품 검수'],['settle','정산 실행']],
+  customer:[['home','진행 중인 판매'],['influencers','인플루언서']]
 };
 function render(){
+  autoTick();
   const cnt=counts();
   $('#roletabs').innerHTML=S.lockedRole?'':ROLES.map(([k,l])=>
     `<button data-act="role" data-k="${k}" class="${S.view.role===k?'on':''}">${l}${cnt[k]?`<span class="badge">${cnt[k]}</span>`:''}</button>`).join('');
@@ -1027,12 +1110,14 @@ function render(){
   $('#subnav').innerHTML=scr.map(([k,l])=>
     `<button data-act="screen" data-k="${k}" class="${S.view.screen===k&&!S.view.cid?'on':''}">${l}</button>`).join('')+personaHtml;
   const m=$('#main');
+  if(S.view.store){ m.innerHTML=vStore(S.view.store); decorate(); window.scrollTo(0,0); return; }
   if(S.view.cid){ m.innerHTML=vCampDetail(S.view.cid); decorate(); const box=m.querySelector('.msgs'); if(box) box.scrollTop=box.scrollHeight; return; }
   const fn={
     'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.dm':vDM,'brand.dm':vDM,'seller.shop':vShop,'brand.shop':vShop,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
     'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vRequests,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,'brand.my':vBrandMy,
-    'admin.home':vAdminHome,'admin.review':vAdminReview,'admin.settle':vAdminSettle
-  }[S.view.role+'.'+S.view.screen]||vSellerHome;
+    'admin.home':vAdminHome,'admin.match':vAdminMatch,'admin.revenue':vAdminRevenue,'admin.review':vAdminReview,'admin.settle':vAdminSettle,
+    'customer.home':vCustHome,'customer.influencers':vCustInfluencers
+  }[S.view.role+'.'+S.view.screen]||(S.view.role==='customer'?vCustHome:vSellerHome);
   m.innerHTML=fn();
   decorate();
 }
@@ -1058,7 +1143,7 @@ function decorate(){
     const targets=n.matches('.card,.listcard,.tblw,.thread')?[n]:[...n.querySelectorAll(':scope > .card, :scope > .listcard, :scope > .tblw')];
     targets.forEach(x=>{if(!x.hasAttribute('data-win'))x.setAttribute('data-win',t.toUpperCase()+'.EXE');});
   });
-  document.querySelectorAll('.prod .ph, .sc-av.em, .rowitem > div:first-child[style*="font-size:24px"], .det-head > div:first-child[style*="font-size:32px"]').forEach(pixelizeEmoji);
+  document.querySelectorAll('.prod .ph, .sc-av.em, .store-em, .cust-em, .rowitem > div:first-child[style*="font-size:24px"], .det-head > div:first-child[style*="font-size:32px"]').forEach(pixelizeEmoji);
   // 반응형 표: 헤더 텍스트를 각 셀의 data-l 라벨로 (모바일에서 카드형으로 펼침)
   document.querySelectorAll('.tblw table').forEach(tb=>{
     const ths=[...tb.querySelectorAll('thead th')].map(t=>t.textContent.trim());
@@ -1150,7 +1235,7 @@ function prodCard(p){
   const exclLocked=p.exclusiveSellerId&&p.exclusiveSellerId!==S.actingSeller;
   return `<div class="card prod">
     <div class="ph" data-act="prodDetail" data-k="${p.id}" style="cursor:pointer;position:relative">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:92%;max-width:78%;object-fit:contain;pointer-events:none">`:p.em}
-      ${p.t?`<span class="trendbadge">▲ ${p.t.g}</span>`:''}
+      ${p.t?`<span class="trendbadge">▲ ${p.t.g}</span>`:passActive(p,'boost',7)?`<span class="trendbadge" style="background:var(--yellow);color:var(--ink)">★ 부스트</span>`:''}
       ${p.exclusive?`<span class="exclbadge">독점권 오퍼</span>`:''}</div>
     <div><span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> <span class="sub" style="font-size:11px;color:var(--mute)">${p.cat}</span></div>
     <div class="nm" data-act="prodDetail" data-k="${p.id}" style="cursor:pointer">${esc(p.name)}</div>
@@ -1168,7 +1253,7 @@ function prodCard(p){
 const CATS=['전체','다이어트','건기식','비타민','루테인','이너뷰티','화장품','피부'];
 function vExplore(){
   const cur=S.catFilter||'전체';
-  const list=D_().products.filter(p=>p.status==='listed'&&(cur==='전체'||p.cat===cur));
+  const list=D_().products.filter(p=>p.status==='listed'&&(cur==='전체'||p.cat===cur)).sort((a,b)=>(passActive(b,'boost',7)?1:0)-(passActive(a,'boost',7)?1:0));
   const trendPicks=D_().products.filter(p=>p.status==='listed'&&p.t);
   // peer bestsellers: sellers at my grade or above, recent confirmed revenue per product
   const myTier=gradeOf(seller(S.actingSeller).m3Sales);
@@ -1794,7 +1879,7 @@ function vGallery(){
   const catMap={'건강기능식품':['건기식','다이어트','루테인','비타민'],'이너뷰티':['뷰티','이너뷰티','피부','화장품']};
   const rel=catMap[b.cat]||[];
   const pub=D_().sellers.filter(s=>!s.hidden);
-  const recs=pub.map(s=>({s,catFit:rel.includes(s.cat),score:(rel.includes(s.cat)?2:0)+(s.m3Sales/s.followers)/300}))
+  const recs=pub.map(s=>({s,catFit:rel.includes(s.cat),score:(rel.includes(s.cat)?2:0)+(s.m3Sales/s.followers)/300+(passActive(s,'featured',7)?5:0)}))
     .sort((a,b)=>b.score-a.score).slice(0,2);
   const scout=D_().sellers.filter(s=>s.hidden&&pass(s)).map(s=>{
     const un=unlocked.includes(s.id);
@@ -1998,6 +2083,203 @@ function vAdminSettle(){
   </tbody></table></div>`;
 }
 
+/* ============ ADMIN: 매칭·자동 제안 / 매출·순수익 ============ */
+function vAdminMatch(){
+  const rising=D_().sellers.map(s=>({s,g:growthOf(s)})).sort((a,b)=>b.g-a.g).slice(0,6);
+  const cands=autoMatches();
+  const autoCs=D_().campaigns.filter(c=>c.auto);
+  return `<h2 class="pg">매칭·자동 제안 <small>요즘 뜨는 인플루언서를 브랜드 상품과 자동 매칭 · 브랜드별 자동 제안 ON/OFF</small></h2>
+  <div class="grid g2">
+    <div class="card">
+      <div class="lbl-sm" style="margin-bottom:4px">📈 요즘 뜨는 인플루언서</div>
+      <div style="font-size:11px;color:var(--mute);margin-bottom:12px">최근 게시물 반응 성장률 (후반 평균 vs 전반 평균) · 비공개는 익명</div>
+      ${rising.map(({s,g},i)=>`<div class="hb-row" style="cursor:default">
+        <span class="hb-nm">${i+1}. ${platIcon(s)} ${s.hidden?'○○○ 인플루언서':esc(s.name)+' '+s.handle} <span class="gradebox sm">${gfull(gname(s))}</span></span>
+        <div class="hb-track"><div class="hb-bar ${i===0?'top':''}" style="width:${Math.max(6,Math.min(100,g/Math.max(1,rising[0].g)*100))}%"></div></div>
+        <span class="hb-val" style="color:var(--red)">▲${g.toFixed(1)}%</span></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="lbl-sm" style="margin-bottom:10px">🤖 브랜드 자동 제안 설정</div>
+      ${D_().brands.map(b=>`<div class="rowitem" style="cursor:default"><div class="grow"><div class="nm">${esc(b.name)} <span class="gradebox sm">${gfull(bgname(b))}</span></div><div class="sub">${b.cat} · 노출 상품 ${D_().products.filter(p=>p.brandId===b.id&&p.status==='listed').length}개 · 보유 ${CEL} ${celBal(b.id)}</div></div>
+        <button class="sm ${b.autoPropose?'pri':'ghost'}" data-act="toggleAutoPropose" data-k="${b.id}">${b.autoPropose?'자동 제안 ON':'자동 제안 OFF'}</button></div>`).join('')}
+      <p style="font-size:12px;color:var(--mute);margin:10px 0 0">ON이면 매일 카테고리 적합도 × 성장세 × 매출/팔로워 점수로 상위 인플루언서에게 브랜드 명의로 자동 제안합니다. 다이아·블랙 대상은 브랜드 셀러리 ${CEL} 10이 자동 차감되고, 부족하면 보류됩니다.</p>
+    </div>
+  </div>
+  <div class="sec">자동 제안 후보 <span class="badge">${cands.length}</span></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 18px 6px">
+      <div style="font-size:12.5px;color:var(--mute)">상품별 상위 2명 · 진행 중 캠페인·독점 확정 상품 제외 · 실행 시 상위 5건 발송</div>
+      <button class="pri sm" data-act="runAutoPropose" ${cands.length?'':'disabled style="opacity:.5"'}>오늘 자동 제안 실행 (${Math.min(5,cands.length)}건)</button>
+    </div>
+    <div class="tblw" style="margin:0;box-shadow:none;padding-top:0"><table>
+    <thead><tr><th>브랜드 · 상품</th><th>인플루언서</th><th class="num">성장세</th><th class="num">3개월 매출</th><th class="num">매칭 점수</th></tr></thead>
+    <tbody>${cands.map(({b,p,s,growth,score})=>`<tr><td><b>${esc(p.name)}</b> <span class="sub" style="color:var(--mute)">${esc(b.name)} · ${p.cat}</span></td>
+      <td>${platIcon(s)} ${s.hidden?'○○○ (비공개)':esc(s.name)+' '+s.handle} <span class="gradebox sm">${gfull(gname(s))}</span></td>
+      <td class="num" style="color:var(--red)">▲${growth.toFixed(1)}%</td><td class="num">₩${fmt(s.m3Sales)}</td><td class="num"><b>${score}</b></td></tr>`).join('')||'<tr><td colspan="5" class="empty">자동 제안 ON 브랜드의 후보가 없습니다</td></tr>'}
+    </tbody></table></div>
+  </div>
+  <div class="sec">자동 제안 이력 <span class="badge">${autoCs.length}</span></div>
+  <div class="listcard">${autoCs.map(c=>campRow(c,{who:'brand'})).join('')||'<div class="empty">아직 자동 제안이 없습니다 — 위에서 실행해보세요</div>'}</div>`;
+}
+function vAdminRevenue(){
+  const cs=D_().campaigns.filter(c=>['LIVE','CLEARING','SETTLED'].includes(c.status));
+  const T={gross:0,refund:0,net:0,pg:0,sf:0,brandPay:0,pfGross:0,gBonus:0,ref:0,bref:0,bDisc:0,costs:0,pf:0,vat:0,pfNet:0};
+  cs.forEach(c=>{const k=calc(c);T.gross+=k.gross;T.refund+=k.refund;T.net+=k.net;T.pg+=k.pg;T.sf+=k.sfTotal;T.brandPay+=k.brandPay;T.pfGross+=k.pfGross;T.gBonus+=k.gBonus;T.ref+=k.boost+k.refReward;T.bref+=k.bBoost+k.bReward;T.bDisc+=k.bDisc;T.costs+=k.costs;T.pf+=k.pf;T.vat+=k.vat;T.pfNet+=k.pfNet;});
+  const led=D_().celeryLedger||[];
+  const topups=led.filter(e=>e.won);const celWon=topups.reduce((a,e)=>a+e.won,0);const celNet=Math.round(celWon/1.1);
+  const spent=led.filter(e=>e.delta<0).reduce((a,e)=>a-e.delta,0);
+  const all=D_().sellers.concat(D_().brands);
+  const earned=all.reduce((a,x)=>a+celEarned(x.id),0), granted=led.filter(e=>e.delta>0&&!e.won).reduce((a,e)=>a+e.delta,0), bal=all.reduce((a,x)=>a+celBal(x.id),0);
+  const row=(l,v,cls='',note='')=>`<tr class="${cls}"><td>${l}${note?` <span style="color:var(--mute);font-size:11px">${note}</span>`:''}</td><td class="num">${v}</td></tr>`;
+  return `<h2 class="pg">매출·순수익 <small>확정 매출 기준 · PG수수료·보상비용·부가세를 제외한 플랫폼 순수익</small></h2>
+  <div class="grid g4">
+    <div class="card kpi"><div class="lbl">확정 거래액 (GMV)</div><div class="val">₩${fmt(T.net)}</div><div class="sub">결제 ₩${fmt(T.gross)} − 환불 ₩${fmt(T.refund)}</div></div>
+    <div class="card kpi"><div class="lbl">플랫폼 수수료 매출</div><div class="val">₩${fmt(T.pf)}</div><div class="sub">${(PLAT_RATE*100).toFixed(0)}% ₩${fmt(T.pfGross)} − 보상·할인 ₩${fmt(T.costs)}</div></div>
+    <div class="card kpi"><div class="lbl">플랫폼 순수익 (VAT 제외)</div><div class="val" style="color:var(--accent-ink)">₩${fmt(T.pfNet)}</div><div class="sub">부가세 ₩${fmt(T.vat)} 제외 · 순 테이크레이트 ${T.net?(T.pfNet/T.net*100).toFixed(2):'0.00'}%</div></div>
+    <div class="card kpi"><div class="lbl">셀러리 충전 매출</div><div class="val">₩${fmt(celWon)}</div><div class="sub">공급가 ₩${fmt(celNet)} · 충전 ${topups.length}건 · 소진 ${spent}🥬</div></div>
+  </div>
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card"><h4>손익 요약 — 판매 ${cs.length}건</h4>
+      <table class="stmt" style="min-width:0;font-size:12.5px">
+        ${row('총 결제액','₩'+fmt(T.gross))}
+        ${row('환불','−₩'+fmt(T.refund))}
+        ${row('<b>확정 매출 (GMV)</b>','<b>₩'+fmt(T.net)+'</b>')}
+        ${row('PG 수수료 '+(PG_RATE*100).toFixed(1)+'%','−₩'+fmt(T.pg),'','브랜드 정산에서 차감 · 플랫폼 수익 아님')}
+        ${row('인플루언서 지급','−₩'+fmt(T.sf),'','기본 + 등급 보너스 + 추천 부스트')}
+        ${row('브랜드 정산액','−₩'+fmt(T.brandPay))}
+        ${row('<b>플랫폼 수수료 총액 '+(PLAT_RATE*100).toFixed(0)+'%</b>','<b>₩'+fmt(T.pfGross)+'</b>')}
+        ${row('　− 인플루언서 등급 보너스','−₩'+fmt(T.gBonus))}
+        ${row('　− 인플루언서 추천 보상·부스트','−₩'+fmt(T.ref))}
+        ${row('　− 브랜드 추천 보상·할인','−₩'+fmt(T.bref))}
+        ${row('　− 브랜드 등급 수수료 할인','−₩'+fmt(T.bDisc))}
+        ${row('수수료 매출 (VAT 포함)','₩'+fmt(T.pf))}
+        ${row('　− 부가세 10%','−₩'+fmt(T.vat))}
+        ${row('<b>플랫폼 순수익</b>','<b style="color:var(--accent-ink)">₩'+fmt(T.pfNet)+'</b>','tot')}
+      </table></div>
+    <div class="card"><h4>셀러리 포인트 손익</h4>
+      <table class="stmt" style="min-width:0;font-size:12.5px">
+        ${row('충전 결제액 (VAT 포함)','₩'+fmt(celWon))}
+        ${row('　− 부가세','−₩'+fmt(celWon-celNet))}
+        ${row('<b>충전 순매출</b>','<b>₩'+fmt(celNet)+'</b>','tot')}
+        ${row('무상 발행 (가입·이벤트)',granted+' 🥬')}
+        ${row('매출 달성 획득 (₩500만당 1)',earned+' 🥬')}
+        ${row('소진',spent+' 🥬')}
+        ${row('미사용 잔액 (부채)',bal+' 🥬','','충전가 환산 ₩'+fmt(bal*20000))}
+      </table>
+      <p style="font-size:11.5px;color:var(--mute);margin-top:10px">셀러리 1개 = 충전가 ₩20,000 기준. 무상 발행·획득분은 매출이 아닌 마케팅 비용(잔액은 부채)으로 잡습니다.</p></div>
+  </div>
+  <div class="sec">판매별 손익</div>
+  <div class="tblw"><table>
+  <thead><tr><th>판매</th><th class="num">확정 매출</th><th class="num">PG</th><th class="num">인플루언서</th><th class="num">브랜드</th><th class="num">수수료 ${(PLAT_RATE*100).toFixed(0)}%</th><th class="num">보상·할인</th><th class="num">VAT</th><th class="num">순수익</th><th>상태</th></tr></thead>
+  <tbody>${cs.map(c=>{const k=calc(c),p=prod(c.productId);
+    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td><b>${esc(p.name)}</b> <span class="sub" style="color:var(--mute)">${seller(c.sellerId).handle}</span></td><td class="num">₩${fmt(k.net)}</td><td class="num">₩${fmt(k.pg)}</td><td class="num">₩${fmt(k.sfTotal)}</td><td class="num">₩${fmt(k.brandPay)}</td><td class="num">₩${fmt(k.pfGross)}</td><td class="num">−₩${fmt(k.costs)}</td><td class="num">−₩${fmt(k.vat)}</td><td class="num"><b>₩${fmt(k.pfNet)}</b></td><td>${stChip(c.status)}</td></tr>`;}).join('')||'<tr><td colspan="10" class="empty">확정 매출이 있는 판매가 없습니다</td></tr>'}
+  </tbody></table></div>`;
+}
+
+/* ============ CUSTOMER (sellery.co.kr 고객 화면 · 구매 페이지) ============ */
+function custVisible(c){ // 공구 링크 진입 세션: 같은 상품·카테고리의 타 인플루언서 판매 비노출 (인플루언서 판매 보호)
+  if(!S.linkCtx)return true;const lc=camp(S.linkCtx.cid);if(!lc)return true;
+  if(c.sellerId===lc.sellerId)return true;
+  const lp=prod(lc.productId),p=prod(c.productId);
+  return p.id!==lp.id&&p.cat!==lp.cat;
+}
+const isHomeFeat=c=>!!(c.homeFeatured&&(today()-P(c.homeFeatured))/DAY<7);
+function custCard(c){
+  const p=prod(c.productId),s=seller(c.sellerId),b=brand(p.brandId);
+  const live=c.status==='LIVE';const left=(c.qty||0)-soldQty(c.id);
+  const dd=live?Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY)):Math.ceil((P(c.start)-today())/DAY);
+  return `<div class="card prod">
+    <div class="ph" data-act="preview" data-k="${c.id}" style="cursor:pointer;position:relative">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:92%;max-width:78%;object-fit:contain;pointer-events:none">`:p.em}
+      ${isHomeFeat(c)?'<span class="trendbadge" style="background:var(--yellow);color:var(--ink)">★ 추천</span>':live?`<span class="trendbadge">${dd<=1?'오늘 마감':'D-'+dd+' 마감'}</span>`:`<span class="trendbadge" style="background:var(--ink);color:var(--yellow)">오픈 D-${dd}</span>`}</div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="sc-av ${s.img?'':'em'}" style="width:28px;height:28px;font-size:14px">${s.img?`<img src="${s.img}" alt="">`:(SEMOJI[s.id]||'👤')}</span><span style="font-size:12.5px"><b>${esc(s.name)}</b> <span style="color:var(--mute)">${platIcon(s)} ${s.handle}</span></span><span class="gradebox sm">${gfull(gname(s))}</span></div>
+    <div class="nm" data-act="preview" data-k="${c.id}" style="cursor:pointer">${esc(p.name)}</div>
+    <div class="meta">${esc(p.desc)} · ${esc(b.name)}</div>
+    <div class="prices"><span class="gp">₩${fmt(p.gp)}</span><span class="cp">₩${fmt(p.cp)}</span>${p.cp>p.gp?`<span class="disc">-${Math.round((1-p.gp/p.cp)*100)}%</span>`:''}</div>
+    <div class="meta">${live?`${md(P(c.start))}–${md(P(c.end))} · 잔여 ${fmt(Math.max(0,left))}개 · ${fmt(soldQty(c.id))}개 판매됨`:`${md(P(c.start))} 오픈 예정 · 한정 ${fmt(c.qty||0)}개`}</div>
+    <div class="btnrow">${live?`<button class="pri sm" data-act="preview" data-k="${c.id}">구매하기</button>`:`<button class="sm ghost" data-act="notifyMe" data-k="${c.id}">🔔 오픈 알림</button>`}<button class="sm ghost" data-act="verifyStore" data-k="${c.id}">${CEL} 인증 확인</button></div>
+  </div>`;
+}
+function vCustHome(){
+  const sel=S.custSel?seller(S.custSel):null;
+  const live=D_().campaigns.filter(c=>c.status==='LIVE'&&custVisible(c)&&(!sel||c.sellerId===sel.id)).sort((a,b)=>(isHomeFeat(b)-isHomeFeat(a))||(soldQty(b.id)-soldQty(a.id)));
+  const soon=D_().campaigns.filter(c=>c.status==='SCHEDULE_CONFIRMED'&&custVisible(c)&&(!sel||c.sellerId===sel.id)).sort((a,b)=>(isHomeFeat(b)-isHomeFeat(a))||(P(a.start)-P(b.start)));
+  const pubSellers=D_().sellers.filter(s=>!s.hidden);
+  return `<div class="hero-band">
+    <div class="ey">${CEL} Sellery — 믿을 수 있는 인플루언서 공동구매</div>
+    <h1>${sel?`${esc(sel.name)}님의 <em>진행 중인 판매</em>`:`지금 <em>진행 중인 판매</em>만 모았어요.`}</h1>
+    <div class="sub">인증 인플루언서 · 브랜드 직배송 · 결제는 <b>셀러리</b>가 보관하고 종료 후 ${CLEAR_DAYS}일 환불 보호${sel?` <button class="sm ghost" data-act="custAll" style="margin-left:10px">전체 보기</button>`:''}</div>
+  </div>
+  ${S.linkCtx?`<div class="notice" style="margin-bottom:14px">🔗 인플루언서 링크로 들어오셨어요 — 이 판매와 같은 상품·카테고리의 다른 판매는 표시되지 않습니다 (인플루언서 판매 보호 정책).</div>`:''}
+  <div class="sec">진행 중 <span class="badge">${live.length}</span></div>
+  <div class="grid g3">${live.map(custCard).join('')||'<div class="empty" style="grid-column:1/-1">지금 진행 중인 판매가 없어요</div>'}</div>
+  <div class="sec" style="margin-top:26px">오픈 예정 <span class="badge">${soon.length}</span></div>
+  <div class="grid g3">${soon.map(custCard).join('')||'<div class="empty" style="grid-column:1/-1">예정된 판매가 없어요</div>'}</div>
+  ${sel?'':`<div class="sec" style="margin-top:26px">인플루언서</div>
+  <div class="card"><div style="display:flex;gap:10px;flex-wrap:wrap">${pubSellers.map(s=>`<button class="catchip" data-act="custSeller" data-k="${s.id}">${platIcon(s)} ${esc(s.name)} <span class="gradebox sm">${gfull(gname(s))}</span></button>`).join('')}</div></div>`}
+  <div class="card" style="margin-top:26px"><h4>${CEL} 셀러리에서 사면 다른 점</h4>
+    <div class="grid g3" style="gap:12px">
+      <div><b>인증된 인플루언서</b><div class="meta">채널 소유 인증 + 등급제. 모든 판매 페이지에 인증 마크와 링크 검증.</div></div>
+      <div><b>안전 결제</b><div class="meta">결제 대금은 셀러리가 보관, 판매 종료 후 ${CLEAR_DAYS}일 교환·환불 기간이 끝나야 정산.</div></div>
+      <div><b>기간 한정 · 정가 대비 할인</b><div class="meta">브랜드가 셀러리에 등록한 판매가로만 판매. 같은 기간 다른 곳에서 더 싸게 팔지 않습니다.</div></div>
+    </div></div>`;
+}
+function vCustInfluencers(){
+  const list=D_().sellers.filter(s=>!s.hidden);
+  return `<h2 class="pg">인플루언서 <small>셀러리 인증 인플루언서 — 진행 중·예정 판매를 확인하세요</small></h2>
+  <div class="grid g3">${list.map(s=>{const cs=D_().campaigns.filter(c=>c.sellerId===s.id&&custVisible(c));const live=cs.filter(c=>c.status==='LIVE').length,soon=cs.filter(c=>c.status==='SCHEDULE_CONFIRMED').length,done=cs.filter(c=>['SETTLED','CLEARING'].includes(c.status)).length;
+    return `<div class="card" style="cursor:pointer" data-act="custSeller" data-k="${s.id}">
+      <div style="display:flex;gap:12px;align-items:center"><span class="sc-av ${s.img?'':'em'}" style="width:52px;height:52px">${s.img?`<img src="${s.img}" alt="">`:(SEMOJI[s.id]||'👤')}</span>
+        <div><div><b style="font-size:15px">${esc(s.name)}</b> <span class="gradebox sm">${gfull(gname(s))}</span></div><div style="font-size:12px;color:var(--mute)">${platIcon(s)} ${s.handle} · 팔로워 ${fmt(s.followers)} · 채널 인증 ✓</div></div></div>
+      <div class="meta" style="margin-top:8px">${esc(s.intro)}</div>
+      <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><span class="st ${live?'green':'gray'}" style="animation:none">진행 중 ${live}</span><span class="st blue" style="animation:none">오픈 예정 ${soon}</span><span class="st gray" style="animation:none">완료 ${done}</span></div>
+    </div>`;}).join('')}</div>`;
+}
+function vStore(cid){
+  const c=camp(cid);if(!c)return '<button class="ghost sm" data-act="storeBack">← 돌아가기</button><div class="empty">판매 페이지를 찾을 수 없습니다</div>';
+  const p=prod(c.productId),s=seller(c.sellerId),b=brand(p.brandId);
+  const opts=optsOf(p);const oi=Math.min(S.storeOpt||0,opts.length-1);const o=opts[oi];const q=S.storeQty||1;
+  const live=c.status==='LIVE',soon=c.status==='SCHEDULE_CONFIRMED';
+  const left=(c.qty||0)-soldQty(cid);
+  const dd=live?Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY)):soon?Math.ceil((P(c.start)-today())/DAY):0;
+  const mine=D_().campaigns.filter(x=>x.sellerId===s.id&&x.id!==cid&&['LIVE','SCHEDULE_CONFIRMED'].includes(x.status));
+  return `<div class="store">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="ghost sm" data-act="storeBack">${S.view.role==='customer'?'← 셀러리 홈':'← 돌아가기'}</button>
+      <span style="font-size:11.5px;color:var(--mute)">${S.view.role!=='customer'?'구매자에게 보이는 화면 · ':''}sellery.co.kr/s/${s.handle.slice(1)}/${cid}</span>
+    </div>
+    <div class="store-trust" data-act="verifyStore" data-k="${cid}">${CEL} <b>셀러리 인증 판매</b> · 결제 보관 · ${CLEAR_DAYS}일 환불 보호 · 인플루언서 채널 인증 ✓ <span style="text-decoration:underline;margin-left:auto">인증 확인</span></div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="store-hero"><div class="store-em">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:220px;max-width:80%;object-fit:contain">`:p.em}</div>
+        ${live?`<span class="trendbadge" style="position:absolute;top:30px;left:14px">${dd<=1?'오늘 마감':'D-'+dd+' 마감'}</span>`:soon?`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--ink);color:var(--yellow)">오픈 D-${dd}</span>`:`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--mute)">판매 종료</span>`}</div>
+      <div style="padding:18px 20px 20px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px"><span class="sc-av ${s.img?'':'em'}" style="width:40px;height:40px">${s.img?`<img src="${s.img}" alt="">`:(SEMOJI[s.id]||'👤')}</span>
+          <div style="flex:1;min-width:160px"><div><b>${esc(s.name)}</b> <span style="color:var(--mute);font-size:12px">${platIcon(s)} ${s.handle}</span> <span class="gradebox sm">${gfull(gname(s))}</span></div><div style="font-size:11.5px;color:var(--mute)">셀러리 인증 인플루언서 × ${esc(b.name)} 공식 공급</div></div>
+          ${mine.length?`<button class="sm ghost" data-act="custSeller" data-k="${s.id}">다른 판매 보기</button>`:''}</div>
+        <h2 style="margin:6px 0 4px;font-size:22px">${esc(p.name)}</h2>
+        <div class="meta" style="margin-bottom:12px">${esc(p.desc)} · ${p.cat}</div>
+        <div class="prices" style="margin-bottom:14px"><span class="gp" style="font-size:26px">₩${fmt(o.price)}</span>${oi===0?`<span class="cp">₩${fmt(p.cp)}</span>${p.cp>p.gp?`<span class="disc">-${Math.round((1-p.gp/p.cp)*100)}%</span>`:''}`:`<span class="cp" style="text-decoration:none">${esc(o.n)}</span>`}</div>
+        <div class="lbl-sm" style="margin-bottom:6px">옵션 선택</div>
+        <div class="opts">${opts.map((x,i)=>`<button class="opt ${i===oi?'on':''}" data-act="pickOpt" data-k="${i}"><span>${esc(x.n)}</span><b>₩${fmt(x.price)}</b></button>`).join('')}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 0">
+          <div class="qty"><button data-act="qtyDelta" data-k="-1">−</button><span>${q}</span><button data-act="qtyDelta" data-k="1">+</button></div>
+          <div style="text-align:right"><div style="font-size:11.5px;color:var(--mute)">총 결제 금액</div><div style="font-family:'Archivo',sans-serif;font-size:24px;font-weight:800">₩${fmt(o.price*q)}</div></div>
+        </div>
+        ${live?`<button class="pri buy" data-act="buyNow" data-k="${cid}" ${left<=0?'disabled style="opacity:.5"':''}>${left<=0?'품절':'구매하기'}</button>
+          <div class="meta" style="text-align:center;margin-top:8px">${md(P(c.start))}–${md(P(c.end))} 한정 · 잔여 ${fmt(Math.max(0,left))}개 · ${fmt(soldQty(cid))}개 판매됨 · 결제 시 셀러리 안전결제로 이동</div>`
+        :soon?`<button class="pri buy" data-act="notifyMe" data-k="${cid}">🔔 ${md(P(c.start))} 오픈 알림 받기</button>`
+        :`<button class="buy" disabled style="opacity:.6">판매가 종료되었습니다</button><div class="meta" style="text-align:center;margin-top:8px">교환·환불은 종료 후 ${CLEAR_DAYS}일까지 셀러리 고객센터에서 처리됩니다</div>`}
+      </div>
+    </div>
+    <div class="card"><h4>상세 정보</h4>
+      ${(p.imgs&&p.imgs.length)?p.imgs.map(u=>`<img src="${u}" alt="" style="width:100%;display:block;margin-bottom:8px">`).join(''):`<div class="store-detail"><div class="store-em">${p.em}</div><p>${esc(p.desc)}</p><p style="color:var(--mute);font-size:12.5px">브랜드가 등록한 상세페이지 이미지가 여기에 노출됩니다 (${esc(b.name)} 제공 · 표시광고 사전심의 완료)</p></div>`}
+    </div>
+    <div class="card"><h4>배송 · 교환 · 환불</h4>
+      <ul class="store-ul"><li>결제 후 2–3일 내 <b>${esc(b.name)}</b>에서 직배송, 운송장은 셀러리 알림톡으로 안내</li><li>판매 종료 후 <b>${CLEAR_DAYS}일</b> 동안 교환·환불 신청 가능 (단순 변심 7일 · 하자 ${CLEAR_DAYS}일)</li><li>대금은 정산 전까지 <b>셀러리</b>가 보관하므로 환불이 지연되지 않습니다</li><li>문의: 셀러리 고객센터(채널톡) — 인플루언서 DM이 아닌 셀러리로 접수</li></ul></div>
+    ${mine.length?`<div class="sec">${esc(s.name)}님의 다른 판매</div><div class="grid g3">${mine.map(custCard).join('')}</div>`:''}
+    <div class="store-foot">${CEL} <b>SELLERY</b> · 셀러리는 통신판매중개자로 거래 당사자가 아니며, 상품·거래 정보의 책임은 공급 브랜드(${esc(b.name)})에 있습니다 · #광고 · 인플루언서는 판매 수수료를 받습니다</div>
+  </div>`;
+}
+
 /* ============ CAMPAIGN DETAIL ============ */
 function vCampDetail(cid){
   const c=camp(cid);if(!c)return '<div class="empty">캠페인을 찾을 수 없습니다</div>';
@@ -2040,10 +2322,11 @@ function vCampDetail(cid){
           <tr><td>환불 ${k.refCnt}건</td><td class="num">−₩${fmt(k.refund)}</td></tr>
           <tr><td><b>확정 매출</b></td><td class="num"><b>₩${fmt(k.net)}</b></td></tr>
           <tr><td>PG ${(PG_RATE*100).toFixed(1)}%</td><td class="num">−₩${fmt(k.pg)}</td></tr>
-          <tr><td>인플루언서 ${(p.rate*100).toFixed(0)}%${k.rb?' <b style="color:var(--red)">+1%p 추천</b>':''}</td><td class="num">−₩${fmt(k.sfTotal)}</td></tr>
+          <tr><td>인플루언서 ${(p.rate*100).toFixed(0)}%${k.gBonus?` <b style="color:var(--red)">+${(gradeBonusOf(s)*100).toFixed(1)}%p ${gname(s)}</b>`:''}${k.rb?' <b style="color:var(--red)">+1%p 추천</b>':''}</td><td class="num">−₩${fmt(k.sfTotal)}</td></tr>
           ${k.rb?`<tr><td>추천인 보상 2%</td><td class="num">−₩${fmt(k.refReward)}</td></tr>`:''}
           ${k.bb?`<tr><td>브랜드 추천인 보상 1%</td><td class="num">−₩${fmt(k.bReward)}</td></tr><tr><td>신규 브랜드 수수료 할인 −1%p</td><td class="num" style="color:var(--red)">+₩${fmt(k.bBoost)}</td></tr>`:''}
-          <tr><td>플랫폼 ${(PLAT_RATE*100).toFixed(0)}%${(k.rb||k.bb)?' (보상·할인 차감 후)':''}</td><td class="num">−₩${fmt(k.pf)}</td></tr>
+          ${k.bDisc?`<tr><td>브랜드 ${bgname(b)} 등급 수수료 할인 −${(bDiscOf(b)*100).toFixed(1)}%p</td><td class="num" style="color:var(--red)">+₩${fmt(k.bDisc)}</td></tr>`:''}
+          <tr><td>플랫폼 ${(PLAT_RATE*100).toFixed(0)}%${k.costs?' (보너스·보상·할인 차감 후)':''}</td><td class="num">−₩${fmt(k.pf)}</td></tr>
           <tr class="tot"><td>브랜드 정산액</td><td class="num">₩${fmt(k.brandPay)}</td></tr>
         </table>
         ${c.end?`<div style="font-size:11.5px;color:var(--mute);margin-top:8px">정산 기준일(D+${CLEAR_DAYS}): <b>${md(settleDue(c))}</b></div>`:''}
@@ -2186,7 +2469,9 @@ function productModal(){
     <div class="fld"><label>재고</label><input id="npStock" type="number" value="1000" step="100"></div>
   </div>
   <div class="fld"><label>샘플 정책</label><input id="npSample" value="무상 1개"></div>
-  <p style="font-size:12px;color:var(--mute)">등록 후 플랫폼 검수(관리자 탭)를 통과하면 인플루언서에게 노출됩니다. 상세페이지 에디터는 실서비스에서 제공.</p>
+  <div class="fld"><label>구매 옵션 <span style="font-weight:400">— 한 줄에 하나, "옵션명 | 가격" (비우면 1개/2개 세트/3개 세트 자동 생성)</span></label>
+    <textarea id="npOpts" rows="3" placeholder="1박스 (30포) | 29900&#10;2박스 세트 | 56800&#10;3박스 + 쉐이커 | 79900"></textarea></div>
+  <p style="font-size:12px;color:var(--mute)">등록 후 플랫폼 검수(관리자 탭)를 통과하면 인플루언서에게 노출됩니다. 고객 구매 페이지에는 옵션·가격·상세 이미지가 그대로 노출됩니다.</p>
   <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="createProduct">검수 요청</button></div>`);
 }
 function previewModal(cid){
@@ -2215,6 +2500,7 @@ const ACT={
   gotoMy(){
     if(S.view.role==='brand'){S.view={role:'brand',screen:'my',cid:null};render();return;}
     if(S.view.role==='admin'&&S.lockedRole){toast('관리자 설정은 준비 중입니다');return;}
+    if(S.view.role==='customer'){toast('고객 로그인·주문 조회는 실서비스에서 제공됩니다 (카카오 로그인)');return;}
     S.view={role:'seller',screen:'my',cid:null};render();
   },
   saveBrandInfo(){
@@ -2288,17 +2574,16 @@ const ACT={
   },
   invite(sid){inviteModal(sid);},
   unlockSellerData(sid){
-    const b=S.actingBrand, pr=dataPrice(seller(sid));
-    if(!celSpend(b,pr,`데이터 확인 · ${seller(sid).name} ${seller(sid).handle} (${gfull(gname(seller(sid)))})`))return;
+    const b=S.actingBrand;
+    const pr=spendData(b,seller(sid),`데이터 확인 · ${seller(sid).name} ${seller(sid).handle} (${gname(seller(sid))})`);if(pr===false)return;
     const m=D_().brandDataUnlocks=D_().brandDataUnlocks||{};
     (m[b]=m[b]||[]).push(sid);
-    save();render();toast(`🥬 ${pr} 사용 — ${seller(sid).name}님의 성과 데이터가 열렸습니다`);
+    save();render();toast(pr===0?`브랜드 ${bgname(brand(b))} 등급 혜택 — 무료 열람 (이달 ${freeRefLeft(brand(b))}회 남음)`:`🥬 ${pr} 사용 — ${seller(sid).name}님의 성과 데이터가 열렸습니다`);
   },
   unlockRef(sid){
-    const pr=dataPrice(seller(sid));
-    if(!celSpend(S.actingBrand,pr,`익명 레퍼런스 열람 · ○○○ 인플루언서 (${gfull(gname(seller(sid)))})`))return;
+    const pr=spendData(S.actingBrand,seller(sid),`익명 레퍼런스 열람 · ○○○ 인플루언서 (${gname(seller(sid))})`);if(pr===false)return;
     (D_().unlockedRefs=D_().unlockedRefs||[]).push(sid);
-    save();render();toast(`🥬 ${pr} 사용 — 레퍼런스 상세 지표가 공개되었습니다`);
+    save();render();toast(pr===0?`브랜드 등급 혜택 — 무료 열람 (이달 ${freeRefLeft(brand(S.actingBrand))}회 남음)`:`🥬 ${pr} 사용 — 레퍼런스 상세 지표가 공개되었습니다`);
   },
   shopGo(){closeModal();S.view.screen='shop';render();},
   // 홈 TOP5 행 클릭: 공개 인플루언서 → 갤러리로 이동 + 바로 제안 / 비공개 → 🥬 2 구매 확인 후 제안
@@ -2313,10 +2598,10 @@ const ACT={
     <div class="foot"><button data-act="closeModal">닫기</button><button data-act="shopGo">${CEL} 충전</button><button class="pri" data-act="unlockRefGo" data-k="${sid}">${CEL} ${pr} · 구매해서 보기</button></div>`);
   },
   unlockRefGo(sid){
-    closeModal(); const pr=dataPrice(seller(sid));
-    if(!celSpend(S.actingBrand,pr,`익명 레퍼런스 열람 · ○○○ 인플루언서 (${gfull(gname(seller(sid)))})`))return;
+    closeModal();
+    const pr=spendData(S.actingBrand,seller(sid),`익명 레퍼런스 열람 · ○○○ 인플루언서 (${gname(seller(sid))})`);if(pr===false)return;
     (D_().unlockedRefs=D_().unlockedRefs||[]).push(sid);
-    save();S.view={role:'brand',screen:'gallery'};render();toast(`🥬 ${pr} 사용 — 레퍼런스가 공개되었습니다. 바로 제안해보세요`);inviteModal(sid);
+    save();S.view={role:'brand',screen:'gallery'};render();toast(pr===0?'브랜드 등급 혜택 — 무료 열람. 바로 제안해보세요':`🥬 ${pr} 사용 — 레퍼런스가 공개되었습니다. 바로 제안해보세요`);inviteModal(sid);
   },
   prodDetail(pid){productDetailModal(pid);},
   reqSampleM(pid){closeModal();ACT.reqSample(pid);},
@@ -2428,15 +2713,20 @@ const ACT={
     if(!celSpend(who,it.price,`${it.name} 구매`))return;
     if(id==='sample'){ent.sampleExtra=(ent.sampleExtra||0)+1;save();render();toast(`✓ 샘플 요청 횟수 +1 (이번 달 남은 횟수 ${sampleLeft(ent)}회, −1 🥬)`);return;}
     ent.celeryItems={...(ent.celeryItems||{}),[id]:ymd(today())};
-    if(id==='boost'){const p=D_().products.find(x=>x.brandId===who&&x.status==='listed');if(p)p.boosted=true;}
+    if(id==='boost'){const p=D_().products.find(x=>x.brandId===who&&x.status==='listed');if(p){p.boosted=true;p.celeryItems={...(p.celeryItems||{}),boost:ymd(today())};}}
     if(id==='fastreview'){D_().products.filter(x=>x.brandId===who&&x.status==='pending').forEach(x=>{x.status='listed';x.stock=x.stock||500;});}
+    if(id==='homefeature'){ // 고객 홈 상단 노출 (7일): 브랜드 → 내 상품의 진행 중 판매, 인플루언서 → 내 진행 중 판매
+      const cs=D_().campaigns.filter(c=>['LIVE','SCHEDULE_CONFIRMED'].includes(c.status)&&(isBrand?prod(c.productId).brandId===who:c.sellerId===who));
+      if(!cs.length){toast('노출할 진행 중·예정 판매가 없어 적용되지 않았습니다 (셀러리는 차감되지 않음)');(D_().celeryLedger).pop();save();render();return;}
+      cs.forEach(c=>c.homeFeatured=ymd(today()));
+    }
     save();render();toast(`✓ ${it.name} 구매 완료 (−${it.price} 🥬)`);
   },
   topup(n){
     const isBrand=S.view.role==='brand';
     const who=isBrand?S.actingBrand:S.actingSeller;
     const t=TOPUP.find(x=>x.n===+n);if(!t)return;
-    (D_().celeryLedger=D_().celeryLedger||[]).push({who,at:ymd(today()),delta:t.n,memo:`셀러리 충전 (₩${fmt(t.won)} 시뮬 결제)`});
+    (D_().celeryLedger=D_().celeryLedger||[]).push({who,at:ymd(today()),delta:t.n,won:t.won,memo:`셀러리 충전 (₩${fmt(t.won)} 시뮬 결제)`});
     save();render();toast(`🥬 ${t.n} 충전 완료 (시뮬레이션)`);
   },
   buyDataPass(pid){
@@ -2454,6 +2744,7 @@ const ACT={
   },
   confirmInvite(sid){
     const pid=$('#invProd').value;const msg=$('#invMsg').value.trim();
+    if(prod(pid).exclusiveSellerId&&prod(pid).exclusiveSellerId!==sid){toast('이 상품은 독점 인플루언서가 확정되어 다른 인플루언서에게 제안할 수 없습니다');return;}
     const tg=gname(seller(sid));
     if((tg==='다이아'||tg==='블랙')&&!celSpend(S.actingBrand,10,`${tg} 인플루언서 제안 · ${prod(pid).name}`))return;
     const id='c'+(D_().seq++);
@@ -2550,8 +2841,9 @@ const ACT={
   regongu(cid){
     const old=camp(cid);
     const id='c'+(D_().seq++);
-    D_().campaigns.push({id,sellerId:old.sellerId,productId:old.productId,status:'TESTING',testDue:ymd(addD(today(),14)),createdAt:ymd(today())});
-    pushSys(id,`🔁 <b>재판매</b> — 지난 판매(${cid.toUpperCase()}) 성과 기반. 샘플 단계 생략, 일정 제안부터 시작합니다`);
+    const prio=passActive(seller(old.sellerId),'regongu',30);
+    D_().campaigns.push({id,sellerId:old.sellerId,productId:old.productId,status:'TESTING',testDue:ymd(addD(today(),14)),createdAt:ymd(today()),regongu:true});
+    pushSys(id,`🔁 <b>재판매</b> — 지난 판매(${cid.toUpperCase()}) 성과 기반. 샘플 단계 생략, 일정 제안부터 시작합니다${prio?' · <b>재판매 우선권</b> 보유: 일정 제안 시 즉시 확정':''}`);
     save();S.view.cid=id;render();toast('재판매 캠페인 생성 — 일정 제안부터 시작');
   },
   settleCSV(){
@@ -2585,6 +2877,11 @@ const ACT={
     if(overlaps(c.productId,st,en,cid)){toast('⚠ 이미 확정된 기간과 겹칩니다 — 다른 날짜를 선택하세요');return;}
     c.propStart=st;c.propEnd=en;c.propQty=qty;
     closeModal();
+    if(c.regongu&&passActive(seller(c.sellerId),'regongu',30)){
+      c.start=st;c.end=en;c.qty=qty;
+      transition(cid,'SCHEDULE_CONFIRMED',`⚡ <b>재판매 우선권</b> — 일정 <b>${md(P(st))} – ${md(P(en))}</b> · 재고 ${fmt(qty)} 즉시 확정 (브랜드 승인 생략)`);
+      toast('재판매 우선권 — 일정 즉시 확정');return;
+    }
     transition(cid,'SCHEDULE_PROPOSED',`인플루언서가 판매 일정을 제안했습니다 · <b>${md(P(st))} – ${md(P(en))}</b> · 재고 ${fmt(qty)}`);
     toast('일정 제안 완료 — 브랜드 승인 대기');
   },
@@ -2620,9 +2917,10 @@ const ACT={
     save();render();toast('환불 처리 — 정산 기준액에서 차감됨');
   },
   runSettle(cid){
-    const c=camp(cid),k=calc(c),p=prod(c.productId);
+    const c=camp(cid),k=calc(c),p=prod(c.productId),sl=seller(c.sellerId);
     c.status='SETTLED';c.settledAt=ymd(today());
-    D_().settlements.push({at:ymd(today()),title:`${p.name} · ${seller(c.sellerId).handle}`,net:k.net,brandPay:k.brandPay,sellerPay:k.sfTotal*(1-WHT),platFee:k.pf});
+    if(+c.id.slice(1)>=100)sl.m3Sales=(sl.m3Sales||0)+k.net;   // 시드 이후 생성된 판매만 3개월 매출(등급·셀러리 획득 기준)에 누적
+    D_().settlements.push({at:ymd(today()),title:`${p.name} · ${sl.handle}`,net:k.net,brandPay:k.brandPay,sellerPay:k.sfTotal*(1-sellerWht(sl)),platFee:k.pf,pfNet:k.pfNet});
     if(k.refReward>0){
       const refId=seller(c.sellerId).referredBy;
       (D_().refEarnings=D_().refEarnings||[]).push({at:ymd(today()),referrerId:refId,fromSellerId:c.sellerId,campaignId:cid,amt:k.refReward});
@@ -2633,7 +2931,7 @@ const ACT={
       (D_().brandRefEarnings=D_().brandRefEarnings||[]).push({at:ymd(today()),referrerId:rb,fromBrandId:p.brandId,campaignId:cid,amt:k.bReward});
       pushSys(cid,`브랜드 추천 보상 — 추천 브랜드 ${brand(rb).name}에게 확정 매출의 1% ₩${fmt(k.bReward)} · 신규 브랜드 수수료 −1%p 적용 (플랫폼 부담)`);
     }
-    pushSys(cid,`<b>정산 완료</b> · 브랜드 ₩${fmt(k.brandPay)}${k.bb?' (추천 할인 −1%p 포함)':''} · 인플루언서 ₩${fmt(k.sfTotal)}${k.rb?' (추천 부스트 +1%p 포함)':''} → 원천징수 3.3% 공제 후 ₩${fmt(k.sfTotal*(1-WHT))} · 명세 발행`);
+    pushSys(cid,`<b>정산 완료</b> · 브랜드 ₩${fmt(k.brandPay)}${k.bb?' (추천 할인 −1%p 포함)':''}${k.bDisc?' (등급 할인 포함)':''} · 인플루언서 ₩${fmt(k.sfTotal)}${k.gBonus?` (${gname(sl)} 보너스 포함)`:''}${k.rb?' (추천 부스트 +1%p 포함)':''} → ${sellerWht(sl)?`원천징수 3.3% 공제 후 ₩${fmt(k.sfTotal*(1-WHT))}`:'사업자 정산(세금계산서) ₩'+fmt(k.sfTotal)} · 명세 발행`);
     save();render();toast('정산 실행 완료 — 양측 지급 및 명세 발행');
   },
   approveProduct(pid){const p=prod(pid);p.status='listed';p.stock=p.stock||500;save();render();toast(`${p.name} 노출 승인`);},
@@ -2649,6 +2947,7 @@ const ACT={
     const exg=$('#npExcl').value;
     D_().products.push({id:'p'+(D_().seq++),brandId:S.actingBrand,name:nm,desc:$('#npDesc').value.trim()||'—',em:'📦',cat:$('#npCat').value||'건기식',
       thumb:NP.thumb||null,imgs:NP.imgs.slice(0,4),
+      options:$('#npOpts').value.split(/\n/).map(l=>l.split('|')).filter(a=>a.length>=2&&a[0].trim()&&+a[1].replace(/[^\d]/g,'')).map(a=>({n:a[0].trim(),price:+a[1].replace(/[^\d]/g,'')})),
       cp:+$('#npCp').value||0,gp:+$('#npGp').value||0,rate:Math.max(5,(+$('#npRate').value||30)-PLAT_RATE*100)/100,sample:$('#npSample').value||'무상 1개',stock:+$('#npStock').value||0,status:'pending',
       ...(exg?{exclusive:{grade:exg,label:$('#npExclLabel').value.trim()||exg+' 등급 독점권'}}:{})});
     NP={thumb:null,imgs:[]};
@@ -2683,7 +2982,65 @@ const ACT={
     }
     inp.click();
   },
-  preview(cid){previewModal(cid);},
+  /* ---- 고객 구매 페이지 / 고객 화면 ---- */
+  preview(cid){S.view.store=cid;S.storeOpt=0;S.storeQty=1;render();},
+  storeBack(){S.view.store=null;if(S.view.role==='customer')S.linkCtx=null;render();},
+  pickOpt(i){S.storeOpt=+i;render();},
+  qtyDelta(d){S.storeQty=Math.max(1,Math.min(10,(S.storeQty||1)+ +d));render();},
+  buyNow(cid){
+    const c=camp(cid),p=prod(c.productId);
+    if(c.status!=='LIVE'){toast('현재 판매 중이 아닙니다');return;}
+    const opts=optsOf(p),o=opts[Math.min(S.storeOpt||0,opts.length-1)],q=S.storeQty||1;
+    const left=(c.qty||0)-soldQty(cid);
+    if(left<q){toast(`남은 수량이 부족합니다 (잔여 ${Math.max(0,left)}개)`);return;}
+    const id='o'+(D_().seq++);
+    D_().orders.push({id,campaignId:cid,buyer:'고객(구매 페이지)',qty:q,unit:o.price,opt:o.n,status:'PAID',at:ymd(today())});
+    S.storeQty=1;save();render();
+    openModal(`<h3>주문 완료 ✓</h3>
+    <div class="notice" style="margin:8px 0 12px">결제 금액은 <b>셀러리</b>가 안전하게 보관하고, 판매 종료 후 교환/환불 기간(${CLEAR_DAYS}일)이 지나면 브랜드·인플루언서에게 정산됩니다.</div>
+    <table class="stmt" style="min-width:0;font-size:13px">
+      <tr><td>주문번호</td><td class="num"><b>${id.toUpperCase()}</b></td></tr>
+      <tr><td>상품</td><td class="num">${esc(p.name)} · ${esc(o.n)} × ${q}</td></tr>
+      <tr><td>결제 금액</td><td class="num"><b>₩${fmt(o.price*q)}</b></td></tr>
+      <tr><td>판매 인플루언서</td><td class="num">${esc(seller(c.sellerId).name)} ${seller(c.sellerId).handle}</td></tr>
+      <tr><td>배송</td><td class="num">${esc(brand(p.brandId).name)} 직배송 · 운송장은 셀러리 알림톡으로</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--mute);margin-top:10px">주문 조회·교환·환불은 셀러리 고객센터(카카오 로그인)에서 처리됩니다. 실서비스에서는 이 단계에서 PG 결제창이 열립니다.</p>
+    <div class="foot"><button class="pri" data-act="closeModal">확인</button></div>`);
+  },
+  verifyStore(cid){
+    const c=camp(cid),p=prod(c.productId),s=seller(c.sellerId),b=brand(p.brandId);
+    const ch=(s.channels||[]).filter(x=>x.verified);
+    openModal(`<h3>${CEL} 셀러리 판매 인증</h3>
+    <div class="notice" style="margin:8px 0 12px">이 판매 페이지는 셀러리가 발급한 정식 링크입니다. 사칭 링크는 이 인증 정보를 표시할 수 없습니다.</div>
+    <table class="stmt" style="min-width:0;font-size:13px">
+      <tr><td>인증 링크</td><td class="num">sellery.co.kr/s/${s.handle.slice(1)}/${cid} <span class="st green" style="animation:none">유효</span></td></tr>
+      <tr><td>판매 인플루언서</td><td class="num">${platIcon(s)} ${esc(s.name)} ${s.handle} · <span class="gradebox sm">${gfull(gname(s))}</span></td></tr>
+      <tr><td>인증 채널</td><td class="num">${ch.map(x=>`${PLAT_ICONS[x.platform]||''} ${esc(x.handle)} ✓`).join('<br>')||'—'}</td></tr>
+      <tr><td>공급 브랜드</td><td class="num">${esc(b.name)} · <span class="gradebox sm">${gfull(bgname(b))}</span>${b.settleInfo&&b.settleInfo.bizNo?` · 사업자 ${esc(b.settleInfo.bizNo)}`:' · 인증 브랜드'}</td></tr>
+      <tr><td>판매 기간</td><td class="num">${c.start?md(P(c.start))+' – '+md(P(c.end)):'—'}</td></tr>
+      <tr><td>결제·정산</td><td class="num">셀러리 에스크로 보관 · 종료 후 ${CLEAR_DAYS}일 환불 보호</td></tr>
+    </table>
+    <div class="foot"><button class="pri" data-act="closeModal">닫기</button></div>`);
+  },
+  custSeller(sid){S.custSel=sid;S.view={role:S.view.role==='customer'?'customer':S.view.role,screen:'home',cid:null,store:null};if(S.view.role!=='customer'){S.view.role='customer';S.lockedRole=S.lockedRole;}render();},
+  custAll(){S.custSel=null;render();},
+  notifyMe(){toast('오픈 알림 신청 완료 — 판매 시작 시 카카오 알림톡으로 안내 (시뮬레이션)');},
+  /* ---- 관리자: 자동 제안 ---- */
+  toggleAutoPropose(bid){const b=brand(bid);b.autoPropose=!b.autoPropose;save();render();toast(`${b.name} 자동 제안 ${b.autoPropose?'ON':'OFF'}`);},
+  runAutoPropose(){
+    const list=autoMatches().slice(0,5);let n=0,skip=0;
+    list.forEach(({b,p,s})=>{
+      const tg=gname(s);
+      if((tg==='다이아'||tg==='블랙')&&celBal(b.id)<10){skip++;return;}
+      if(tg==='다이아'||tg==='블랙')celSpend(b.id,10,`${tg} 인플루언서 자동 제안 · ${p.name}`);
+      const id='c'+(D_().seq++);
+      D_().campaigns.push({id,sellerId:s.id,productId:p.id,status:'SAMPLE_APPROVED',createdAt:ymd(today()),invited:true,auto:true});
+      pushSys(id,`🤖 <b>셀러리 자동 제안</b> — 트렌드·카테고리 적합도 기반으로 <b>${esc(b.name)}</b>가 <b>${esc(p.name)}</b> 판매를 제안했고 인플루언서가 수락했습니다 (프로토타입 자동 수락)`);
+      n++;
+    });
+    save();render();toast(`자동 제안 ${n}건 발송${skip?` · ${skip}건은 브랜드 셀러리 부족으로 보류`:''}`);
+  },
   copyLink(url){
     try{navigator.clipboard.writeText('https://'+url);toast('링크 복사됨');}catch(e){toast('복사 실패 — 수동으로 복사해주세요');}
   },
