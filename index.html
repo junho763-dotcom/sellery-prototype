@@ -472,8 +472,13 @@ input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28
 /* ---- 섹션 헤더: 픽셀 화살표 + 점선 ---- */
 .sec::before{width:0;height:0;background:none;box-shadow:none;border-left:8px solid var(--red);border-top:6px solid transparent;border-bottom:6px solid transparent}
 .sec::after{height:4px;background:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 8px)}
-/* ---- 상품 썸네일: 체커보드 ---- */
-.prod .ph,.grid > .prod:nth-child(even) .ph{transform:none;background:conic-gradient(#e2ead0 25%,#f3f6e6 0 50%,#e2ead0 0 75%,#f3f6e6 0) 0 0/16px 16px}
+/* ---- 상품 썸네일: 누끼 공통 스테이지 (연한 셀러리 톤 + 저대비 픽셀 체커 + 바닥 그림자, 이미지는 바닥 정렬) ---- */
+.prod .ph,.grid > .prod:nth-child(even) .ph{transform:none;background:conic-gradient(#f0f5e2 25%,#f7faee 0 50%,#f0f5e2 0 75%,#f7faee 0) 0 0/16px 16px;align-items:flex-end;padding-bottom:22px;height:136px}
+.prod .ph::after{content:'';position:absolute;left:26%;right:26%;bottom:10px;height:6px;background:rgba(28,42,20,.16);box-shadow:-10px 0 0 0 rgba(28,42,20,.07),10px 0 0 0 rgba(28,42,20,.07);pointer-events:none}
+.prod .ph img{max-height:80%!important;max-width:74%!important;position:relative;z-index:1;filter:drop-shadow(0 0 0 transparent)}
+.prod .ph .pxemoji{position:relative;z-index:1;margin-bottom:-2px}
+/* ---- 그라운드: 저대비 체커 (시험 적용 — 단색으로 돌리려면 이 줄 삭제) ---- */
+body{background:conic-gradient(#eef3dc 25%,#eaf0d6 0 50%,#eef3dc 0 75%,#eaf0d6 0) 0 0/24px 24px fixed}
 .prod .rate{background:var(--yellow);border:none;box-shadow:var(--pxb2);margin:2px 4px;font-family:var(--px11)!important;font-weight:400!important}
 .sc-av{transform:none;border-radius:0}
 /* ---- 게이지/막대: 픽셀 블록 ---- */
@@ -697,6 +702,16 @@ function seedData(){
     ],
     unlockedRefs:[],
     brandDataUnlocks:{b1:['s1'],b2:['s7']},
+    external:{
+      s1:[{name:'저분자 피쉬콜라겐 스틱',brand:'타사 A',src:'instagram',at:D(-5),price:32000}],
+      s2:[{name:'프리미엄 침구 세트',brand:'타사 B',src:'instagram',at:D(-2),price:159000},{name:'디퓨저 3종',brand:'타사 C',src:'instagram',at:D(-11),price:38000}],
+      s3:[{name:'곤약 젤리 30팩',brand:'타사 D',src:'naver',at:D(-6),price:24900}],
+      s4:[{name:'오메가3 rTG',brand:'타사 E',src:'youtube',at:D(-3),price:41000}],
+      s5:[{name:'톤업 선크림',brand:'타사 F',src:'tiktok',at:D(-1),price:27000},{name:'립 틴트 3종',brand:'타사 G',src:'tiktok',at:D(-8),price:36000}],
+      s6:[{name:'단백질 쉐이크 14팩',brand:'타사 H',src:'instagram',at:D(-4),price:34000}],
+      s7:[{name:'쿠션 파운데이션',brand:'타사 I',src:'youtube',at:D(-7),price:39000}],
+      s8:[{name:'마그네슘 글리시네이트',brand:'타사 J',src:'naver',at:D(-3),price:29000}]
+    },
     exclusiveReqs:[
       {id:'x1',productId:'p1',sellerId:'s4',status:'PENDING',at:D(-1)}
     ],
@@ -775,7 +790,7 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v14';
+const LS='sellery-proto-v15';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
@@ -807,6 +822,8 @@ function celBal(who){return celEarned(who)+(D_().celeryLedger||[]).filter(e=>e.w
 function sampleQuota(s){const i=tierIdx(gname(s));return i<=tierIdx('플래티넘')?5:(i<=tierIdx('실버')?2:1);}
 function sampleUsed(s){const ym=ymd(today()).slice(0,7);return D_().campaigns.filter(c=>c.sellerId===s.id&&!c.invited&&(c.createdAt||'').slice(0,7)===ym).length;}
 function sampleLeft(s){const q=sampleQuota(s);return q===Infinity?Infinity:Math.max(0,q+(s.sampleExtra||0)-sampleUsed(s));}
+/* 외부 판매 크롤링 추정: 도달 = 팔로워×참여율×노출계수(6), 전환 1.5%, ±25% */
+function estExternal(s,item){const eng=s.likesAvg/s.followers;const orders=s.followers*eng*6*0.015;const mid=orders*item.price;return {lo:mid*0.75,hi:mid*1.25,orders:Math.round(orders)};}
 function passActive(ent,id,days){const d=ent&&ent.celeryItems&&ent.celeryItems[id];if(!d)return false;if(!days)return true;return (today()-P(d))/DAY<days;}
 function celSpend(who,n,memo){
   if(celBal(who)<n){toast(`🥬 셀러리가 부족합니다 (보유 ${celBal(who)} / 필요 ${n}) — 셀러리 샵에서 충전하세요`);return false;}
@@ -1714,20 +1731,23 @@ function sellerCard(s,reason){
   const mxL=Math.max(...rl,1);
   const trendUp=rl.length>1&&rl[rl.length-1]>=rl[0];
   const bv=S.view.role==='brand'?brand(S.actingBrand):null;
-  const unlocked=!bv||passActive(bv,'datapass',30)||(((D_().brandDataUnlocks||{})[bv.id])||[]).includes(s.id);
+  const done=D_().campaigns.filter(c=>c.sellerId===s.id&&['LIVE','CLEARING','SETTLED'].includes(c.status));
+  const worked=!!bv&&done.some(c=>prod(c.productId).brandId===bv.id);
+  const avgNet=done.length?done.reduce((a,c)=>a+calc(c).net,0)/done.length:null;
+  const unlocked=!bv||worked||passActive(bv,'datapass',30)||(((D_().brandDataUnlocks||{})[bv.id])||[]).includes(s.id);
   return `<div class="card scard">
     ${reason?`<div class="rec-tag">✦ 추천 — ${reason}</div>`:''}
     <div style="display:flex;gap:14px;align-items:center">
       ${s.img?`<div class="sc-av" style="background-image:url('${s.img}')"></div>`:`<div class="sc-av em">${SEMOJI[s.id]||'⭐'}</div>`}
       <div style="flex:1;min-width:0">
-        <div><span class="gradebox sm">${gfull(gname(s))}</span> <b style="font-size:15.5px">${esc(s.name)}</b> <span style="color:var(--mute);font-size:12px">${platIcon(s)} ${s.handle}</span></div>
+        <div><span class="gradebox sm">${gfull(gname(s))}</span> <b style="font-size:15.5px">${esc(s.name)}</b> <span style="color:var(--mute);font-size:12px">${platIcon(s)} ${s.handle}</span>${worked?' <span class="st green" style="animation:none">함께 판매 · 데이터 무료</span>':''}</div>
         <div style="font-size:12px;color:var(--mute)">${s.cat} · 팔로워 ${fmt(s.followers)} · ${esc(s.intro)}</div>
       </div>
     </div>
     <div class="gate ${unlocked?'':'locked'}">
     <div class="mini-stats">
       <div><span class="ms-l">3개월 매출</span><span class="ms-v">₩${fmt(s.m3Sales)}</span></div>
-      <div><span class="ms-l">팔로워</span><span class="ms-v">${fmt(s.followers)}</span></div>
+      <div><span class="ms-l">판매당 평균 매출</span><span class="ms-v">${avgNet!=null?'₩'+fmt(avgNet):'—'}</span></div>
       <div><span class="ms-l">좋아요 평균</span><span class="ms-v">${fmt(s.likesAvg)}</span></div>
       <div><span class="ms-l">참여율</span><span class="ms-v">${eng}%</span></div>
     </div>
@@ -1737,6 +1757,10 @@ function sellerCard(s,reason){
         ${hist.length?hist.map(c=>{const p=prod(c.productId),k=calc(c);
           return `<div class="sc-hist" data-act="open" data-k="${c.id}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.em} ${esc(p.name)} <span style="color:var(--mute)">${c.start?md(P(c.start))+'–'+md(P(c.end)):''}</span></span><span style="font-family:'IBM Plex Mono',monospace;white-space:nowrap">₩${fmt(k.net)}</span>${stChip(c.status)}</div>`;}).join('')
         :'<div style="font-size:12px;color:var(--mute)">셀러리 첫 판매 대기 — 지금 제안해 선점하세요</div>'}
+        <div class="lbl-sm" style="margin:12px 0 6px">📡 외부 판매 감지 · 예상 매출 <span style="font-weight:400;letter-spacing:0;text-transform:none">(크롤링 · 가계산 — 실데이터 기반 계산식 확정 예정)</span></div>
+        ${((D_().external||{})[s.id]||[]).slice(0,2).map(x=>{const e=estExternal(s,x);
+          return `<div class="sc-hist" style="cursor:default"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${platIcon({platform:x.src})} ${esc(x.name)} <span style="color:var(--mute)">· ${esc(x.brand)} · ${md(P(x.at))}</span></span><span style="font-family:'IBM Plex Mono',monospace;white-space:nowrap;color:var(--red)">예상 ₩${fmt(e.lo/1e4)}만–${fmt(e.hi/1e4)}만</span></div>`;}).join('')
+          ||'<div style="font-size:12px;color:var(--mute)">최근 30일 외부 판매 감지 없음</div>'}
       </div>
       <div>
         <div class="lbl-sm" style="margin-bottom:6px">최근 게시물 반응 ${trendUp?'<b style="color:var(--red)">▲ 상승</b>':''}</div>
