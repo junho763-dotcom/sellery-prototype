@@ -2692,11 +2692,14 @@ function vAdminHome(){
 }
 function PSTATS(){return {pending:['검수 대기','amber'],listed:['노출 중','green'],paused:['노출 중단','gray']};}
 function pstChip(st){const m=PSTATS()[st]||[st,'gray'];return `<span class="st ${m[1]}" style="animation:none">${m[0]}</span>`;}
+function admSearch(id,val,ph,shown,total){return `<div class="dmsearch"><input id="${id}" value="${esc(val||'')}" placeholder="${ph}" oninput="ACT.${id}Live(this.value)"><span class="sub" style="color:var(--mute);font-size:12px;white-space:nowrap">${val?`${shown}/${total}건`:`전체 ${total}건`}</span>${val?`<button class="sm ghost" data-act="${id}Clear">지우기</button>`:''}</div>`;}
 function admChips(list,cur,act){return `<div class="cats" style="margin:0 0 12px">${list.map(([k,l,n])=>`<button class="catchip ${cur===k?'on':''}" data-act="${act}" data-k="${k}">${l}${n!=null?` <span style="color:var(--mute);font-weight:400">${n}</span>`:''}</button>`).join('')}</div>`;}
 function vAdminProducts(){
   const all=D_().products;
   const sf=S.admPS||'all', bf=S.admPB||'all', cf=S.admPC||'all';
-  const list=all.filter(p=>(sf==='all'||p.status===sf)&&(bf==='all'||p.brandId===bf)&&(cf==='all'||p.cat===cf));
+  const q=(S.admPQ||'').trim().toLowerCase();
+  const base=all.filter(p=>(sf==='all'||p.status===sf)&&(bf==='all'||p.brandId===bf)&&(cf==='all'||p.cat===cf));
+  const list=q?base.filter(p=>[p.name,p.desc,p.id,p.cat,brand(p.brandId).name,p.sample,(p.exclusive&&p.exclusive.label)||''].join(' ').toLowerCase().includes(q)):base;
   const cnt=k=>all.filter(p=>p.status===k).length;
   const totalRate=p=>((p.rate+PLAT_RATE)*100).toFixed(0);
   const campsOf=p=>D_().campaigns.filter(c=>c.productId===p.id);
@@ -2708,6 +2711,7 @@ function vAdminProducts(){
     ${admChips([['all','모든 브랜드'],...D_().brands.map(b=>[b.id,b.name,all.filter(p=>p.brandId===b.id).length])],bf,'admPB')}
     ${admChips([['all','모든 카테고리'],...CATS.filter(c=>c!=='전체').map(c=>[c,c,all.filter(p=>p.cat===c).length])],cf,'admPC')}
   </div>
+  ${admSearch('admPQ',S.admPQ,'상품명 · 설명 · 상품ID · 브랜드 · 카테고리 검색',list.length,base.length)}
   <div class="tblw compact"><table>
   <thead><tr><th>상품</th><th>브랜드</th><th>카테고리</th><th class="num">판매가</th><th class="num">총 수수료</th><th class="num">재고</th><th class="num">판매·매출</th><th>독점</th><th>상태</th><th>관리</th></tr></thead>
   <tbody>${list.map(p=>{const b=brand(p.brandId);const cs=campsOf(p);const live=cs.filter(c=>c.status==='LIVE').length;
@@ -2722,16 +2726,19 @@ function vAdminProducts(){
     <td>${pstChip(p.status)}</td>
     <td><div style="display:flex;gap:4px;flex-wrap:wrap">${p.status==='pending'?`<button class="sm pri" data-act="approveProduct" data-k="${p.id}">승인</button><button class="sm danger" data-act="rejectProduct" data-k="${p.id}">반려</button>`
       :`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}
-      <button class="sm ghost" data-act="prodDetail" data-k="${p.id}">실적</button><button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td></tr>`;}).join('')||'<tr><td colspan="10" class="empty">조건에 맞는 상품이 없습니다</td></tr>'}
+      <button class="sm ghost" data-act="prodDetail" data-k="${p.id}">실적</button><button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td></tr>`;}).join('')||`<tr><td colspan="10" class="empty">${S.admPQ?`"${esc(S.admPQ)}"에 맞는 상품이 없습니다`:'조건에 맞는 상품이 없습니다'}</td></tr>`}
   </tbody></table></div>`;
 }
 function vAdminInfluencers(){
   const all=D_().sellers;
   const gf=S.admIG||'all';
-  const list=all.filter(x=>gf==='all'||gname(x)===gf).sort((a,b)=>b.m3Sales-a.m3Sales);
+  const q=(S.admIQ||'').trim().toLowerCase();
+  const base=all.filter(x=>gf==='all'||gname(x)===gf);
+  const list=(q?base.filter(x=>[x.name,x.handle,x.cat,x.intro,x.id,PLAT_NAMES[x.platform]||'',(x.channels||[]).map(c=>c.handle).join(' ')].join(' ').toLowerCase().includes(q)):base).sort((a,b)=>b.m3Sales-a.m3Sales);
   const unverified=all.reduce((a,x)=>a+(x.channels||[]).filter(c=>!c.verified).length,0);
   return `<h2 class="pg">인플루언서 <small>가입 ${all.length}명 · 비공개 ${all.filter(x=>x.hidden).length} · 미인증 채널 ${unverified}개</small></h2>
   ${admChips([['all','전체',all.length],...GRADES.map(t=>[t.g,t.g,all.filter(x=>gname(x)===t.g).length]).filter(x=>x[2])],gf,'admIG')}
+  ${admSearch('admIQ',S.admIQ,'이름 · 핸들 · 카테고리 · 채널 · 소개 검색',list.length,base.length)}
   <div class="tblw compact"><table>
   <thead><tr><th>인플루언서</th><th>등급</th><th class="num">팔로워</th><th class="num">3개월 매출</th><th class="num">판매</th><th>채널 인증</th><th class="num">셀러리</th><th>상태</th><th>관리</th></tr></thead>
   <tbody>${list.map(x=>{const cs=D_().campaigns.filter(c=>c.sellerId===x.id);const done=cs.filter(c=>['LIVE','CLEARING','SETTLED'].includes(c.status)).length;const ch=x.channels||[];const ver=ch.filter(c=>c.verified).length;
@@ -2742,7 +2749,7 @@ function vAdminInfluencers(){
     <td style="white-space:nowrap">${ch.length?`<span class="st ${ver===ch.length?'green':'amber'}" style="animation:none">${ver}/${ch.length} 인증</span>`:'<span style="color:var(--mute)">—</span>'}${x.referredBy?`<div style="font-size:11px;color:var(--mute)">추천: ${seller(x.referredBy).name}</div>`:''}</td>
     <td class="num">${CEL} ${celBal(x.id)}</td>
     <td>${x.hidden?'<span class="st gray" style="animation:none">비공개</span>':'<span class="st green" style="animation:none">공개</span>'}</td>
-    <td><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="sm ghost" data-act="admToggleHidden" data-k="${x.id}">${x.hidden?'공개 전환':'비공개 전환'}</button><button class="sm ghost" data-act="admGrant" data-k="${x.id}">${CEL} +3 지급</button></div></td></tr>`;}).join('')}
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="sm ghost" data-act="admToggleHidden" data-k="${x.id}">${x.hidden?'공개 전환':'비공개 전환'}</button><button class="sm ghost" data-act="admGrant" data-k="${x.id}">${CEL} +3 지급</button></div></td></tr>`;}).join('')||`<tr><td colspan="9" class="empty">"${esc(S.admIQ||'')}"에 맞는 인플루언서가 없습니다</td></tr>`}
   </tbody></table></div>`;
 }
 function vAdminBrands(){
@@ -4080,6 +4087,10 @@ const ACT={
   /* ---- 관리자: 자동 제안 ---- */
   saveOpex(){const o={};Object.keys(OPEX_DEF).forEach(k=>{const el=$('#ox_'+k);o[k]=el?Math.max(0,+el.value||0):OPEX_DEF[k];});D_().opex=o;save();render();toast('운영 비용 저장 — 순이익 재계산');},
   resetOpex(){delete D_().opex;save();render();toast('운영 비용 기본값으로 복원');},
+  admPQLive(v){S.admPQ=v;clearTimeout(S._pq);S._pq=setTimeout(()=>{const el=$('#admPQ');const pos=el?el.selectionStart:0;render();const n=$('#admPQ');if(n){n.focus();n.setSelectionRange(pos,pos);}},200);},
+  admPQClear(){S.admPQ='';render();},
+  admIQLive(v){S.admIQ=v;clearTimeout(S._iq);S._iq=setTimeout(()=>{const el=$('#admIQ');const pos=el?el.selectionStart:0;render();const n=$('#admIQ');if(n){n.focus();n.setSelectionRange(pos,pos);}},200);},
+  admIQClear(){S.admIQ='';render();},
   admPS(k){S.admPS=k;render();}, admPB(k){S.admPB=k;render();}, admPC(k){S.admPC=k;render();},
   admIG(k){S.admIG=k;render();}, admOF(k){S.admOF=k;render();}, admCF(k){S.admCF=k;S.view.screen='home';render();},
   admGo(k){const [scr,f]=k.split('|');if(scr==='products'&&f)S.admPS=f;if(scr==='orders'&&f)S.admOF=f;S.view={role:'admin',screen:scr,cid:null,store:null};render();},
