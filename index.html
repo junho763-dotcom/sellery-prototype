@@ -2205,8 +2205,8 @@ function vCustHome(){
   const soon=D_().campaigns.filter(c=>c.status==='SCHEDULE_CONFIRMED'&&custVisible(c)&&(!sel||c.sellerId===sel.id)).sort((a,b)=>(isHomeFeat(b)-isHomeFeat(a))||(P(a.start)-P(b.start)));
   const pubSellers=D_().sellers.filter(s=>!s.hidden);
   return `<div class="hero-band">
-    <div class="ey">${CEL} Sellery — 믿을 수 있는 인플루언서 공동구매</div>
-    <h1>${sel?`${esc(sel.name)}님의 <em>진행 중인 판매</em>`:`지금 <em>진행 중인 판매</em>만 모았어요.`}</h1>
+    <div class="ey">${CEL} Sellery — 믿을 수 있는 인플루언서 추천 판매제품</div>
+    <h1>${sel?`${esc(sel.name)}님이 추천하는 <em>진행 중인 상품</em>`:`지금 진행 중인 <em>최저가 상품</em>만 모았어요.`}</h1>
     <div class="sub">인증 인플루언서 · 브랜드 직배송 · 결제는 <b>셀러리</b>가 보관하고 종료 후 ${CLEAR_DAYS}일 환불 보호${sel?` <button class="sm ghost" data-act="custAll" style="margin-left:10px">전체 보기</button>`:''}</div>
   </div>
   ${S.linkCtx?`<div class="notice" style="margin-bottom:14px">🔗 인플루언서 링크로 들어오셨어요 — 이 판매와 같은 상품·카테고리의 다른 판매는 표시되지 않습니다 (인플루언서 판매 보호 정책).</div>`:''}
