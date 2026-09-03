@@ -826,6 +826,7 @@ const LS='sellery-proto-v16';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
+const OPEX_DEF={server:30000,db:35000,cs:50000,domain:15000,misc:30000,pgFixed:0,kakaoPer:15,claudePerCrawl:120,claudePerMatch:300}; // 운영 비용 기본값(월, ₩)
 /* 인플루언서 데이터 열람 가격 — 등급이 높을수록 비쌈 */
 const DATA_PRICE={'스타터':1,'브론즈':1,'실버':2,'골드':2,'플래티넘':3,'다이아':4,'블랙':5};
 function dataPrice(s){return DATA_PRICE[gname(s)]||2;}
@@ -2131,6 +2132,22 @@ function vAdminRevenue(){
   const all=D_().sellers.concat(D_().brands);
   const earned=all.reduce((a,x)=>a+celEarned(x.id),0), granted=led.filter(e=>e.delta>0&&!e.won).reduce((a,e)=>a+e.delta,0), bal=all.reduce((a,x)=>a+celBal(x.id),0);
   const row=(l,v,cls='',note='')=>`<tr class="${cls}"><td>${l}${note?` <span style="color:var(--mute);font-size:11px">${note}</span>`:''}</td><td class="num">${v}</td></tr>`;
+  /* 운영 비용(월): 고정비 + 건당 변동비 — 관리자가 수정 가능(D_().opex) */
+  const ox={...OPEX_DEF,...(D_().opex||{})};
+  const orders=D_().orders.length, sellersN=D_().sellers.length, crawlN=(Object.values(D_().external||{}).flat().length);
+  const varCost={
+    kakao:ox.kakaoPer*orders*3,                       // 결제·배송·정산 알림톡 3건/주문
+    claude:ox.claudePerCrawl*sellersN*30+ox.claudePerMatch*(D_().campaigns.filter(c=>c.auto).length+crawlN), // 인플루언서 일일 크롤링 분석 + 자동매칭/예상매출 추론
+    pgFixed:ox.pgFixed
+  };
+  const fixedTotal=ox.server+ox.db+ox.cs+ox.domain+ox.misc;
+  const varTotal=varCost.kakao+varCost.claude+varCost.pgFixed;
+  const opexTotal=fixedTotal+varTotal;
+  const finalNet=T.pfNet-opexTotal;
+  const takeNet=T.net?T.pfNet/T.net:0;
+  const bep=takeNet>0?opexTotal/takeNet:0;
+  const inp=(id,v)=>`<input id="ox_${id}" type="number" value="${v}" step="1000" style="width:110px;text-align:right;padding:4px 8px;font-family:'IBM Plex Mono',monospace;font-size:12px">`;
+  const orow=(l,id,v,note='')=>`<tr><td>${l}${note?` <span style="color:var(--mute);font-size:11px">${note}</span>`:''}</td><td class="num">${inp(id,v)}</td></tr>`;
   return `<h2 class="pg">매출·순수익 <small>확정 매출 기준 · PG수수료·보상비용·부가세를 제외한 플랫폼 순수익</small></h2>
   <div class="grid g4">
     <div class="card kpi"><div class="lbl">확정 거래액 (GMV)</div><div class="val">₩${fmt(T.net)}</div><div class="sub">결제 ₩${fmt(T.gross)} − 환불 ₩${fmt(T.refund)}</div></div>
@@ -2167,6 +2184,36 @@ function vAdminRevenue(){
         ${row('미사용 잔액 (부채)',bal+' 🥬','','충전가 환산 ₩'+fmt(bal*20000))}
       </table>
       <p style="font-size:11.5px;color:var(--mute);margin-top:10px">셀러리 1개 = 충전가 ₩20,000 기준. 무상 발행·획득분은 매출이 아닌 마케팅 비용(잔액은 부채)으로 잡습니다.</p></div>
+  </div>
+  <div class="sec">운영 비용 · 최종 순이익 <span style="font-weight:400;font-size:12px;color:var(--mute);margin-left:8px">서버·DB·Claude API·알림톡 등 (월 기준 추정 · 수정 가능)</span></div>
+  <div class="grid g2">
+    <div class="card"><h4>운영 비용 입력 (월)</h4>
+      <table class="stmt" style="min-width:0;font-size:12.5px">
+        ${orow('서버·호스팅 (Vercel Pro)','server',ox.server)}
+        ${orow('DB·스토리지·인증 (Supabase Pro)','db',ox.db)}
+        ${orow('CS 툴 (채널톡)','cs',ox.cs)}
+        ${orow('도메인·이메일·모니터링','domain',ox.domain)}
+        ${orow('기타 SaaS·회계','misc',ox.misc)}
+        ${orow('PG 월 고정비 (토스 지급대행)','pgFixed',ox.pgFixed)}
+        ${orow('알림톡 단가 (₩/건)','kakaoPer',ox.kakaoPer,'주문당 결제·배송·정산 3건')}
+        ${orow('Claude API · 인플루언서 크롤링 분석 (₩/명·일)','claudePerCrawl',ox.claudePerCrawl,'외부 판매 감지·반응 지표')}
+        ${orow('Claude API · 자동 매칭/예상 매출 추론 (₩/건)','claudePerMatch',ox.claudePerMatch)}
+      </table>
+      <div class="btnrow" style="margin-top:12px"><button class="pri sm" data-act="saveOpex">비용 저장 · 재계산</button><button class="sm ghost" data-act="resetOpex">기본값</button></div>
+    </div>
+    <div class="card"><h4>비용 집계 → 최종 순이익</h4>
+      <table class="stmt" style="min-width:0;font-size:12.5px">
+        ${row('고정비 합계 (월)','−₩'+fmt(fixedTotal))}
+        ${row('　알림톡','−₩'+fmt(varCost.kakao),'',fmt(orders)+'건 × 3 × ₩'+fmt(ox.kakaoPer))}
+        ${row('　Claude API','−₩'+fmt(varCost.claude),'',sellersN+'명 × 30일 크롤링 + 추론 '+(D_().campaigns.filter(c=>c.auto).length+crawlN)+'건')}
+        ${row('　PG 고정비','−₩'+fmt(varCost.pgFixed))}
+        ${row('<b>운영 비용 합계</b>','<b>−₩'+fmt(opexTotal)+'</b>')}
+        ${row('플랫폼 순수익 (VAT 제외)','₩'+fmt(T.pfNet))}
+        ${row('<b>운영비 차감 최종 순이익</b>','<b style="color:'+(finalNet>=0?'var(--accent-ink)':'var(--danger)')+'">'+(finalNet<0?'−':'')+'₩'+fmt(Math.abs(Math.round(finalNet)))+'</b>','tot')}
+        ${row('손익분기 월 GMV','₩'+fmt(Math.round(bep)),'','운영비 ÷ 순 테이크레이트 '+(takeNet*100).toFixed(2)+'%')}
+        ${row('운영비율 (운영비 ÷ GMV)',T.net?(opexTotal/T.net*100).toFixed(2)+'%':'—')}
+      </table>
+      <p style="font-size:11.5px;color:var(--mute);margin-top:10px">PG 2.9%는 브랜드 정산에서 차감되는 통과 비용이라 위 순수익에 이미 반영(플랫폼 부담 아님). 운영비는 월 단위 추정치이며, 확정 매출은 누적 기준이라 실서비스에서는 월별로 끊어 봅니다.</p></div>
   </div>
   <div class="sec">판매별 손익</div>
   <div class="tblw"><table>
@@ -3027,6 +3074,8 @@ const ACT={
   custAll(){S.custSel=null;render();},
   notifyMe(){toast('오픈 알림 신청 완료 — 판매 시작 시 카카오 알림톡으로 안내 (시뮬레이션)');},
   /* ---- 관리자: 자동 제안 ---- */
+  saveOpex(){const o={};Object.keys(OPEX_DEF).forEach(k=>{const el=$('#ox_'+k);o[k]=el?Math.max(0,+el.value||0):OPEX_DEF[k];});D_().opex=o;save();render();toast('운영 비용 저장 — 순이익 재계산');},
+  resetOpex(){delete D_().opex;save();render();toast('운영 비용 기본값으로 복원');},
   toggleAutoPropose(bid){const b=brand(bid);b.autoPropose=!b.autoPropose;save();render();toast(`${b.name} 자동 제안 ${b.autoPropose?'ON':'OFF'}`);},
   runAutoPropose(){
     const list=autoMatches().slice(0,5);let n=0,skip=0;
