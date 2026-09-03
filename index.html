@@ -1038,6 +1038,42 @@ body[data-stage="podium"] .prod .ph .p3d{transform:translateY(-6px)}
   .hero-band .ey{margin-bottom:10px;line-height:1.7}
   .hero-band .tagline{font-size:15px;line-height:1.5}
 }
+/* ===== 입체 리프트: 테두리보다 연한 오프셋 블록 + 호버 시 더 튀어나옴 (전 채널·전 탭 공통) ===== */
+:root{--lift:#dae8bf;--lift2:#e6f0d2}
+:root{
+  --pxd-1:2px 4px 0 0 var(--lift),4px 2px 0 0 var(--lift),4px 4px 0 0 var(--lift);
+  --pxd-2:3px 6px 0 0 var(--lift),6px 3px 0 0 var(--lift),6px 6px 0 0 var(--lift);
+  --pxd-3:4px 8px 0 0 var(--lift),8px 4px 0 0 var(--lift),8px 8px 0 0 var(--lift);
+  --pxd-s1:2px 3px 0 0 var(--lift2),3px 2px 0 0 var(--lift2),3px 3px 0 0 var(--lift2);
+  --pxd-s2:3px 5px 0 0 var(--lift),5px 3px 0 0 var(--lift),5px 5px 0 0 var(--lift);
+}
+.card,.listcard,.tblw,.det-head,.thread,.landing,.sim,.exclbox,.hero-band,.modal,.boot-win{
+  box-shadow:var(--pxbl),var(--pxd-2);
+  transition:transform .16s cubic-bezier(.2,.7,.3,1),box-shadow .16s cubic-bezier(.2,.7,.3,1)}
+.card:hover,.listcard:hover,.tblw:hover,.det-head:hover,.thread:hover,.landing:hover,.sim:hover,.exclbox:hover{
+  transform:translate(-2px,-2px);box-shadow:var(--pxbl),var(--pxd-3)}
+.hero-band:hover,.modal:hover{transform:none;box-shadow:var(--pxbl),var(--pxd-2)}
+.card.prod:hover,.kpi.go:hover{transform:translate(-3px,-3px);box-shadow:var(--pxbl),var(--pxd-3)}
+.card:active,.card.prod:active,.kpi.go:active{transform:translate(0,0);box-shadow:var(--pxbl),var(--pxd-1)}
+/* 작은 박스: 통계칸·이력·피라미드·옵션·아바타 */
+.mini-stats>div,.sc-hist,.pyr-row,.opt,.sc-av,.prod .ph,.gate-cta,.acc{
+  box-shadow:var(--pxbl-soft),var(--pxd-s1);
+  transition:transform .14s ease-out,box-shadow .14s ease-out}
+.mini-stats>div:hover,.sc-hist:hover,.pyr-row:hover,.opt:hover{transform:translate(-1px,-1px);box-shadow:var(--pxbl-soft),var(--pxd-s2)}
+.pyr-row.me{box-shadow:var(--pxbl),var(--pxd-s2)}
+.opt.on{box-shadow:var(--pxbl),var(--pxd-s2)}
+/* 버튼·칩도 같은 리프트 문법 */
+button,button.pri,button.ghost,button.sm,button.danger{box-shadow:var(--pxbl),var(--pxd-s1);transition:transform .12s ease-out,box-shadow .12s ease-out}
+button:hover,button.pri:hover,button.ghost:hover,button.sm:hover{transform:translate(-1px,-1px);box-shadow:var(--pxbl),var(--pxd-s2)}
+button:active{transform:translate(1px,1px);box-shadow:var(--pxbl)}
+.wordmark,.celery-bal,.iconbtn{box-shadow:var(--pxbl),var(--pxd-s2)}
+.iconbtn:hover,.celery-bal:hover{transform:translate(-1px,-1px);box-shadow:var(--pxbl),var(--pxd-2)}
+.catchip{box-shadow:var(--pxbl-soft),var(--pxd-s1)}
+.catchip:hover{transform:translate(-1px,-1px);box-shadow:var(--pxbl-soft),var(--pxd-s2)}
+.catchip.on{box-shadow:var(--pxbl),var(--pxd-s2)}
+.subnav button.on{box-shadow:0 -2px 0 0 var(--bar),0 2px 0 0 var(--bar),-2px 0 0 0 var(--bar),2px 0 0 0 var(--bar),var(--pxd-s2)}
+.roletabs button.on{box-shadow:var(--pxbl),var(--pxd-s2)!important}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.card:hover,.prod:hover,.kpi.go:hover,button:hover{transform:none!important}}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
