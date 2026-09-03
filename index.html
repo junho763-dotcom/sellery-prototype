@@ -971,6 +971,22 @@ body[data-stage="podium"] .prod .ph .p3d{transform:translateY(-6px)}
 .ph::after,.store-hero::after{z-index:0}
 .ph .p3d,.store-hero .p3d{z-index:1}
 .ph .trendbadge,.ph .exclbadge,.store-hero .trendbadge{z-index:2}
+/* 모바일: 리스트 행(rowitem) 2단 배치 — 본문 전체 폭, 날짜·상태·버튼은 다음 줄 우측 */
+@media(max-width:640px){
+  .rowitem{flex-wrap:wrap;row-gap:8px;align-items:center}
+  .rowitem .grow{flex:1 1 calc(100% - 64px);min-width:0}
+  .rowitem .grow .nm{white-space:normal;line-height:1.35}
+  .rowitem .grow .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .rowitem > .grow + *{margin-left:auto}
+  .rowitem > .st,.rowitem > span.sub,.rowitem > button,.rowitem > .btnrow{flex:0 0 auto}
+  .rowitem .dmdot{vertical-align:middle}
+  h2.pg{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+  h2.pg small{display:block;margin:0;line-height:1.55;white-space:normal}
+  .dmsearch{flex-direction:column;align-items:stretch}
+  .dmsearch .sub{align-self:flex-end}
+  .acc-head{padding:12px 14px}
+  .acc-head .st{font-size:10px;padding:2px 7px}
+}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
