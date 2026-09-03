@@ -1011,6 +1011,16 @@ body[data-stage="podium"] .prod .ph .p3d{transform:translateY(-6px)}
   .roletabs .badge{top:-6px;right:-6px;min-width:15px;height:15px;line-height:15px;font-size:9.5px}
   .master{gap:6px}
 }
+/* 리스트 행 태그 정렬: 칩·버튼은 항상 오른쪽 끝에서 정렬 (모바일 2단에서도 동일) */
+.rowitem{align-items:center}
+.rowitem > .grow{flex:1 1 auto;min-width:0}
+.rowitem > .grow ~ *{margin-left:0}
+@media(max-width:640px){
+  .rowitem{justify-content:flex-end;row-gap:6px}
+  .rowitem > .grow{flex:1 1 calc(100% - 62px)}
+  .rowitem > .grow ~ *{margin-left:0}
+  .rowitem > .grow ~ .st,.rowitem > .grow ~ span.sub,.rowitem > .grow ~ button{align-self:center}
+}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
