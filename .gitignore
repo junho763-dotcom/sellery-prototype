@@ -1,3 +1,4 @@
 .claude/
 *.zip
 _preview.html
+assets/*.png

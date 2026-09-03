@@ -1171,7 +1171,7 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v23';
+const LS='sellery-proto-v24';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
@@ -1191,8 +1191,10 @@ function spendData(bid,s,memo){
   const pr=dataPrice(s);return celSpend(bid,pr,memo)?pr:false;
 }
 /* 데모: 실제 누끼가 있는 상품만 노출·추천 (DEMO_REAL_ONLY=false로 해제) */
-const DEMO_REAL_ONLY=true;
-function demoVisible(p){return !DEMO_REAL_ONLY||!!(p&&p.thumb&&!String(p.thumb).startsWith('data:'));}
+const DEMO_REAL_ONLY=false;   // 사용자: 다른 예시 상품은 유지, 실제 누끼 상품을 상단 배치
+function hasReal(p){return !!(p&&p.thumb&&!String(p.thumb).startsWith('data:'));}
+function demoVisible(p){return !DEMO_REAL_ONLY||hasReal(p);}
+const realFirst=(a,b)=>(hasReal(b)?1:0)-(hasReal(a)?1:0);
 /* 상품 옵션: 브랜드 미등록 시 기본 묶음 옵션 자동 생성 */
 function optsOf(p){
   if(p.options&&p.options.length)return p.options;
@@ -1634,7 +1636,7 @@ function vSellerHome(){
       ${fresh.map(p=>`<div class="news-item" data-act="prodDetail" data-k="${p.id}"><span class="nb new">NEW</span><div><b>${esc(p.name)}</b> 신규 입점 — ${brand(p.brandId).name} · ${p.cat} · 수수료 ${(p.rate*100).toFixed(0)}%</div></div>`).join('')}
     </div>
   </div>`;
-  const recs=listed.filter(p=>demoVisible(p)&&!mine.some(c=>c.productId===p.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status))).sort((a,b)=>(b.cat===sl.cat)-(a.cat===sl.cat)).slice(0,3);
+  const recs=listed.filter(p=>demoVisible(p)&&!mine.some(c=>c.productId===p.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status))).sort((a,b)=>realFirst(a,b)||((b.cat===sl.cat)-(a.cat===sl.cat))).slice(0,3);
   return `<div class="hero-band">
     ${sl.img?`<img class="hero-av" src="${sl.img}" alt="프로필" data-act="gotoMy" style="cursor:pointer" title="마이페이지">`:''}
     <div class="ey">Seller Gallery</div>
@@ -1692,8 +1694,8 @@ const CAT_INFO={
 const CAT_POLICY='셀러리는 건강·웰니스 상품만 다룹니다 — 건강기능식품·이너뷰티·더마 스킨케어·웰니스 푸드. 색조 화장품, 가전, 패션·잡화는 등록되지 않으며, 인플루언서도 건강·웰니스 판매 레퍼런스가 있는 채널만 활동합니다.';
 function vExplore(){
   const cur=S.catFilter||'전체';
-  const list=D_().products.filter(p=>p.status==='listed'&&demoVisible(p)&&(cur==='전체'||p.cat===cur)).sort((a,b)=>(passActive(b,'boost',7)?1:0)-(passActive(a,'boost',7)?1:0));
-  const trendPicks=D_().products.filter(p=>p.status==='listed'&&demoVisible(p)&&p.t);
+  const list=D_().products.filter(p=>p.status==='listed'&&demoVisible(p)&&(cur==='전체'||p.cat===cur)).sort((a,b)=>realFirst(a,b)||((passActive(b,'boost',7)?1:0)-(passActive(a,'boost',7)?1:0)));
+  const trendPicks=D_().products.filter(p=>p.status==='listed'&&demoVisible(p)&&p.t).sort(realFirst);
   // peer bestsellers: sellers at my grade or above, recent confirmed revenue per product
   const myTier=gradeOf(seller(S.actingSeller).m3Sales);
   const peerIds=D_().sellers.filter(x=>x.m3Sales>=myTier.min).map(x=>x.id);
@@ -1702,7 +1704,7 @@ function vExplore(){
   D_().campaigns.filter(c=>peerIds.includes(c.sellerId)&&['LIVE','CLEARING','SETTLED'].includes(c.status))
     .forEach(c=>{sums[c.productId]=(sums[c.productId]||0)+calc(c).net;});
   const top=Object.entries(sums).map(([pid,v])=>({p:prod(pid),v})).filter(x=>x.p&&x.p.status==='listed'&&demoVisible(x.p))
-    .sort((a,b)=>b.v-a.v).slice(0,5);
+    .sort((a,b)=>realFirst(a.p,b.p)||(b.v-a.v)).slice(0,5);
   const mx=top.length?top[0].v:1;
   const meS=seller(S.actingSeller), left=sampleLeft(meS);
   return `<h2 class="pg">상품 갤러리 <small>브랜드가 판매가·수수료율을 공개 책정 · 이번 달 샘플 요청 <b>${left===Infinity?'무제한':left+'회 남음'}</b>${left!==Infinity&&left===0?' — <span style="color:var(--danger)">한도 소진 시 샘플 구매로 진행</span>':''}</small></h2>
