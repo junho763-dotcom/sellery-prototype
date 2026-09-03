@@ -544,6 +544,9 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 .boot-prog i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--red) 0 10px,var(--yellow) 10px 12px,var(--ink) 12px 14px);animation:bootfill 1.15s steps(14) forwards}
 @keyframes bootfill{to{width:100%}}
 @media(prefers-reduced-motion:reduce){.boot{display:none}.disc,.hero-band h1::after,.st::before{animation:none}}
+/* 인라인 padding:0 카드(주문 피드·뉴스)도 타이틀바 아래로 내용 밀기 */
+.card[style*="padding:0"]{padding-top:18px!important}
+.card[style*="padding:0"] > .lbl-sm{padding-top:14px}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -905,7 +908,9 @@ function pixelizeEmoji(el){
 }
 function decorate(){
   document.querySelectorAll('main .sec').forEach(s=>{
-    const t=s.textContent.replace(/[▶■·—]/g,' ').replace(/\d+명|\d+건/g,'').replace(/\s+/g,' ').trim().split(' ').slice(0,3).join('_').slice(0,14);
+    const words=s.textContent.replace(/[▶■·—]/g,' ').replace(/\d+명|\d+건/g,'').split(/\s+/)
+      .map(w=>w.replace(/[^가-힣A-Za-z0-9]/g,'')).filter(w=>w&&!/^LIVE$|^진행중$/i.test(w)&&!/^@/.test(w));
+    let t=words.slice(0,3).join('_'); if(t.length>12)t=words.slice(0,2).join('_'); if(t.length>12)t=words[0].slice(0,12);
     const n=s.nextElementSibling;if(!n)return;
     const targets=n.matches('.card,.listcard,.tblw,.thread')?[n]:[...n.querySelectorAll(':scope > .card, :scope > .listcard, :scope > .tblw')];
     targets.forEach(x=>{if(!x.hasAttribute('data-win'))x.setAttribute('data-win',t.toUpperCase()+'.EXE');});
@@ -1345,7 +1350,7 @@ function vSales(){
       return {d,rev};});
     const mx=Math.max(...days.map(x=>x.rev),1);
     const feed=os.slice(-10).reverse();
-    return `<div class="sec">${esc(p.name)} · ${s.handle} <span class="st live" style="margin-left:4px"><span class="pulse"></span>LIVE</span></div>
+    return `<div class="sec">${esc(p.name)} · ${s.handle} <span class="st live" style="margin-left:4px"><span class="pulse"></span>진행중</span></div>
     <div class="grid g4">
       <div class="card kpi"><div class="lbl">오늘 매출</div><div class="val">₩${fmt(todayRev)}</div><div class="sub">주문 ${todayOs.length}건</div></div>
       <div class="card kpi"><div class="lbl">누적 확정 매출</div><div class="val">₩${fmt(k.net)}</div><div class="sub">결제 ${k.paidCnt}건 · 환불 ${k.refCnt}건</div></div>
