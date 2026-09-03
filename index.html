@@ -1643,7 +1643,7 @@ function vMy(){
     <div class="card">
       <div class="lbl-sm">프로필</div>
       <div style="display:flex;gap:16px;align-items:center;margin-top:12px;flex-wrap:wrap">
-        ${me.img?`<img src="${me.img}" alt="프로필" style="width:84px;height:84px;object-fit:cover;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink)">`
+        ${me.img?`<img src="${me.img}" alt="프로필" style="width:84px;height:84px;object-fit:cover;border:2px solid var(--line);box-shadow:3px 3px 0 var(--line-sh)">`
           :`<div style="width:84px;height:84px;display:flex;align-items:center;justify-content:center;font-size:32px;border:2px dashed var(--mute)">👤</div>`}
         <div>
           <div style="font-weight:800;font-size:16px">${me.name} <span style="font-weight:400;color:var(--mute);font-size:13px">${platIcon(me)} ${me.handle}</span></div>
@@ -1716,7 +1716,7 @@ function verifyModal(chId){
   openModal(`<h3>채널 인증 — ${esc(ch.handle)}</h3>
   <p style="font-size:13px;color:var(--mute);margin-top:-6px">본인 계정임을 확인해 사칭을 방지합니다. 아래 <b>1회용 코드</b>를 사용해 두 방법 중 하나로 인증하세요.</p>
   <div style="text-align:center;margin:16px 0">
-    <span style="font-family:'Archivo',sans-serif;font-size:26px;font-weight:800;letter-spacing:.15em;background:var(--yellow);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:5px 20px">${ch.vcode}</span>
+    <span style="font-family:'Archivo',sans-serif;font-size:26px;font-weight:800;letter-spacing:.15em;background:var(--yellow);border:2px solid var(--line);box-shadow:3px 3px 0 var(--line-sh);padding:5px 20px">${ch.vcode}</span>
     <div style="margin-top:10px"><button class="sm ghost" data-act="copyVcode" data-k="${ch.vcode}">코드 복사</button></div>
   </div>
   <div class="grid g2">
@@ -1750,7 +1750,7 @@ function vRef(){
   <div class="grid g2">
     <div class="card"><div class="lbl-sm">내 추천 코드</div>
       <div style="display:flex;align-items:center;gap:14px;margin:12px 0;flex-wrap:wrap">
-        <span style="font-family:'Archivo',sans-serif;font-size:30px;font-weight:800;letter-spacing:.12em;background:var(--yellow);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:4px 18px">${me.refCode}</span>
+        <span style="font-family:'Archivo',sans-serif;font-size:30px;font-weight:800;letter-spacing:.12em;background:var(--yellow);border:2px solid var(--line);box-shadow:3px 3px 0 var(--line-sh);padding:4px 18px">${me.refCode}</span>
         <button class="sm" data-act="copyRef" data-k="${me.refCode}">코드 복사</button></div>
       <p style="font-size:12.5px;color:var(--mute);margin:0">동료 인플루언서가 가입할 때 이 코드를 입력하면 보상이 시작됩니다.</p></div>
     <div class="card"><div class="lbl-sm">보상 구조</div>
@@ -1797,13 +1797,13 @@ function productDetailModal(pid){
     </div>`;
   }
   openModal(`<h3>${p.em} ${esc(p.name)}</h3>
-  <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px">${b.logo?`<img src="${b.logo}" alt="" style="width:20px;height:20px;vertical-align:-6px;border:1.5px solid var(--ink);margin-right:2px">`:''}<span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> ${p.cat} · 판매가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> ${p.cp>p.gp?`<span class="disc">-${Math.round((1-p.gp/p.cp)*100)}%</span>`:''} · 수수료 ${(p.rate*100).toFixed(0)}~${(p.rate*100+GRADES[0].bonus).toFixed(0)}% (등급 보너스 포함) · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
+  <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px">${b.logo?`<img src="${b.logo}" alt="" style="width:20px;height:20px;vertical-align:-6px;border:1.5px solid var(--line-soft);margin-right:2px">`:''}<span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> ${p.cat} · 판매가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> ${p.cp>p.gp?`<span class="disc">-${Math.round((1-p.gp/p.cp)*100)}%</span>`:''} · 수수료 ${(p.rate*100).toFixed(0)}~${(p.rate*100+GRADES[0].bonus).toFixed(0)}% (등급 보너스 포함) · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
   ${excl}
   <div class="lbl-sm" style="margin:16px 0 8px">이 상품의 판매 실적 — 인플루언서 익명</div>
   <div class="tblw fit" style="box-shadow:none;overflow:visible"><table style="min-width:0">
   <thead><tr><th class="num">팔로워</th><th class="num">좋아요</th><th class="num">참여율</th><th class="num">기간</th><th class="num">확정 매출</th><th>상태</th></tr></thead>
   <tbody>${rows||'<tr><td colspan="6" class="empty">아직 진행된 판매가 없습니다 — 첫 인플루언서가 되어보세요</td></tr>'}</tbody></table></div>
-  ${(p.imgs&&p.imgs.length)?`<div class="lbl-sm" style="margin:16px 0 8px">상세페이지 이미지</div>${p.imgs.map(u=>`<img src="${u}" alt="" style="width:100%;border:1.5px solid var(--ink);margin-bottom:8px;display:block">`).join('')}`:''}
+  ${(p.imgs&&p.imgs.length)?`<div class="lbl-sm" style="margin:16px 0 8px">상세페이지 이미지</div>${p.imgs.map(u=>`<img src="${u}" alt="" style="width:100%;border:1.5px solid var(--line-soft);margin-bottom:8px;display:block">`).join('')}`:''}
   <div class="foot">
     <button data-act="previewProduct" data-k="${pid}">🛍 상세페이지 보기</button>
     ${isSeller&&!(p.exclusiveSellerId&&p.exclusiveSellerId!==S.actingSeller)?`<button class="pri" data-act="reqSampleM" data-k="${pid}">샘플 요청</button>`:''}
@@ -1993,7 +1993,7 @@ function brandRefHtml(b){
   <div class="grid g2">
     <div class="card"><div class="lbl-sm">내 브랜드 추천 코드</div>
       <div style="display:flex;align-items:center;gap:14px;margin:12px 0;flex-wrap:wrap">
-        <span style="font-family:'Archivo',sans-serif;font-size:26px;font-weight:800;letter-spacing:.1em;background:var(--yellow);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:4px 16px">${b.refCode||'—'}</span>
+        <span style="font-family:'Archivo',sans-serif;font-size:26px;font-weight:800;letter-spacing:.1em;background:var(--yellow);border:2px solid var(--line);box-shadow:3px 3px 0 var(--line-sh);padding:4px 16px">${b.refCode||'—'}</span>
         <button class="sm" data-act="copyBrandRef" data-k="${b.refCode||''}">코드 복사</button></div>
       <ul style="font-size:13px;margin:0;padding-left:18px;line-height:2">
         <li><b>나 (추천 브랜드)</b> — 새 브랜드의 첫 ${BREF_TIMES}회 판매, <b>확정 매출의 1%</b> 리워드</li>
@@ -2193,7 +2193,7 @@ function vBrandMy(){
     <div class="card">
       <div class="lbl-sm">브랜드 정보</div>
       <div style="display:flex;gap:16px;align-items:center;margin-top:12px;flex-wrap:wrap">
-        ${b.logo?`<img src="${b.logo}" alt="로고" style="width:76px;height:76px;object-fit:cover;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink)">`
+        ${b.logo?`<img src="${b.logo}" alt="로고" style="width:76px;height:76px;object-fit:cover;border:2px solid var(--line);box-shadow:3px 3px 0 var(--line-sh)">`
           :`<div style="width:76px;height:76px;display:flex;align-items:center;justify-content:center;font-size:28px;border:2px dashed var(--mute)">🏷️</div>`}
         <div>
           <div style="font-weight:800;font-size:17px">${esc(b.name)} <span class="chip brand">${esc(b.cat)}</span> <span class="gradebox sm">${gfull(bgname(b))}</span></div>
