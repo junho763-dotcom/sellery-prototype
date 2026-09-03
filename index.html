@@ -854,6 +854,10 @@ button.sm,button.sm:hover,button[disabled],button[disabled]:hover{box-shadow:var
 .homegrid{display:grid;grid-template-columns:1fr 2fr;gap:14px;align-items:start}
 @media(max-width:900px){.homegrid{grid-template-columns:1fr}.homegrid .grid.g3{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.homegrid .grid.g3{grid-template-columns:1fr}.mini-stats{grid-template-columns:1fr 1fr}}
+/* 텍스트 선택: 연한 하이라이트 · 클릭 요소는 선택 불가 (드래그 시 카드가 통째로 칠해지는 오해 방지) */
+::selection{background:#e6f0c8;color:var(--ink)}
+button,.catchip,.rowitem,.hb-row,.news-item,.st,.gradebox,.nb,.badge,.subnav,.roletabs,.wordmark,.celery-bal,.sc-hist,.gate-cta,.acc-head,.pyr-row,.opt,.qty,.kpi.go{-webkit-user-select:none;user-select:none}
+.msgs,.msg,input,textarea,select,code,.stmt,.tblw td,.sysline{-webkit-user-select:text;user-select:text}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -2157,7 +2161,7 @@ function sellerCard(s,reason){
         ${hist.length?hist.map(c=>{const p=prod(c.productId),k=calc(c);
           return `<div class="sc-hist" data-act="open" data-k="${c.id}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.em} ${esc(p.name)} <span style="color:var(--mute)">${c.start?md(P(c.start))+'–'+md(P(c.end)):''}</span></span><span style="font-family:'IBM Plex Mono',monospace;white-space:nowrap">₩${fmt(k.net)}</span>${stChip(c.status)}</div>`;}).join('')
         :'<div style="font-size:12px;color:var(--mute)">셀러리 첫 판매 대기 — 지금 제안해 선점하세요</div>'}
-        <div class="lbl-sm" style="margin:12px 0 6px">📡 외부 판매 감지 · 예상 매출 <span style="font-weight:400;letter-spacing:0;text-transform:none">(크롤링 · 가계산 — 실데이터 기반 계산식 확정 예정)</span></div>
+        <div class="lbl-sm" style="margin:12px 0 6px">📡 외부 판매 감지 · 예상 매출 <span style="font-weight:400;letter-spacing:0;text-transform:none" title="크롤링 기반 가계산 — 실데이터 확보 후 계산식 확정 예정">(가계산)</span></div>
         ${((D_().external||{})[s.id]||[]).slice(0,2).map(x=>{const e=estExternal(s,x);
           return `<div class="sc-hist" style="cursor:default"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${platIcon({platform:x.src})} ${esc(x.name)} <span style="color:var(--mute)">· ${esc(x.brand)} · ${md(P(x.at))}</span></span><span style="font-family:'IBM Plex Mono',monospace;white-space:nowrap;color:var(--red)">예상 ₩${fmt(e.lo/1e4)}만–${fmt(e.hi/1e4)}만</span></div>`;}).join('')
           ||'<div style="font-size:12px;color:var(--mute)">최근 30일 외부 판매 감지 없음</div>'}
