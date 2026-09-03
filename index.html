@@ -697,6 +697,13 @@ td{border-bottom-color:var(--soft-line)}
 .tblw.fit th,.tblw.fit td{padding:8px 8px;font-size:12px;white-space:nowrap}
 .tblw.fit .st{font-size:9.5px;padding:2px 6px;margin:0}
 @media(max-width:900px){.tblw.fit td{white-space:normal!important}}
+/* 11) 카테고리 가이드 라인 */
+.catguide{font-size:12px;color:var(--mute);margin:8px 6px 16px 4px;line-height:1.6}
+.catguide b{color:var(--ink)}
+.catguide .en{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px;color:var(--red);margin-left:2px}
+/* 12) 셀러리 잔액 칩·가격 태그: 픽셀 숫자 → Archivo 볼드 (사용자: "5 텍스트가 이상") */
+.celery-bal,.celprice{font-family:'Archivo','IBM Plex Sans KR',sans-serif!important;font-weight:800!important;font-size:14px;letter-spacing:.02em;color:var(--ink)}
+.celery-bal{padding:6px 12px 6px 10px;gap:6px}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -755,7 +762,7 @@ function seedData(){
   const data = {
     brands:[
       {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인',email:'partner@vyneherb.co',gmvBase:52000000,logo:BLOGO1,refCode:'VYNE-01',autoPropose:true},
-      {id:'b2',name:'글로헬스',cat:'이너뷰티',manager:'박글로',email:'official@weglow.biz',gmvBase:382000000,logo:BLOGO2,refCode:'GLO-002',referredBy:'b1'}
+      {id:'b2',name:'글로헬스',cat:'이너뷰티·피부',manager:'박글로',email:'official@weglow.biz',gmvBase:382000000,logo:BLOGO2,refCode:'GLO-002',referredBy:'b1'}
     ],
     brandRefEarnings:[
       {at:D(-20),referrerId:'b1',fromBrandId:'b2',campaignId:'(지난 판매)',amt:318000}
@@ -771,24 +778,24 @@ function seedData(){
       {who:'b2',at:D(-40),delta:5,memo:'입점 이벤트 지급'}
     ],
     sellers:[
-      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:typeof AV1!=='undefined'?AV1:null,followers:84300,cat:'뷰티',likesAvg:3100,recentLikes:[2900,3400,2800,3600,3100,3500],m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 판매 전환율 상위 10%.',
+      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:typeof AV1!=='undefined'?AV1:null,followers:84300,cat:'이너뷰티·피부',likesAvg:3100,recentLikes:[2900,3400,2800,3600,3100,3500],m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 판매 전환율 상위 10%.',
         channels:[
           {id:'ch1',platform:'instagram',handle:'@jiyu_beauty',url:'instagram.com/jiyu_beauty',followers:84300,verified:true,primary:true},
           {id:'ch2',platform:'youtube',handle:'지유의 뷰티랩',url:'youtube.com/@jiyulab',followers:12400,verified:false}
         ]},
-      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',followers:126000,cat:'라이프스타일',likesAvg:4200,recentLikes:[3900,4600,4100,4400,4000,4700],m3Sales:22840000,refCode:'HYERIN',intro:'라이프스타일 큐레이션. 재판매율 78%.',
+      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',followers:126000,cat:'웰니스 푸드',likesAvg:4200,recentLikes:[3900,4600,4100,4400,4000,4700],m3Sales:22840000,refCode:'HYERIN',intro:'웰니스 라이프 큐레이션(건강식·홈트). 재판매율 78%.',
         channels:[{id:'ch3',platform:'instagram',handle:'@hyerin_pick',url:'instagram.com/hyerin_pick',followers:126000,verified:true,primary:true}]},
-      {id:'s3',name:'민지',handle:'@minji_diet',platform:'naver',followers:45200,cat:'다이어트',likesAvg:1900,recentLikes:[1700,2100,1800,2000,1900,2200],m3Sales:13221900,refCode:'MINJI5',referredBy:'s1',intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.',
+      {id:'s3',name:'민지',handle:'@minji_diet',platform:'naver',followers:45200,cat:'다이어트·체형',likesAvg:1900,recentLikes:[1700,2100,1800,2000,1900,2200],m3Sales:13221900,refCode:'MINJI5',referredBy:'s1',intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.',
         channels:[{id:'ch4',platform:'naver',handle:'@minji_diet',url:'blog.naver.com/minji_diet',followers:45200,verified:true,primary:true}]},
-      {id:'s4',name:'서아',handle:'@seoa_health',platform:'youtube',followers:118000,cat:'건기식',likesAvg:5400,recentLikes:[5100,5800,5200,5600,5400],m3Sales:52000000,refCode:'SEOA88',hidden:true,intro:'건기식 전문. 비공개 프로필.',
+      {id:'s4',name:'서아',handle:'@seoa_health',platform:'youtube',followers:118000,cat:'비타민·영양',likesAvg:5400,recentLikes:[5100,5800,5200,5600,5400],m3Sales:52000000,refCode:'SEOA88',hidden:true,intro:'건기식 전문. 비공개 프로필.',
         channels:[{id:'ch5',platform:'youtube',handle:'@seoa_health',url:'youtube.com/@seoa_health',followers:118000,verified:true,primary:true}]},
-      {id:'s5',name:'로라',handle:'@lola_beauty',platform:'tiktok',followers:210000,cat:'뷰티',likesAvg:12800,recentLikes:[12100,13400,12600,13100,12800],m3Sales:87000000,refCode:'LOLA00',hidden:true,intro:'뷰티 메가 인플루언서. 비공개 프로필.',
+      {id:'s5',name:'로라',handle:'@lola_beauty',platform:'tiktok',followers:210000,cat:'이너뷰티·피부',likesAvg:12800,recentLikes:[12100,13400,12600,13100,12800],m3Sales:87000000,refCode:'LOLA00',hidden:true,intro:'이너뷰티 메가 인플루언서. 비공개 프로필.',
         channels:[{id:'ch6',platform:'tiktok',handle:'@lola_beauty',url:'tiktok.com/@lola_beauty',followers:210000,verified:true,primary:true}]},
-      {id:'s6',name:'하늘',handle:'@haneul_fit',platform:'instagram',followers:62000,cat:'다이어트',likesAvg:2400,recentLikes:[2100,2600,2300,2700,2500,2900],m3Sales:9800000,refCode:'HANEUL',intro:'홈트·바디 프로필 크리에이터. 다이어트 판매 반응 좋음.',
+      {id:'s6',name:'하늘',handle:'@haneul_fit',platform:'instagram',followers:62000,cat:'다이어트·체형',likesAvg:2400,recentLikes:[2100,2600,2300,2700,2500,2900],m3Sales:9800000,refCode:'HANEUL',intro:'홈트·바디 프로필 크리에이터. 다이어트 판매 반응 좋음.',
         channels:[{id:'ch7',platform:'instagram',handle:'@haneul_fit',url:'instagram.com/haneul_fit',followers:62000,verified:true,primary:true}]},
-      {id:'s7',name:'소민',handle:'@somin_beauty',platform:'youtube',followers:38000,cat:'뷰티',likesAvg:5100,recentLikes:[4600,5300,4900,5500,5200],m3Sales:6200000,refCode:'SOMIN7',intro:'뷰티 리뷰 유튜버. 구독자 신뢰도·댓글 반응 상위.',
+      {id:'s7',name:'소민',handle:'@somin_beauty',platform:'youtube',followers:38000,cat:'이너뷰티·피부',likesAvg:5100,recentLikes:[4600,5300,4900,5500,5200],m3Sales:6200000,refCode:'SOMIN7',intro:'이너뷰티·더마 리뷰 유튜버. 구독자 신뢰도·댓글 반응 상위.',
         channels:[{id:'ch8',platform:'youtube',handle:'@somin_beauty',url:'youtube.com/@somin_beauty',followers:38000,verified:true,primary:true}]},
-      {id:'s8',name:'유나',handle:'@yuna_healthy',platform:'naver',followers:71000,cat:'건기식',likesAvg:1600,recentLikes:[1400,1700,1500,1800,1700,1900],m3Sales:18400000,refCode:'YUNA88',intro:'건기식·영양제 블로거. 검색 유입 강함, 재판매율 71%.',
+      {id:'s8',name:'유나',handle:'@yuna_healthy',platform:'naver',followers:71000,cat:'비타민·영양',likesAvg:1600,recentLikes:[1400,1700,1500,1800,1700,1900],m3Sales:18400000,refCode:'YUNA88',intro:'건기식·영양제 블로거. 검색 유입 강함, 재판매율 71%.',
         channels:[{id:'ch9',platform:'naver',handle:'@yuna_healthy',url:'blog.naver.com/yuna_healthy',followers:71000,verified:true,primary:true}]}
     ],
     productViews:[
@@ -803,12 +810,12 @@ function seedData(){
     brandDataUnlocks:{b1:['s1'],b2:['s7']},
     external:{
       s1:[{name:'저분자 피쉬콜라겐 스틱',brand:'타사 A',src:'instagram',at:D(-5),price:32000}],
-      s2:[{name:'프리미엄 침구 세트',brand:'타사 B',src:'instagram',at:D(-2),price:159000},{name:'디퓨저 3종',brand:'타사 C',src:'instagram',at:D(-11),price:38000}],
+      s2:[{name:'프로바이오틱스 30포',brand:'타사 B',src:'instagram',at:D(-2),price:39000},{name:'저당 그래놀라 3팩',brand:'타사 C',src:'instagram',at:D(-11),price:28000}],
       s3:[{name:'곤약 젤리 30팩',brand:'타사 D',src:'naver',at:D(-6),price:24900}],
       s4:[{name:'오메가3 rTG',brand:'타사 E',src:'youtube',at:D(-3),price:41000}],
-      s5:[{name:'톤업 선크림',brand:'타사 F',src:'tiktok',at:D(-1),price:27000},{name:'립 틴트 3종',brand:'타사 G',src:'tiktok',at:D(-8),price:36000}],
+      s5:[{name:'글루타치온 필름',brand:'타사 F',src:'tiktok',at:D(-1),price:33000},{name:'콜라겐 젤리 스틱',brand:'타사 G',src:'tiktok',at:D(-8),price:29000}],
       s6:[{name:'단백질 쉐이크 14팩',brand:'타사 H',src:'instagram',at:D(-4),price:34000}],
-      s7:[{name:'쿠션 파운데이션',brand:'타사 I',src:'youtube',at:D(-7),price:39000}],
+      s7:[{name:'비오틴 츄어블',brand:'타사 I',src:'youtube',at:D(-7),price:24000}],
       s8:[{name:'마그네슘 글리시네이트',brand:'타사 J',src:'naver',at:D(-3),price:29000}]
     },
     exclusiveReqs:[
@@ -818,19 +825,19 @@ function seedData(){
       {at:D(-24),referrerId:'s1',fromSellerId:'s3',campaignId:'(지난 판매)',amt:186400}
     ],
     products:[
-      {id:'p1',brandId:'b1',name:'버닝온',desc:'다이어트 부스터 · 30포',em:'🔥',thumb:'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20160%20150%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27g%27%20x1%3D%270%27%20x2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23ff8a3d%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23ff5a2d%27%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%27M28%2044l52-18%2052%2018v70l-52%2018-52-18z%27%20fill%3D%27url%28%23g%29%27%2F%3E%3Cpath%20d%3D%27M28%2044l52%2018v70l-52-18z%27%20fill%3D%27%23e04a22%27%2F%3E%3Cpath%20d%3D%27M80%2062l52-18v70l-52%2018z%27%20fill%3D%27%23ff7a35%27%2F%3E%3Ctext%20x%3D%2747%27%20y%3D%27106%27%20font-family%3D%27Arial%20Black%2CArial%27%20font-weight%3D%27900%27%20font-size%3D%2715%27%20fill%3D%27%23fff%27%20transform%3D%27skewY%2819%29%27%3EBURNING%3C%2Ftext%3E%3Ctext%20x%3D%2747%27%20y%3D%27124%27%20font-family%3D%27Arial%20Black%2CArial%27%20font-weight%3D%27900%27%20font-size%3D%2715%27%20fill%3D%27%23ffe5b0%27%20transform%3D%27skewY%2819%29%27%3EON%3C%2Ftext%3E%3Crect%20x%3D%27108%27%20y%3D%2784%27%20width%3D%2716%27%20height%3D%2758%27%20rx%3D%276%27%20fill%3D%27%23ffb27a%27%20stroke%3D%27%23e04a22%27%20stroke-width%3D%272%27%20transform%3D%27rotate%28-12%20116%20113%29%27%2F%3E%3C%2Fsvg%3E',cat:'다이어트',cp:39000,gp:29900,rate:.20,sample:'무상 1박스',stock:2000,status:'listed',t:{g:'+240%',note:'분기 매출 급등'},exclusive:{grade:'다이아',label:'인스타그램 판매 독점권 · 3개월'},
+      {id:'p1',brandId:'b1',name:'버닝온',desc:'다이어트 부스터 · 30포',em:'🔥',thumb:'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20160%20150%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27g%27%20x1%3D%270%27%20x2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23ff8a3d%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23ff5a2d%27%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%27M28%2044l52-18%2052%2018v70l-52%2018-52-18z%27%20fill%3D%27url%28%23g%29%27%2F%3E%3Cpath%20d%3D%27M28%2044l52%2018v70l-52-18z%27%20fill%3D%27%23e04a22%27%2F%3E%3Cpath%20d%3D%27M80%2062l52-18v70l-52%2018z%27%20fill%3D%27%23ff7a35%27%2F%3E%3Ctext%20x%3D%2747%27%20y%3D%27106%27%20font-family%3D%27Arial%20Black%2CArial%27%20font-weight%3D%27900%27%20font-size%3D%2715%27%20fill%3D%27%23fff%27%20transform%3D%27skewY%2819%29%27%3EBURNING%3C%2Ftext%3E%3Ctext%20x%3D%2747%27%20y%3D%27124%27%20font-family%3D%27Arial%20Black%2CArial%27%20font-weight%3D%27900%27%20font-size%3D%2715%27%20fill%3D%27%23ffe5b0%27%20transform%3D%27skewY%2819%29%27%3EON%3C%2Ftext%3E%3Crect%20x%3D%27108%27%20y%3D%2784%27%20width%3D%2716%27%20height%3D%2758%27%20rx%3D%276%27%20fill%3D%27%23ffb27a%27%20stroke%3D%27%23e04a22%27%20stroke-width%3D%272%27%20transform%3D%27rotate%28-12%20116%20113%29%27%2F%3E%3C%2Fsvg%3E',cat:'다이어트·체형',cp:39000,gp:29900,rate:.20,sample:'무상 1박스',stock:2000,status:'listed',t:{g:'+240%',note:'분기 매출 급등'},exclusive:{grade:'다이아',label:'인스타그램 판매 독점권 · 3개월'},
         options:[{n:'1박스 (30포)',price:29900},{n:'2박스 세트 (60포)',price:56800},{n:'3박스 + 쉐이커 증정',price:79900}]},
-      {id:'p2',brandId:'b1',name:'치팅온',desc:'탄수화물 컷 · 30포',em:'🍚',cat:'다이어트',cp:35000,gp:26900,rate:.20,sample:'무상 1박스',stock:1500,status:'listed',
+      {id:'p2',brandId:'b1',name:'치팅온',desc:'탄수화물 컷 · 30포',em:'🍚',cat:'다이어트·체형',cp:35000,gp:26900,rate:.20,sample:'무상 1박스',stock:1500,status:'listed',
         options:[{n:'1박스 · 오리지널',price:26900},{n:'1박스 · 레몬맛',price:26900},{n:'2박스 세트 (맛 선택 혼합)',price:49900}]},
-      {id:'p3',brandId:'b1',name:'벨리라잇',desc:'유산균 다이어트 · 30캡슐',em:'✨',cat:'다이어트',cp:33000,gp:24900,rate:.18,sample:'무상 1박스',stock:1200,status:'listed'},
-      {id:'p4',brandId:'b2',name:'GL-01 스킨 샷',desc:'스킨 롱제비티 액상샷 · 1개월분',em:'🍍',thumb:'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20120%20160%27%3E%3Crect%20x%3D%2744%27%20y%3D%2710%27%20width%3D%2732%27%20height%3D%2718%27%20rx%3D%274%27%20fill%3D%27%233a1a22%27%2F%3E%3Cpath%20d%3D%27M38%2030h44v10l6%2012v84a12%2012%200%200%201-12%2012H44a12%2012%200%200%201-12-12V52l6-12z%27%20fill%3D%27%23f4ebeb%27%20stroke%3D%27%238a4a52%27%20stroke-width%3D%272%27%2F%3E%3Crect%20x%3D%2740%27%20y%3D%2770%27%20width%3D%2740%27%20height%3D%2752%27%20rx%3D%273%27%20fill%3D%27%238a4a52%27%2F%3E%3Ctext%20x%3D%2760%27%20y%3D%2792%27%20text-anchor%3D%27middle%27%20font-family%3D%27Georgia%2Cserif%27%20font-style%3D%27italic%27%20font-size%3D%2718%27%20fill%3D%27%23f4ebeb%27%3Eglo%3C%2Ftext%3E%3Ctext%20x%3D%2760%27%20y%3D%27110%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%27%20font-size%3D%279%27%20fill%3D%27%23f4ebeb%27%20letter-spacing%3D%272%27%3EGL-01%3C%2Ftext%3E%3Crect%20x%3D%2746%27%20y%3D%27130%27%20width%3D%2728%27%20height%3D%274%27%20fill%3D%27%23d4b5b5%27%2F%3E%3C%2Fsvg%3E',cat:'이너뷰티',cp:119000,gp:89000,rate:.15,sample:'무상 2주분',stock:800,status:'listed',t:{g:'+38%',note:'이너뷰티 상승세'},exclusive:{grade:'플래티넘',label:'이너뷰티 단독 판매권 · 2개월'},
+      {id:'p3',brandId:'b1',name:'벨리라잇',desc:'유산균 다이어트 · 30캡슐',em:'✨',cat:'다이어트·체형',cp:33000,gp:24900,rate:.18,sample:'무상 1박스',stock:1200,status:'listed'},
+      {id:'p4',brandId:'b2',name:'GL-01 스킨 샷',desc:'스킨 롱제비티 액상샷 · 1개월분',em:'🍍',thumb:'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20120%20160%27%3E%3Crect%20x%3D%2744%27%20y%3D%2710%27%20width%3D%2732%27%20height%3D%2718%27%20rx%3D%274%27%20fill%3D%27%233a1a22%27%2F%3E%3Cpath%20d%3D%27M38%2030h44v10l6%2012v84a12%2012%200%200%201-12%2012H44a12%2012%200%200%201-12-12V52l6-12z%27%20fill%3D%27%23f4ebeb%27%20stroke%3D%27%238a4a52%27%20stroke-width%3D%272%27%2F%3E%3Crect%20x%3D%2740%27%20y%3D%2770%27%20width%3D%2740%27%20height%3D%2752%27%20rx%3D%273%27%20fill%3D%27%238a4a52%27%2F%3E%3Ctext%20x%3D%2760%27%20y%3D%2792%27%20text-anchor%3D%27middle%27%20font-family%3D%27Georgia%2Cserif%27%20font-style%3D%27italic%27%20font-size%3D%2718%27%20fill%3D%27%23f4ebeb%27%3Eglo%3C%2Ftext%3E%3Ctext%20x%3D%2760%27%20y%3D%27110%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%27%20font-size%3D%279%27%20fill%3D%27%23f4ebeb%27%20letter-spacing%3D%272%27%3EGL-01%3C%2Ftext%3E%3Crect%20x%3D%2746%27%20y%3D%27130%27%20width%3D%2728%27%20height%3D%274%27%20fill%3D%27%23d4b5b5%27%2F%3E%3C%2Fsvg%3E',cat:'이너뷰티·피부',cp:119000,gp:89000,rate:.15,sample:'무상 2주분',stock:800,status:'listed',t:{g:'+38%',note:'이너뷰티 상승세'},exclusive:{grade:'플래티넘',label:'이너뷰티 단독 판매권 · 2개월'},
         options:[{n:'1개월분 (30포)',price:89000},{n:'3개월분 (90포) · 12% 할인',price:235000},{n:'6개월분 (180포) · 20% 할인',price:427000}]},
-      {id:'p5',brandId:'b1',name:'플랜트프로틴',desc:'식물성 단백질 · 900g',em:'🌱',cat:'건기식',cp:42000,gp:31900,rate:.22,sample:'무상 1통',stock:900,status:'listed'},
-      {id:'p7',brandId:'b1',name:'아이클리어 루테인',desc:'마리골드 루테인 20mg · 60캡슐',em:'👁️',cat:'루테인',cp:36000,gp:27900,rate:.20,sample:'무상 1병',stock:1000,status:'listed',t:{g:'+112%',note:'루테인 카테고리 급상승'}},
-      {id:'p8',brandId:'b1',name:'데일리 멀티비타민',desc:'비타민 13종 올인원 · 90정',em:'💊',cat:'비타민',cp:32000,gp:23900,rate:.18,sample:'무상 1병',stock:1400,status:'listed'},
-      {id:'p9',brandId:'b2',name:'글로우 시카 세럼',desc:'진정 시카 세럼 · 50ml',em:'🧴',cat:'화장품',cp:45000,gp:33900,rate:.25,sample:'무상 1개',stock:700,status:'listed'},
-      {id:'p10',brandId:'b2',name:'수분광 앰플 마스크',desc:'수분 앰플 마스크 · 10매',em:'🎭',cat:'피부',cp:24000,gp:17900,rate:.22,sample:'무상 3매',stock:1800,status:'listed'},
-      {id:'p6',brandId:'b2',name:'글로우 콜라겐 젤리',desc:'저분자 콜라겐 스틱 젤리 · 14포',em:'🍑',cat:'이너뷰티',cp:29000,gp:21900,rate:.20,sample:'무상 1박스',stock:0,status:'pending'}
+      {id:'p5',brandId:'b1',name:'플랜트프로틴',desc:'식물성 단백질 · 900g',em:'🌱',cat:'웰니스 푸드',cp:42000,gp:31900,rate:.22,sample:'무상 1통',stock:900,status:'listed'},
+      {id:'p7',brandId:'b1',name:'아이클리어 루테인',desc:'마리골드 루테인 20mg · 60캡슐',em:'👁️',cat:'눈·뇌 건강',cp:36000,gp:27900,rate:.20,sample:'무상 1병',stock:1000,status:'listed',t:{g:'+112%',note:'루테인 카테고리 급상승'}},
+      {id:'p8',brandId:'b1',name:'데일리 멀티비타민',desc:'비타민 13종 올인원 · 90정',em:'💊',cat:'비타민·영양',cp:32000,gp:23900,rate:.18,sample:'무상 1병',stock:1400,status:'listed'},
+      {id:'p9',brandId:'b2',name:'글로우 시카 세럼',desc:'더마 진정 세럼 · 50ml',em:'🧴',cat:'이너뷰티·피부',cp:45000,gp:33900,rate:.25,sample:'무상 1개',stock:700,status:'listed'},
+      {id:'p10',brandId:'b2',name:'수분광 앰플 마스크',desc:'더마 보습 앰플 마스크 · 10매',em:'🎭',cat:'이너뷰티·피부',cp:24000,gp:17900,rate:.22,sample:'무상 3매',stock:1800,status:'listed'},
+      {id:'p6',brandId:'b2',name:'글로우 콜라겐 젤리',desc:'저분자 콜라겐 스틱 젤리 · 14포',em:'🍑',cat:'이너뷰티·피부',cp:29000,gp:21900,rate:.20,sample:'무상 1박스',stock:0,status:'pending'}
     ],
     campaigns:[
       {id:'c1',sellerId:'s1',productId:'p1',status:'LIVE',start:D(-2),end:D(2),qty:800,createdAt:D(-14)},
@@ -892,7 +899,7 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v17';
+const LS='sellery-proto-v18';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
@@ -920,7 +927,7 @@ function optsOf(p){
 function soldQty(cid){return campOrders(cid).filter(o=>o.status==='PAID').reduce((a,o)=>a+o.qty,0);}
 /* 성장세(최근 좋아요 후반 vs 전반) — "요즘 뜨는 인플루언서" */
 function growthOf(s){const r=s.recentLikes||[];if(r.length<2)return 0;const h=Math.ceil(r.length/2);const m=x=>x.reduce((a,b)=>a+b,0)/x.length;return (m(r.slice(h))/m(r.slice(0,h))-1)*100;}
-const CATMAP={'건강기능식품':['건기식','다이어트','루테인','비타민'],'이너뷰티':['뷰티','이너뷰티','피부','화장품']};
+const CATMAP={'건강기능식품':['다이어트·체형','비타민·영양','눈·뇌 건강','장·소화','활력·수면','웰니스 푸드'],'이너뷰티':['이너뷰티·피부']};
 function catFit(p,s){const g=Object.values(CATMAP).find(x=>x.includes(p.cat));return !!g&&g.includes(s.cat);}
 /* 자동 제안 후보 (브랜드가 자동 제안 ON인 상품 × 카테고리 적합 인플루언서, 진행 중 캠페인 제외) */
 function autoMatches(){
@@ -1047,9 +1054,9 @@ const PLAT_ICONS={
 const platIcon=s=>PLAT_ICONS[s.platform]||'';
 const PEN=`<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:5px"><path d="M17 3l4 4L8 20l-5 1 1-5z"/></svg>`;
 const CAT_TRENDS=[
-  {cat:'루테인',g:'+112%',note:'3040 눈 건강 관심 급상승'},
-  {cat:'다이어트',g:'+64%',note:'여름 시즌 · 검색량 급증'},
-  {cat:'이너뷰티',g:'+38%',note:'콜라겐 숏폼 바이럴'}
+  {cat:'눈·뇌 건강',g:'+112%',note:'3040 눈 건강 관심 급상승'},
+  {cat:'다이어트·체형',g:'+64%',note:'여름 시즌 · 검색량 급증'},
+  {cat:'이너뷰티·피부',g:'+38%',note:'콜라겐 숏폼 바이럴'}
 ];
 let S;
 function load(){
@@ -1324,7 +1331,18 @@ function prodCard(p){
     </div>
   </div>`;
 }
-const CATS=['전체','다이어트','건기식','비타민','루테인','이너뷰티','화장품','피부'];
+/* 셀러리 카테고리 — 건강·웰니스 전용 (색조·가전·잡화 취급 안 함). 이름은 직관적으로, 설명은 CAT_INFO에서 */
+const CATS=['전체','다이어트·체형','이너뷰티·피부','비타민·영양','눈·뇌 건강','장·소화','활력·수면','웰니스 푸드'];
+const CAT_INFO={
+  '다이어트·체형':{en:'Body',desc:'체지방·탄수화물 컷·식욕 조절',ex:'가르시니아, 시서스, 프로틴 쉐이크'},
+  '이너뷰티·피부':{en:'Inner Beauty',desc:'먹는 피부 관리와 더마 스킨케어',ex:'콜라겐, 글루타치온, 히알루론산, 세라마이드'},
+  '비타민·영양':{en:'Nutrition',desc:'매일 채우는 기본 영양',ex:'멀티비타민, 오메가3, 마그네슘, 비타민D'},
+  '눈·뇌 건강':{en:'Eye & Brain',desc:'눈 피로·집중력·기억력',ex:'루테인, 아스타잔틴, 포스파티딜세린'},
+  '장·소화':{en:'Gut',desc:'장 건강과 소화 편안함',ex:'프로바이오틱스, 식이섬유, 소화효소'},
+  '활력·수면':{en:'Energy & Sleep',desc:'피로 회복과 편안한 밤',ex:'홍삼, 테아닌, 마그네슘, 밀크씨슬'},
+  '웰니스 푸드':{en:'Wellness Food',desc:'건강한 식습관을 위한 식품',ex:'저당 간식, 곤약, 단백질 식품, 건강차'}
+};
+const CAT_POLICY='셀러리는 건강·웰니스 상품만 다룹니다 — 건강기능식품·이너뷰티·더마 스킨케어·웰니스 푸드. 색조 화장품, 가전, 패션·잡화는 등록되지 않으며, 인플루언서도 건강·웰니스 판매 레퍼런스가 있는 채널만 활동합니다.';
 function vExplore(){
   const cur=S.catFilter||'전체';
   const list=D_().products.filter(p=>p.status==='listed'&&(cur==='전체'||p.cat===cur)).sort((a,b)=>(passActive(b,'boost',7)?1:0)-(passActive(a,'boost',7)?1:0));
@@ -1359,7 +1377,8 @@ function vExplore(){
   ${cur==='전체'&&trendPicks.length?`<div class="sec">트렌드 픽 — 매출 급등 상품</div>
   <div class="grid g3" style="margin-bottom:26px">${trendPicks.map(prodCard).join('')}</div>
   <div class="sec">전체 상품</div>`:''}
-  <div class="cats">${CATS.map(c=>`<button class="catchip ${c===cur?'on':''}" data-act="setCat" data-k="${c}">${c}</button>`).join('')}</div>
+  <div class="cats">${CATS.map(c=>`<button class="catchip ${c===cur?'on':''}" data-act="setCat" data-k="${c}" title="${CAT_INFO[c]?CAT_INFO[c].desc+' · '+CAT_INFO[c].ex:'건강·웰니스 전 카테고리'}">${c}</button>`).join('')}</div>
+  <div class="catguide">${cur==='전체'?`<b>건강·웰니스 전용 갤러리</b> — ${CAT_POLICY}`:`<b>${cur}</b> <span class="en">${CAT_INFO[cur].en}</span> — ${CAT_INFO[cur].desc} · 예: ${CAT_INFO[cur].ex}`}</div>
   <div class="grid g3">${list.map(prodCard).join('')||'<div class="empty" style="grid-column:1/-1;background:var(--surface);border:2px solid var(--ink);border-radius:6px">해당 카테고리에 노출 중인 상품이 없습니다</div>'}</div>`;
 }
 function vSellerCamps(){
@@ -1951,8 +1970,7 @@ function vGallery(){
   const b=brand(S.actingBrand);
   const gf=S.galGrade||'전체', pfilt=S.galPlat||'all';
   const pass=s=>(pfilt==='all'||s.platform===pfilt)&&(gf==='전체'||(tierIdx(gname(s))>-1&&tierIdx(gname(s))<=tierIdx(gf)));
-  const catMap={'건강기능식품':['건기식','다이어트','루테인','비타민'],'이너뷰티':['뷰티','이너뷰티','피부','화장품']};
-  const rel=catMap[b.cat]||[];
+  const rel=CATMAP[b.cat]||[];
   const pub=D_().sellers.filter(s=>!s.hidden);
   const recs=pub.map(s=>({s,catFit:rel.includes(s.cat),score:(rel.includes(s.cat)?2:0)+(s.m3Sales/s.followers)/300+(passActive(s,'featured',7)?5:0)}))
     .sort((a,b)=>b.score-a.score).slice(0,2);
@@ -1967,7 +1985,7 @@ function vGallery(){
      <div class="btnrow" style="margin-top:12px"><button class="sm" data-act="unlockRef" data-k="${s.id}">🔓 레퍼런스 열람 · ${CEL} ${dataPrice(s)}</button></div>`}
     </div>`;}).join('');
   const filtered=pub.filter(pass);
-  return `<h2 class="pg">인플루언서 갤러리 <small>이력·반응 데이터를 보고 판매를 직접 제안하세요</small></h2>
+  return `<h2 class="pg">인플루언서 갤러리 <small>건강·웰니스 판매 레퍼런스가 인증된 인플루언서 · 이력·반응 데이터를 보고 직접 제안하세요</small></h2>
   <div class="card" style="margin-bottom:20px">
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
       <span class="lbl-sm" style="min-width:64px">등급</span>
@@ -2133,7 +2151,7 @@ function vAdminHome(){
 function vAdminReview(){
   const pend=D_().products.filter(p=>p.status==='pending');
   return `<h2 class="pg">상품 검수 <small>금지 표현·필수 표시사항 체크 후 노출 승인</small></h2>
-  <div class="notice">건강기능식품은 표시광고 사전 심의 대상입니다. 검수 체크리스트: 질병 치료·예방 표현 금지, 기능성 문구는 식약처 인정 범위 내, 이벤트 문구의 소비자 오인 여부.</div>
+  <div class="notice"><b>카테고리 정책</b> — ${CAT_POLICY}<br>건강기능식품은 표시광고 사전 심의 대상입니다. 검수 체크리스트: 질병 치료·예방 표현 금지, 기능성 문구는 식약처 인정 범위 내, 이벤트 문구의 소비자 오인 여부.</div>
   <div class="listcard">${pend.map(p=>`<div class="rowitem">
     <div style="font-size:24px">${p.em}</div>
     <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${brand(p.brandId).name} · 판매가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%</div></div>
@@ -2326,7 +2344,7 @@ function vCustHome(){
   const soon=D_().campaigns.filter(c=>c.status==='SCHEDULE_CONFIRMED'&&custVisible(c)&&(!sel||c.sellerId===sel.id)).sort((a,b)=>(isHomeFeat(b)-isHomeFeat(a))||(P(a.start)-P(b.start)));
   const pubSellers=D_().sellers.filter(s=>!s.hidden);
   return `<div class="hero-band">
-    <div class="ey">${CEL} Sellery — 믿을 수 있는 인플루언서 추천 판매제품</div>
+    <div class="ey">${CEL} Sellery — 건강·웰니스 인플루언서 추천 판매제품</div>
     <h1>${sel?`${esc(sel.name)}님이 추천하는 <em>진행 중인 상품</em>`:`지금 진행 중인 <em>최저가 상품</em>만 모았어요.`}</h1>
     <div class="sub">인증 인플루언서 · 브랜드 직배송 · 결제는 <b>셀러리</b>가 보관하고 종료 후 ${CLEAR_DAYS}일 환불 보호${sel?` <button class="sm ghost" data-act="custAll" style="margin-left:10px">전체 보기</button>`:''}</div>
   </div>
@@ -2338,10 +2356,11 @@ function vCustHome(){
   ${sel?'':`<div class="sec" style="margin-top:26px">인플루언서</div>
   <div class="card"><div style="display:flex;gap:10px;flex-wrap:wrap">${pubSellers.map(s=>`<button class="catchip" data-act="custSeller" data-k="${s.id}">${platIcon(s)} ${esc(s.name)} <span class="gradebox sm">${gfull(gname(s))}</span></button>`).join('')}</div></div>`}
   <div class="card" style="margin-top:26px"><h4>${CEL} 셀러리에서 사면 다른 점</h4>
-    <div class="grid g3" style="gap:12px">
+    <div class="grid g4" style="gap:12px">
       <div><b>인증된 인플루언서</b><div class="meta">채널 소유 인증 + 등급제. 모든 판매 페이지에 인증 마크와 링크 검증.</div></div>
       <div><b>안전 결제</b><div class="meta">결제 대금은 셀러리가 보관, 판매 종료 후 ${CLEAR_DAYS}일 교환·환불 기간이 끝나야 정산.</div></div>
       <div><b>기간 한정 · 정가 대비 할인</b><div class="meta">브랜드가 셀러리에 등록한 판매가로만 판매. 같은 기간 다른 곳에서 더 싸게 팔지 않습니다.</div></div>
+      <div><b>건강·웰니스만</b><div class="meta">건강기능식품·이너뷰티·더마·웰니스 푸드만 다룹니다. 색조·가전·잡화는 없고, 판매 인플루언서도 건강 분야 레퍼런스가 있는 채널만.</div></div>
     </div></div>`;
 }
 function vCustInfluencers(){
@@ -2589,7 +2608,8 @@ function productModal(){
       <select id="npExcl"><option value="">사용 안 함</option>${GRADES.slice(0,4).map(t=>`<option value="${t.g}">${t.g} 등급 이상</option>`).join('')}</select></div>
     <div class="fld"><label>독점권 내용</label><input id="npExclLabel" placeholder="예: 인스타그램 판매 독점권 · 3개월"></div>
   </div>
-  <div class="fld"><label>카테고리</label><select id="npCat">${CATS.filter(c=>c!=='전체').map(c=>`<option>${c}</option>`).join('')}</select></div>
+  <div class="fld"><label>카테고리 <span style="font-weight:400">— 건강·웰니스만 등록 가능</span></label><select id="npCat">${CATS.filter(c=>c!=='전체').map(c=>`<option value="${c}">${c} — ${CAT_INFO[c].desc} (${CAT_INFO[c].ex})</option>`).join('')}</select>
+    <div style="font-size:11.5px;color:var(--mute);margin-top:5px">${CAT_POLICY} 범위 밖 상품은 검수에서 반려됩니다.</div></div>
   <div class="grid g2">
     <div class="fld"><label>소비자가 (₩)</label><input id="npCp" type="number" value="39000" step="1000"></div>
     <div class="fld"><label>판매가 (₩)</label><input id="npGp" type="number" value="29900" step="100"></div>
