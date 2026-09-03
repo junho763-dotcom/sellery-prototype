@@ -825,6 +825,12 @@ button.sm,button.sm:hover,button[disabled],button[disabled]:hover{box-shadow:var
 .spark span,.sc-cols span,.bars span{box-shadow:none!important;border:none!important;background:var(--line)!important}
 .spark span.last,.sc-cols span.last{background:var(--red)!important}
 .spark{border-bottom:1.5px solid var(--line-soft)!important}
+/* v8-h 캘린더 헤더·범례·시스템 라인·게이트 CTA 잔여 잉크 → 그린 */
+.cal-head{border-bottom:2px solid var(--line-soft)!important}
+.lg{border:1.5px solid var(--line)!important}
+.sysline{box-shadow:var(--pxbl-soft)!important;border:none!important}
+.gate-cta span{box-shadow:var(--pxbl-soft)!important;border:none!important}
+.gate-cta button{box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh)!important}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1662,7 +1668,7 @@ function vMy(){
     <div class="card">
       <div class="lbl-sm">내 추천 코드</div>
       <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap">
-        <span style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;letter-spacing:.1em;background:var(--yellow);border:2px solid var(--line);box-shadow:2px 2px 0 var(--ink);padding:3px 14px">${me.refCode}</span>
+        <span style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;letter-spacing:.1em;background:var(--yellow);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line-sh);padding:3px 14px">${me.refCode}</span>
         <button class="sm" data-act="copyRef" data-k="${me.refCode}">복사</button>
         <button class="sm ghost" data-act="screen" data-k="ref">추천 프로그램 →</button>
       </div>
