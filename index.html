@@ -691,6 +691,12 @@ td{border-bottom-color:var(--soft-line)}
 .kpi.go:hover{transform:translate(-2px,-2px);box-shadow:var(--pxb),6px 6px 0 0 var(--ink)}
 .kpi.go .lbl::after{content:' →';color:var(--red);opacity:0;transition:opacity .12s}
 .kpi.go:hover .lbl::after{opacity:1}
+/* 10) 상품 상세 모달: 가로 스크롤 없이 한 번에 */
+.modal{max-width:640px}
+.tblw.fit table{min-width:0;width:100%;table-layout:auto}
+.tblw.fit th,.tblw.fit td{padding:8px 8px;font-size:12px;white-space:nowrap}
+.tblw.fit .st{font-size:9.5px;padding:2px 6px;margin:0}
+@media(max-width:900px){.tblw.fit td{white-space:normal!important}}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1661,11 +1667,12 @@ function productDetailModal(pid){
   <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px">${b.logo?`<img src="${b.logo}" alt="" style="width:20px;height:20px;vertical-align:-6px;border:1.5px solid var(--ink);margin-right:2px">`:''}<span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> ${p.cat} · 판매가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> ${p.cp>p.gp?`<span class="disc">-${Math.round((1-p.gp/p.cp)*100)}%</span>`:''} · 수수료 ${(p.rate*100).toFixed(0)}~${(p.rate*100+GRADES[0].bonus).toFixed(0)}% (등급 보너스 포함) · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
   ${excl}
   <div class="lbl-sm" style="margin:16px 0 8px">이 상품의 판매 실적 — 인플루언서 익명</div>
-  <div class="tblw" style="box-shadow:none"><table style="min-width:480px">
-  <thead><tr><th class="num">팔로워</th><th class="num">좋아요 평균</th><th class="num">참여율</th><th class="num">기간</th><th class="num">확정 매출</th><th>상태</th></tr></thead>
+  <div class="tblw fit" style="box-shadow:none;overflow:visible"><table style="min-width:0">
+  <thead><tr><th class="num">팔로워</th><th class="num">좋아요</th><th class="num">참여율</th><th class="num">기간</th><th class="num">확정 매출</th><th>상태</th></tr></thead>
   <tbody>${rows||'<tr><td colspan="6" class="empty">아직 진행된 판매가 없습니다 — 첫 인플루언서가 되어보세요</td></tr>'}</tbody></table></div>
   ${(p.imgs&&p.imgs.length)?`<div class="lbl-sm" style="margin:16px 0 8px">상세페이지 이미지</div>${p.imgs.map(u=>`<img src="${u}" alt="" style="width:100%;border:1.5px solid var(--ink);margin-bottom:8px;display:block">`).join('')}`:''}
   <div class="foot">
+    <button data-act="previewProduct" data-k="${pid}">🛍 상세페이지 보기</button>
     ${isSeller&&!(p.exclusiveSellerId&&p.exclusiveSellerId!==S.actingSeller)?`<button class="pri" data-act="reqSampleM" data-k="${pid}">샘플 요청</button>`:''}
     <button data-act="closeModal">닫기</button>
   </div>`);
@@ -1884,7 +1891,7 @@ function vBrandProducts(){
     <td class="num">${(p.rate*100).toFixed(0)}%<div style="color:var(--mute);font-size:11px">+플랫폼 ${(PLAT_RATE*100).toFixed(0)}</div></td>
     <td style="white-space:nowrap">${p.sample}<div style="font-size:11px;color:var(--mute)">재고 ${fmt(p.stock)}</div></td>
     <td style="white-space:nowrap">${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))}</span> 이상${p.exclusiveSellerId?`<div><span class="st green">확정</span></div>`:''}`:dash}</td>
-    <td style="white-space:nowrap">${stTag}${p.status==='pending'?'':`<div style="margin-top:6px"><button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button></div>`}</td>
+    <td style="white-space:nowrap">${stTag}<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">${p.status==='pending'?'':`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}<button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td>
     <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;white-space:nowrap">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||dash}</td></tr>`;}).join('')}
   </tbody></table></div>
   <p style="font-size:12px;color:var(--mute);margin-top:10px">판매가·수수료율은 진행 중인 판매가 있으면 변경할 수 없습니다(신뢰 보호). 노출 중단 시 새 샘플 요청만 막히고 진행 중 판매는 유지됩니다.</p>`;
@@ -2348,8 +2355,15 @@ function vCustInfluencers(){
       <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap"><span class="st ${live?'green':'gray'}" style="animation:none">진행 중 ${live}</span><span class="st blue" style="animation:none">오픈 예정 ${soon}</span><span class="st gray" style="animation:none">완료 ${done}</span></div>
     </div>`;}).join('')}</div>`;
 }
+/* 상품 상세페이지 미리보기: 판매 링크 발급 전 상품을 고객 화면 레이아웃으로 보기 (id 'p:p1') */
+function storeCamp(cid){
+  if(typeof cid==='string'&&cid.startsWith('p:')){const pid=cid.slice(2),p=prod(pid);if(!p)return null;
+    const sid=S.view.role==='seller'?S.actingSeller:(D_().campaigns.find(c=>c.productId===pid)||{}).sellerId||D_().sellers.find(x=>!x.hidden).id;
+    return {id:cid,productId:pid,sellerId:sid,status:'PREVIEW',qty:p.stock||0,preview:true};}
+  return camp(cid);
+}
 function vStore(cid){
-  const c=camp(cid);if(!c)return '<button class="ghost sm" data-act="storeBack">← 돌아가기</button><div class="empty">판매 페이지를 찾을 수 없습니다</div>';
+  const c=storeCamp(cid);if(!c)return '<button class="ghost sm" data-act="storeBack">← 돌아가기</button><div class="empty">판매 페이지를 찾을 수 없습니다</div>';
   const p=prod(c.productId),s=seller(c.sellerId),b=brand(p.brandId);
   const opts=optsOf(p);const oi=Math.min(S.storeOpt||0,opts.length-1);const o=opts[oi];const q=S.storeQty||1;
   const live=c.status==='LIVE',soon=c.status==='SCHEDULE_CONFIRMED';
@@ -2359,12 +2373,12 @@ function vStore(cid){
   return `<div class="store">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
       <button class="ghost sm" data-act="storeBack">${S.view.role==='customer'?'← 셀러리 홈':'← 돌아가기'}</button>
-      <span style="font-size:11.5px;color:var(--mute)">${S.view.role!=='customer'?'구매자에게 보이는 화면 · ':''}sellery.co.kr/s/${s.handle.slice(1)}/${cid}</span>
+      <span style="font-size:11.5px;color:var(--mute)">${S.view.role!=='customer'?'구매자에게 보이는 화면 · ':''}${c.preview?'sellery.co.kr/p/'+p.id+' (상세페이지 미리보기)':'sellery.co.kr/s/'+s.handle.slice(1)+'/'+cid}</span>
     </div>
-    <div class="store-trust" data-act="verifyStore" data-k="${cid}">${CEL} <b>셀러리 인증 판매</b> · 결제 보관 · ${CLEAR_DAYS}일 환불 보호 · 인플루언서 채널 인증 ✓ <span style="text-decoration:underline;margin-left:auto">인증 확인</span></div>
+    <div class="store-trust" ${c.preview?'':`data-act="verifyStore" data-k="${cid}"`}>${CEL} <b>셀러리 인증 판매</b> · 결제 보관 · ${CLEAR_DAYS}일 환불 보호 · 인플루언서 채널 인증 ✓ <span style="text-decoration:underline;margin-left:auto">${c.preview?'미리보기':'인증 확인'}</span></div>
     <div class="card" style="padding:0;overflow:hidden">
       <div class="store-hero"><div class="store-em">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:220px;max-width:80%;object-fit:contain">`:p.em}</div>
-        ${live?`<span class="trendbadge" style="position:absolute;top:30px;left:14px">${dd<=1?'오늘 마감':'D-'+dd+' 마감'}</span>`:soon?`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--ink);color:var(--yellow)">오픈 D-${dd}</span>`:`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--mute)">판매 종료</span>`}</div>
+        ${live?`<span class="trendbadge" style="position:absolute;top:30px;left:14px">${dd<=1?'오늘 마감':'D-'+dd+' 마감'}</span>`:soon?`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--ink);color:var(--yellow)">오픈 D-${dd}</span>`:c.preview?`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--mute)">미리보기</span>`:`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--mute)">판매 종료</span>`}</div>
       <div style="padding:18px 20px 20px">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px"><span class="sc-av ${s.img?'':'em'}" style="width:40px;height:40px;${s.img?`background-image:url(${s.img})`:''}">${s.img?'':(SEMOJI[s.id]||'👤')}</span>
           <div style="flex:1;min-width:160px"><div><b>${esc(s.name)}</b> <span style="color:var(--mute);font-size:12px">${platIcon(s)} ${s.handle}</span> <span class="gradebox sm">${gfull(gname(s))}</span></div><div style="font-size:11.5px;color:var(--mute)">셀러리 인증 인플루언서 × ${esc(b.name)} 공식 공급</div></div>
@@ -2380,6 +2394,7 @@ function vStore(cid){
         </div>
         ${live?`<button class="pri buy" data-act="buyNow" data-k="${cid}" ${left<=0?'disabled style="opacity:.5"':''}>${left<=0?'품절':'구매하기'}</button>
           <div class="meta" style="text-align:center;margin-top:8px">${md(P(c.start))}–${md(P(c.end))} 한정 · 잔여 ${fmt(Math.max(0,left))}개 · ${fmt(soldQty(cid))}개 판매됨 · 결제 시 셀러리 안전결제로 이동</div>`
+        :c.preview?`<button class="buy" disabled style="opacity:.7">상세페이지 미리보기 — 판매 링크 발급 전</button><div class="meta" style="text-align:center;margin-top:8px">인플루언서 일정이 확정되면 이 레이아웃으로 판매 링크가 생성됩니다 · 재고 ${fmt(p.stock)}개</div>`
         :soon?`<button class="pri buy" data-act="notifyMe" data-k="${cid}">🔔 ${md(P(c.start))} 오픈 알림 받기</button>`
         :`<button class="buy" disabled style="opacity:.6">판매가 종료되었습니다</button><div class="meta" style="text-align:center;margin-top:8px">교환·환불은 종료 후 ${CLEAR_DAYS}일까지 셀러리 고객센터에서 처리됩니다</div>`}
       </div>
@@ -3098,6 +3113,7 @@ const ACT={
   },
   /* ---- 고객 구매 페이지 / 고객 화면 ---- */
   preview(cid){S.view.store=cid;S.storeOpt=0;S.storeQty=1;S.storeTop=true;render();},
+  previewProduct(pid){closeModal();S.view.store='p:'+pid;S.storeOpt=0;S.storeQty=1;S.storeTop=true;render();},
   storeBack(){S.view.store=null;if(S.view.role==='customer')S.linkCtx=null;render();},
   pickOpt(i){S.storeOpt=+i;render();},
   qtyDelta(d){S.storeQty=Math.max(1,Math.min(10,(S.storeQty||1)+ +d));render();},
