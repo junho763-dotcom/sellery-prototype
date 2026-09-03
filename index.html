@@ -363,96 +363,91 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 .ph.av{background-size:cover;background-position:center;transform:none!important}
 
 /* ======================================================================
-   SKIN: light-pixel-celery (2026-09-02)
-   원복 방법: 이 블록(=== SKIN ~ /SKIN ===)만 삭제하면 네오브루탈 크림 스킨으로 복귀.
+   SKIN: light-pixel-celery v3 — 단일 픽셀 폰트(Neo둥근모 Pro → Galmuri11 폴백)
+   원복 방법: 이 블록(=== SKIN ~ /SKIN ===)과 <head>의 galmuri <link>만 삭제하면 네오브루탈로 복귀.
    git 스냅샷: tag skin-neobrutal-v1
    ====================================================================== */
 :root{
   --bg:#eef3dc; --surface:#f8faee; --surface-2:#e2ead0;
-  --ink:#1c2a14; --mute:#56663f; --line:#1c2a14; --soft-line:#c9d4ae;
-  --red:#4f8a2c; --red-soft:#dfeccc;            /* 브랜드 액센트 = 셀러리 그린 */
-  --yellow:#b7e34a; --yellow-soft:#e8f3c6;      /* 하이라이트/CTA = 셀러리 라임 */
+  --ink:#1c2a14; --mute:#5b6b4a; --line:#1c2a14; --soft-line:#c9d4ae;
+  --red:#4f8a2c; --red-soft:#dfeccc;
+  --yellow:#b7e34a; --yellow-soft:#e8f3c6;
   --money:#8a6a12; --money-soft:#f1ecd0;
   --plat-c:#2f6a1e; --plat-bg:#dfeccc;
   --seller-c:#b0326a; --seller-bg:#f7e2ec;
-}
-/* --- 픽셀 그리드 그라운드 --- */
-body{background-image:linear-gradient(rgba(28,42,20,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(28,42,20,.075) 1px,transparent 1px);background-size:16px 16px}
-.appbar{background:var(--surface);border-bottom:3px solid var(--ink)}
-/* --- 픽셀 윈도우: 모서리 파인(notched) 테두리 + 베벨 + 픽셀 드롭섀도 --- */
-:root{
+  --brand-c:#2f63b8; --brand-bg:#e2ebf9;
+  --pxfont:'Galmuri14','Galmuri11','IBM Plex Sans KR',sans-serif; --pxfont-sm:'Galmuri11','Galmuri14','IBM Plex Sans KR',sans-serif;
   --pxb:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink);
-  --pxd:3px 6px 0 0 var(--ink),6px 3px 0 0 var(--ink),6px 6px 0 0 var(--ink);
-  --bevel:inset 0 3px 0 rgba(255,255,255,.75),inset 3px 0 0 rgba(255,255,255,.75),inset 0 -3px 0 rgba(28,42,20,.14),inset -3px 0 0 rgba(28,42,20,.14);
   --pxb2:0 -2px 0 0 var(--ink),0 2px 0 0 var(--ink),-2px 0 0 0 var(--ink),2px 0 0 0 var(--ink);
-  --pxd2:2px 4px 0 0 var(--ink),4px 2px 0 0 var(--ink),4px 4px 0 0 var(--ink);
-  --bevel2:inset 0 2px 0 rgba(255,255,255,.7),inset 2px 0 0 rgba(255,255,255,.7),inset 0 -2px 0 rgba(28,42,20,.18),inset -2px 0 0 rgba(28,42,20,.18);
+  --bevel:inset 0 3px 0 rgba(255,255,255,.8),inset 3px 0 0 rgba(255,255,255,.8),inset 0 -3px 0 rgba(28,42,20,.13),inset -3px 0 0 rgba(28,42,20,.13);
+  --bevel2:inset 0 2px 0 rgba(255,255,255,.75),inset 2px 0 0 rgba(255,255,255,.75),inset 0 -2px 0 rgba(28,42,20,.18),inset -2px 0 0 rgba(28,42,20,.18);
 }
-.card,.listcard,.tblw,.det-head,.thread,.modal,.landing,.sim,.exclbox,.hero-av,.sc-av,.mini-stats>div,.wordmark,.prod .ph{
-  border:none!important;border-radius:0;margin:3px 6px 6px 3px;
-  box-shadow:var(--pxb),var(--pxd),var(--bevel)}
-.grid{gap:20px}
+/* ---- 타이포: 한 폰트, 한 굵기(픽셀 폰트는 가짜 볼드가 뭉개져서 굵기 대신 크기·색으로 위계) ---- */
+body,body *{font-family:var(--pxfont)!important;letter-spacing:0!important;font-weight:400!important;text-transform:none!important}
+body{font-size:16px;line-height:1.55;background-image:linear-gradient(rgba(28,42,20,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(28,42,20,.07) 1px,transparent 1px);background-size:16px 16px}
+h2.pg{font-size:30px;margin-bottom:20px}
+h2.pg small{font-size:14px}
+.hero-band h1{font-size:clamp(26px,4vw,40px);line-height:1.35}
+.hero-band .ey{font-size:12px;color:var(--red)}
+.hero-band .ey::before{content:'▶ '}
+.hero-band .sub{font-size:14px}
+.kpi .lbl{font-size:12px;color:var(--mute)}
+.kpi .val{font-size:26px;color:var(--ink);margin-top:6px;line-height:1.3}
+.kpi .sub{font-size:13px}
+.sec{font-size:14px;color:var(--ink)}
+.lbl-sm,.kpi .lbl,th,.fld label,.ms-l{font-size:12px}
+.rowitem .nm{font-size:16px}.rowitem .sub,.meta,.sub,.hint,.actions .hint{font-size:13px}
+.prod .nm{font-size:19px}
+.prod .gp{font-size:22px}
+.prod .cp{font-size:13px}
+.prod .rate{font-size:12px;padding:2px 8px}
+.chip,.st,.gradebox,.nb,.stp,.catchip,.subnav button,button,input,select,textarea,.cal-ev,.pyr-row,.mebadge,.badge,.trendbadge,.exclbadge,code,.toast,.sysline,.warnline,.msg .who,.msg .tm,.composer .as{font-size:13px}
+.stp,.cal-ev,.pyr-row .pct,.badge,.mebadge,.trendbadge,.exclbadge,.msg .tm,.cal-dow,.cal-cell .dn{font-size:12px}
+.badge{min-width:18px;height:18px;line-height:18px}
+td,table{font-size:14px}
+.hb-nm,.hb-val{font-size:13px}
+.det-head .t{font-size:20px}
+.modal h3{font-size:22px}
+.mini-stats .ms-v{font-size:16px}
+b,strong,.nm,.hb-nm,.det-head .t,h1,h2,h3,h4{color:var(--ink)}
+/* ---- 그라운드 & 앱바: 검정 실선 대신 픽셀 점선 ---- */
+.appbar{background:var(--surface);border-bottom:3px dashed var(--ink)}
+.wordmark{background:none!important;box-shadow:none!important;border:none!important;padding:0!important;margin:0!important;font-size:20px;color:var(--ink);display:inline-flex;gap:8px;align-items:center}
+.wordmark .dot{color:var(--red)}
+.wordmark svg{transform:none}
+.iconbtn{background:var(--surface);width:36px;height:36px;box-shadow:var(--pxb2),var(--bevel2)}
+/* ---- 카드/패널: 파인 모서리 픽셀 프레임 + 베벨, 오프셋 섀도 없음 ---- */
+.card,.listcard,.tblw,.det-head,.thread,.modal,.landing,.sim,.exclbox,.hero-av,.sc-av,.mini-stats>div,.prod .ph{
+  border:none!important;border-radius:0;margin:3px;box-shadow:var(--pxb),var(--bevel)}
+.card:hover,.prod:hover{transform:none;box-shadow:var(--pxb),var(--bevel)}
+.grid{gap:18px}
 .sim{background:var(--yellow-soft)}
-.modal{box-shadow:var(--pxb),var(--pxd),var(--bevel);border-radius:0}
-.notice,.sc-hist,.slot,.msg,.hb-track,.cal-ev,.pyr-row,.stp,.nb,.chip,.st,.gradebox,.catchip,input,select,textarea,.toast{border-radius:0}
-.pyr-row.me,.gradebox,.chip,.st.live,.msg{box-shadow:var(--pxb2)!important;border:none!important;margin:2px 4px}
-/* --- 버튼: 픽셀 베벨 버튼 --- */
-button{border:none;border-radius:0;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2);margin:2px 4px 4px 2px}
-button:hover{transform:none;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2),0 0 0 2px rgba(79,138,44,.25)}
-button:active{transform:translate(2px,2px);box-shadow:var(--pxb2),inset 0 -2px 0 rgba(255,255,255,.5),inset 2px 2px 0 rgba(28,42,20,.2)}
+.notice,.sc-hist,.slot,.msg,.hb-track,.cal-ev,.pyr-row,.stp,.nb,.chip,.st,.gradebox,.catchip,input,select,textarea,.toast,.mebadge,.badge{border-radius:0}
+.pyr-row{border:none!important;box-shadow:var(--pxb2);margin:2px 4px;background:var(--surface)}
+.pyr-row.me{background:var(--yellow);box-shadow:var(--pxb2),var(--bevel2)}
+.msg{border:none!important;box-shadow:var(--pxb2);margin:2px 4px}
+.sysline{border:none;background:var(--surface-2);box-shadow:var(--pxb2);margin:2px 4px}
+.warnline{border:none;box-shadow:var(--pxb2)}
+.sc-hist,.slot{border:none;box-shadow:var(--pxb2);margin:2px 4px 6px}
+.hb-track{border:none;box-shadow:var(--pxb2);margin:2px 3px}
+.notice{border:none;box-shadow:var(--pxb2);margin:3px}
+/* ---- 버튼: 게임 버튼 (파인 모서리 + 베벨 + 바닥 2px) ---- */
+button,button.pri,button.ghost,button.danger,button.sm,.master button{border:none!important;border-radius:0;box-shadow:var(--pxb2),0 4px 0 0 var(--ink),var(--bevel2);margin:2px 4px 6px 2px}
+button:hover,button.pri:hover,button.ghost:hover,button.danger:hover,button.sm:hover{transform:none;box-shadow:var(--pxb2),0 4px 0 0 var(--ink),var(--bevel2),0 0 0 2px rgba(79,138,44,.28)}
+button:active,button.pri:active,button.ghost:active,button.danger:active,button.sm:active{transform:translateY(3px);box-shadow:var(--pxb2),0 1px 0 0 var(--ink),inset 2px 2px 0 rgba(28,42,20,.18)}
 button.pri{background:var(--yellow);color:var(--ink)}
 button.ghost{background:var(--surface)}
 button.danger{background:var(--danger);color:#fff}
+button[disabled]{box-shadow:var(--pxb2)!important;opacity:.45;transform:none!important}
+.roletabs button,.roletabs button.on{box-shadow:none!important;margin:0;background:transparent}
+.roletabs button.on{background:var(--yellow);box-shadow:var(--pxb2)!important}
 .subnav button{background:var(--surface);color:var(--ink)}
-.subnav button.on{background:var(--ink);color:var(--yellow)}
-.roletabs button{box-shadow:none;margin:0}
-.roletabs button.on{background:var(--yellow);box-shadow:var(--pxb2)}
-.iconbtn{background:var(--surface);width:36px;height:36px}
+.subnav button.on{background:var(--red);color:#fff}
 .catchip{border:none;box-shadow:var(--pxb2);margin:2px 4px;background:var(--surface)}
-.catchip.on{background:var(--yellow)}
-input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28,42,20,.12);background:#fff;margin:2px}
-/* --- 픽셀 폰트: 영문 로고·KPI 숫자·가격·LIVE 태그·뱃지 (한글은 고딕 유지) --- */
-.wordmark{font-family:'Press Start 2P','IBM Plex Sans KR',monospace;font-size:12px;letter-spacing:.1em;padding:9px 14px;background:var(--surface)}
-.wordmark .dot{color:var(--red)}
-.hero-band .ey{font-family:'Press Start 2P',monospace;font-size:8.5px;letter-spacing:.18em}
-.kpi .val{font-family:'Press Start 2P',monospace;font-size:15px;letter-spacing:0;color:var(--ink);margin-top:10px;line-height:1.4}
-.prod .gp{font-family:'Press Start 2P',monospace;font-size:13px;letter-spacing:0}
-.landing .pr .g{font-family:'Press Start 2P',monospace;font-size:20px}
-.mebadge{font-family:'Press Start 2P',monospace;font-size:6.5px;padding:2px 6px;color:var(--yellow)}
-.badge{font-family:'Press Start 2P',monospace;font-size:7px;line-height:17px;border-radius:0}
-.st.live{background:var(--red);color:#fff}
-.st.live .pulse{display:none}
-.st.live::before{content:'LIVE';font-family:'Press Start 2P',monospace;font-size:7px;margin-right:6px;letter-spacing:.05em;vertical-align:1px}
-.gradebox{font-family:'IBM Plex Sans KR',sans-serif;background:var(--yellow)}
-/* --- 섹션 헤더: 픽셀 점선 --- */
-.sec::before{width:8px;height:8px;background:var(--red);box-shadow:8px 0 0 var(--ink)}
-.sec::after{height:3px;background:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 8px)}
-/* --- 히어로 형광펜 --- */
-.hero-band h1 em{background:#d8ee9a;box-shadow:var(--pxb2);transform:none;padding:0 8px}
-/* --- 상품 썸네일: 사선/기울임 제거 → 픽셀 체커보드 --- */
-.prod .ph,.grid > .prod:nth-child(even) .ph{transform:none;background:conic-gradient(#e2ead0 25%,#f3f6e6 0 50%,#e2ead0 0 75%,#f3f6e6 0) 0 0/16px 16px;image-rendering:pixelated}
-.prod .ph img{image-rendering:auto}
-.prod:hover{transform:none;box-shadow:var(--pxb),var(--pxd),var(--bevel),0 0 0 3px rgba(79,138,44,.25)}
-.hero-av{transform:none;border-radius:0}
-.sc-av{border-radius:0}
-.trendbadge,.exclbadge{transform:none;border:none;box-shadow:var(--pxb2);font-family:'Press Start 2P',monospace;font-size:6.5px;padding:3px 6px}
-.exclbadge{font-family:'IBM Plex Sans KR',sans-serif;font-size:9.5px;font-weight:800}
-/* --- 스텝퍼/게이지: 픽셀 블록 --- */
-.stp.now{color:var(--yellow)}
-.meter{border:none;box-shadow:var(--pxb2);height:12px;margin:3px}
-.meter span{background:repeating-linear-gradient(90deg,var(--red) 0 8px,var(--yellow) 8px 12px)}
-.hb-bar{background:repeating-linear-gradient(90deg,var(--ink) 0 6px,#3a5230 6px 8px)}
-.hb-bar.top{background:repeating-linear-gradient(90deg,var(--red) 0 6px,var(--yellow) 6px 8px)}
-.bars .b{border:none;box-shadow:var(--pxb2);background:var(--red)}
-.spark span{background:var(--red);border:none;box-shadow:1px 0 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink)}
-/* --- 버튼 변형들도 픽셀 베벨로 통일 (기존 스킨 섀도 덮어쓰기) --- */
-button.pri,button.ghost,button.danger,button.sm,.master button{border:none;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2)}
-button.pri:hover,button.ghost:hover,button.danger:hover,button.sm:hover{transform:none;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2),0 0 0 2px rgba(79,138,44,.28)}
-button.pri:active,button.ghost:active,button.danger:active,button.sm:active{transform:translate(2px,2px);box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28,42,20,.2)}
-button.ghost:hover{border:none}
-button[disabled]{box-shadow:var(--pxb2)!important;opacity:.45}
-/* --- 상태 태그: 픽셀 LED 태그 (상태별 채움색 + 인디케이터 점) --- */
-.st{border:none!important;box-shadow:var(--pxb2),2px 2px 0 0 var(--ink);padding:4px 10px 4px 8px;font-weight:800;letter-spacing:.03em;margin:2px 4px;font-family:'IBM Plex Sans KR',sans-serif;font-size:10.5px;line-height:1.6}
+.catchip.on{background:var(--red);color:#fff}
+input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28,42,20,.1);background:#fff;margin:2px}
+/* ---- 태그/칩: 상태 LED 태그 + 플랫 컬러 칩 ---- */
+.st{border:none!important;box-shadow:var(--pxb2);padding:3px 10px 3px 8px;margin:2px 4px;line-height:1.5}
 .st::before{content:'';display:inline-block;width:6px;height:6px;margin-right:7px;vertical-align:1px;background:currentColor;box-shadow:inset 1px 1px 0 rgba(255,255,255,.55)}
 .st.blue{background:#2f63b8;color:#fff}
 .st.amber{background:#e3b93c;color:#1c2a14}
@@ -460,8 +455,40 @@ button[disabled]{box-shadow:var(--pxb2)!important;opacity:.45}
 .st.gray{background:#7a876b;color:#fff}
 .st.red{background:var(--danger);color:#fff}
 .st.live{background:var(--ink);color:var(--yellow)}
-.st.live::before{content:'LIVE';width:auto;height:auto;background:none;box-shadow:none;font-family:'Press Start 2P',monospace;font-size:7px;margin-right:7px;letter-spacing:.05em;vertical-align:1px}
-.cal-ev,.nb{box-shadow:var(--pxb2);border:none!important;margin:3px 3px 2px}
+.st.live .pulse{display:none}
+.st.live::before{content:'LIVE';width:auto;height:auto;background:none;box-shadow:none;margin-right:7px;color:var(--yellow)}
+.chip{border:none!important;box-shadow:none;padding:2px 8px}
+.chip.brand{background:var(--brand-bg);color:var(--brand-c)}
+.chip.seller{background:var(--seller-bg);color:var(--seller-c)}
+.chip.plat{background:var(--plat-bg);color:var(--plat-c)}
+.gradebox{border:none!important;box-shadow:var(--pxb2);background:var(--yellow);margin:2px 4px;padding:2px 8px}
+.nb,.trendbadge,.exclbadge{border:none!important;box-shadow:var(--pxb2);transform:none;margin:3px}
+.mebadge{background:var(--ink);color:var(--yellow);padding:1px 6px}
+.badge{border:none;box-shadow:var(--pxb2);background:var(--danger)}
+/* ---- 헤드라인 강조: 옐로 박스 대신 셀러리 그린 + 픽셀 밑줄 ---- */
+.hero-band h1 em{background:none;box-shadow:none;color:var(--red);padding:0;border-bottom:4px dotted var(--red);transform:none}
+/* ---- 섹션 헤더 ---- */
+.sec::before{width:8px;height:8px;background:var(--red);box-shadow:none}
+.sec::after{height:3px;background:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 8px)}
+/* ---- 상품 썸네일: 픽셀 체커보드, 기울임 제거 ---- */
+.prod .ph,.grid > .prod:nth-child(even) .ph{transform:none;background:conic-gradient(#e2ead0 25%,#f3f6e6 0 50%,#e2ead0 0 75%,#f3f6e6 0) 0 0/16px 16px}
+.prod .rate{background:var(--yellow);border:none;box-shadow:var(--pxb2);margin:2px 4px}
+.hero-av,.sc-av{transform:none;border-radius:0}
+/* ---- 게이지/막대 ---- */
+.meter{border:none;box-shadow:var(--pxb2);height:12px;margin:3px}
+.meter span{background:repeating-linear-gradient(90deg,var(--red) 0 8px,var(--yellow) 8px 12px)}
+.hb-bar{background:repeating-linear-gradient(90deg,var(--ink) 0 6px,#3a5230 6px 8px)}
+.hb-bar.top{background:repeating-linear-gradient(90deg,var(--red) 0 6px,var(--yellow) 6px 8px)}
+.bars .b{border:none;box-shadow:var(--pxb2);background:var(--red)}
+.spark span{background:var(--red);border:none;box-shadow:1px 0 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink)}
+.stp{border:none;box-shadow:var(--pxb2);margin:2px 3px}
+.stp.now{background:var(--red);color:#fff}
+.stp.done{background:var(--yellow-soft)}
+.cal-cell.today .dn{background:var(--yellow);border:none;box-shadow:var(--pxb2)}
+.cal-ev{border:none!important;box-shadow:var(--pxb2);margin:3px 3px 2px}
+.toast{border:none;box-shadow:var(--pxb2),0 4px 0 0 var(--red)}
+/* 작은 텍스트는 11px 그리드 폰트로 (선명도) */
+.lbl-sm,.kpi .lbl,th,.fld label,.ms-l,.chip,.st,.gradebox,.nb,.stp,.catchip,.subnav button,.badge,.mebadge,.trendbadge,.exclbadge,.cal-ev,.cal-dow,.cal-cell .dn,.pyr-row,.msg .tm,.sysline,.hb-nm,.hb-val,.rowitem .sub,.meta,.sub,.hint,.prod .cp,.prod .rate,.kpi .sub,.hero-band .sub,.hero-band .ey,td.num,.composer .as,.sec{font-family:var(--pxfont-sm)!important}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
