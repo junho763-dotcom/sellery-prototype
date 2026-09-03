@@ -686,6 +686,11 @@ td{border-bottom-color:var(--soft-line)}
 .store-detail .store-em{font-size:64px}
 .cust-em{font-size:58px}
 .sc-av.em{font-size:24px}
+/* 9) 홈 KPI 카드 클릭 → 실시간 매출/순수익 이동 */
+.kpi.go{cursor:pointer;transition:transform .12s,box-shadow .12s}
+.kpi.go:hover{transform:translate(-2px,-2px);box-shadow:var(--pxb),6px 6px 0 0 var(--ink)}
+.kpi.go .lbl::after{content:' →';color:var(--red);opacity:0;transition:opacity .12s}
+.kpi.go:hover .lbl::after{opacity:1}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1280,10 +1285,10 @@ function vSellerHome(){
   <div class="grid g2 overlap">${pyr}${newsHtml}</div>
   <div class="sec">내 현황</div>
   <div class="grid g4">
-    <div class="card kpi"><div class="lbl">진행 중 판매 매출 (확정 기준)</div><div class="val">₩${fmt(liveNet)}</div><div class="sub">판매 ${live.length}건 LIVE</div></div>
-    <div class="card kpi"><div class="lbl">정산 예정 수수료</div><div class="val" style="color:var(--money)">₩${fmt(pendPay)}</div><div class="sub">원천징수 3.3% 공제 후</div></div>
-    <div class="card kpi"><div class="lbl">내 응답 대기</div><div class="val">${todo.length}건</div><div class="sub">샘플 수령·테스트 결정</div></div>
-    <div class="card kpi"><div class="lbl">누적 판매</div><div class="val">${mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status)).length}회</div><div class="sub">마이 갤러리 아카이브</div></div>
+    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">진행 중 판매 매출 (확정 기준)</div><div class="val">₩${fmt(liveNet)}</div><div class="sub">판매 ${live.length}건 LIVE</div></div>
+    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">정산 예정 수수료</div><div class="val" style="color:var(--money)">₩${fmt(pendPay)}</div><div class="sub">원천징수 3.3% 공제 후</div></div>
+    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">내 응답 대기</div><div class="val">${todo.length}건</div><div class="sub">샘플 수령·테스트 결정</div></div>
+    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">누적 판매</div><div class="val">${mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status)).length}회</div><div class="sub">마이 갤러리 아카이브</div></div>
   </div>
   ${todo.length?`<div class="sec">지금 할 일</div><div class="listcard">${todo.map(c=>campRow(c)).join('')}</div>`:''}
   <div class="sec">진행 중 · 예정 판매</div>
@@ -1799,10 +1804,10 @@ function vBrandHome(){
   <div class="grid g2 overlap">${topChart}${brandNews}</div>
   <div class="sec">내 현황</div>
   <div class="grid g4">
-    <div class="card kpi"><div class="lbl">누적 확정 매출 (GMV)</div><div class="val">₩${fmt(gmv)}</div></div>
-    <div class="card kpi"><div class="lbl">승인 대기</div><div class="val">${pend.length}건</div><div class="sub">샘플·일정·발송</div></div>
-    <div class="card kpi"><div class="lbl">진행 중 판매</div><div class="val">${live.length}건</div></div>
-    <div class="card kpi"><div class="lbl">등록 상품</div><div class="val">${myP.length}개</div></div>
+    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">누적 확정 매출 (GMV)</div><div class="val">₩${fmt(gmv)}</div></div>
+    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">승인 대기</div><div class="val">${pend.length}건</div><div class="sub">샘플·일정·발송</div></div>
+    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">진행 중 판매</div><div class="val">${live.length}건</div></div>
+    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">등록 상품</div><div class="val">${myP.length}개</div></div>
   </div>
   ${pend.length?`<div class="sec">승인·처리 대기</div><div class="listcard">${pend.map(c=>campRow(c,{who:'brand'})).join('')}</div>`:''}
   <div class="sec">진행 중 · 확정 판매</div>
@@ -2105,10 +2110,10 @@ function vAdminHome(){
     <div class="sub">전체 캠페인 <b>${cs.length}건</b> · 주문 <b>${fmt(os.length)}건</b> <button class="sm ghost" data-act="reset" style="margin-left:12px">데이터 초기화</button></div>
   </div>
   <div class="grid g4 overlap">
-    <div class="card kpi"><div class="lbl">누적 GMV (확정)</div><div class="val">₩${fmt(gmv)}</div></div>
-    <div class="card kpi"><div class="lbl">플랫폼 수수료 수익</div><div class="val" style="color:var(--accent-ink)">₩${fmt(fee)}</div><div class="sub">테이크레이트 ${(PLAT_RATE*100).toFixed(0)}%</div></div>
-    <div class="card kpi"><div class="lbl">진행 중 판매</div><div class="val">${cs.filter(c=>c.status==='LIVE').length}건</div></div>
-    <div class="card kpi"><div class="lbl">환불률</div><div class="val">${refRate.toFixed(1)}%</div><div class="sub">주문 ${fmt(os.length)}건 기준</div></div>
+    <div class="card kpi go" data-act="screen" data-k="revenue" title="매출·순수익 보기"><div class="lbl">누적 GMV (확정)</div><div class="val">₩${fmt(gmv)}</div></div>
+    <div class="card kpi go" data-act="screen" data-k="revenue" title="매출·순수익 보기"><div class="lbl">플랫폼 수수료 수익</div><div class="val" style="color:var(--accent-ink)">₩${fmt(fee)}</div><div class="sub">테이크레이트 ${(PLAT_RATE*100).toFixed(0)}%</div></div>
+    <div class="card kpi go" data-act="screen" data-k="revenue" title="매출·순수익 보기"><div class="lbl">진행 중 판매</div><div class="val">${cs.filter(c=>c.status==='LIVE').length}건</div></div>
+    <div class="card kpi go" data-act="screen" data-k="revenue" title="매출·순수익 보기"><div class="lbl">환불률</div><div class="val">${refRate.toFixed(1)}%</div><div class="sub">주문 ${fmt(os.length)}건 기준</div></div>
   </div>
   <div class="sec">전체 캠페인</div>
   <div class="tblw"><table>
