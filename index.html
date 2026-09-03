@@ -858,6 +858,15 @@ button.sm,button.sm:hover,button[disabled],button[disabled]:hover{box-shadow:var
 ::selection{background:#e6f0c8;color:var(--ink)}
 button,.catchip,.rowitem,.hb-row,.news-item,.st,.gradebox,.nb,.badge,.subnav,.roletabs,.wordmark,.celery-bal,.sc-hist,.gate-cta,.acc-head,.pyr-row,.opt,.qty,.kpi.go{-webkit-user-select:none;user-select:none}
 .msgs,.msg,input,textarea,select,code,.stmt,.tblw td,.sysline{-webkit-user-select:text;user-select:text}
+/* 내 장부 컴팩트 카드 · 한 줄 버튼 행 */
+.mini-stats.ledger4{grid-template-columns:repeat(4,1fr)}
+.mini-stats.ledger4 .ms-v{font-size:17px}
+.mini-stats.ledger4 .ms-s{font-size:11px;color:var(--mute);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-stats.ledger4 > div.go{cursor:pointer}
+.mini-stats.ledger4 > div.go:hover{background:#eaf1d6}
+@media(max-width:640px){.mini-stats.ledger4{grid-template-columns:1fr 1fr}.mini-stats.ledger4 .ms-v{font-size:15px}}
+.btnrow.one{display:flex;flex-wrap:nowrap;gap:6px}
+.btnrow.one button{flex:1;min-width:0;padding:7px 4px;font-size:11.5px;white-space:nowrap;margin:2px 0 4px;overflow:hidden;text-overflow:ellipsis}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1447,7 +1456,7 @@ function vSellerHome(){
         <div><span class="ms-l">주문</span><span class="ms-v">${k.paidCnt}건</span></div>
         <div><span class="ms-l">마감 · 잔여</span><span class="ms-v">D-${dd} · ${fmt(Math.max(0,left))}개</span></div>
       </div>
-      <div class="btnrow"><button class="sm ghost" data-act="open" data-k="${c.id}">스레드</button><button class="sm ghost" data-act="preview" data-k="${c.id}">구매 페이지</button><button class="sm ghost" data-act="copyLink" data-k="sellery.co.kr/s/${sl.handle.slice(1)}/${c.id}">링크 복사</button><button class="sm ghost" data-act="screen" data-k="sales">실시간 매출</button></div>
+      <div class="btnrow one"><button class="sm ghost" data-act="open" data-k="${c.id}">스레드</button><button class="sm ghost" data-act="preview" data-k="${c.id}">구매 페이지</button><button class="sm ghost" data-act="copyLink" data-k="sellery.co.kr/s/${sl.handle.slice(1)}/${c.id}">링크 복사</button><button class="sm ghost" data-act="screen" data-k="sales">실시간 매출</button></div>
     </div>`;};
   const soonRow=c=>{const p=prod(c.productId);const dd=Math.ceil((P(c.start)-today())/DAY);return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div><div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${brand(p.brandId).name} · ${md(P(c.start))}–${md(P(c.end))} · 재고 ${fmt(c.qty||0)}</div></div><span class="st blue" style="animation:none">오픈 D-${dd}</span></div>`;};
   const salesHtml=`<div class="sec">진행 중 · 예정 판매</div>
@@ -1456,11 +1465,13 @@ function vSellerHome(){
     ${(!live.length&&!soon.length&&!clearing.length)?'<div class="listcard"><div class="empty">진행 중인 판매가 없습니다 — 상품 갤러리에서 시작해보세요</div></div>':''}`;
   /* 3 내 장부 */
   const ledger=`<div class="sec">내 장부</div>
-  <div class="grid g4">
-    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출"><div class="lbl">진행 중 판매 매출</div><div class="val">₩${fmt(liveNet)}</div><div class="sub">확정 기준 · ${live.length}건 LIVE</div></div>
-    <div class="card kpi go" data-act="screen" data-k="settle" title="정산"><div class="lbl">정산 예정 수수료</div><div class="val" style="color:var(--money)">₩${fmt(pendPay)}</div><div class="sub">환불기간 ${clearing.length}건 · ${sellerWht(sl)?'원천징수 후':'사업자 정산'}</div></div>
-    <div class="card kpi go" data-act="screen" data-k="settle" title="정산"><div class="lbl">이번 달 확정 수익</div><div class="val">₩${fmt(monthPay)}</div><div class="sub">정산 완료 기준</div></div>
-    <div class="card kpi go" data-act="screen" data-k="camps" title="내 캠페인"><div class="lbl">누적 판매</div><div class="val">${mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status)).length}회</div><div class="sub">재판매율 ${(()=>{const d=mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status));const pids=d.map(c=>c.productId);const rep=pids.filter((x,i)=>pids.indexOf(x)!==i).length;return d.length?Math.round(rep/d.length*100):0;})()}%</div></div>
+  <div class="card" style="padding:16px 18px">
+    <div class="mini-stats ledger4">
+      <div class="go" data-act="screen" data-k="sales" title="실시간 매출"><span class="ms-l">진행 중 판매 매출</span><span class="ms-v">₩${fmt(liveNet)}</span><span class="ms-s">확정 기준 · ${live.length}건 LIVE</span></div>
+      <div class="go" data-act="screen" data-k="settle" title="정산"><span class="ms-l">정산 예정 수수료</span><span class="ms-v" style="color:var(--money)">₩${fmt(pendPay)}</span><span class="ms-s">환불기간 ${clearing.length}건 · ${sellerWht(sl)?'원천징수 후':'사업자 정산'}</span></div>
+      <div class="go" data-act="screen" data-k="settle" title="정산"><span class="ms-l">이번 달 확정 수익</span><span class="ms-v">₩${fmt(monthPay)}</span><span class="ms-s">정산 완료 기준</span></div>
+      <div class="go" data-act="screen" data-k="camps" title="내 캠페인"><span class="ms-l">누적 판매</span><span class="ms-v">${mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status)).length}회</span><span class="ms-s">재판매율 ${(()=>{const d=mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status));const pids=d.map(c=>c.productId);const rep=pids.filter((x,i)=>pids.indexOf(x)!==i).length;return d.length?Math.round(rep/d.length*100):0;})()}%</span></div>
+    </div>
   </div>`;
   /* 4 성장: 피라미드(컴팩트) + 내 자산 */
   const pyr=`<div class="card kpi go" data-act="screen" data-k="rank" title="랭킹·등급 보기">
