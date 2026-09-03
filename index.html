@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>셀러리 프로토타입</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cg%20stroke%3D%22%23141414%22%20stroke-width%3D%221.5%22%3E%3Ccircle%20cx%3D%226.5%22%20cy%3D%225.5%22%20r%3D%223%22%20fill%3D%22%239cc86a%22%2F%3E%3Ccircle%20cx%3D%2217.5%22%20cy%3D%225.5%22%20r%3D%223%22%20fill%3D%22%239cc86a%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%224.4%22%20r%3D%223.4%22%20fill%3D%22%236da33a%22%2F%3E%3Crect%20x%3D%224.6%22%20y%3D%228.2%22%20width%3D%224.2%22%20height%3D%2212.8%22%20rx%3D%222.1%22%20fill%3D%22%23cfe3a4%22%2F%3E%3Crect%20x%3D%2215.2%22%20y%3D%228.2%22%20width%3D%224.2%22%20height%3D%2212.8%22%20rx%3D%222.1%22%20fill%3D%22%23cfe3a4%22%2F%3E%3Crect%20x%3D%229.9%22%20y%3D%227.4%22%20width%3D%224.2%22%20height%3D%2213.6%22%20rx%3D%222.1%22%20fill%3D%22%23aed378%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2012%2012%22%20shape-rendering%3D%22crispEdges%22%3E%3Crect%20width%3D%2212%22%20height%3D%2212%22%20fill%3D%22%23eef3dc%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%220%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%234f8a2c%22%2F%3E%3Crect%20x%3D%227%22%20y%3D%220%22%20width%3D%221%22%20height%3D%221%22%20fill%3D%22%234f8a2c%22%2F%3E%3Crect%20x%3D%222%22%20y%3D%221%22%20width%3D%223%22%20height%3D%221%22%20fill%3D%22%236da33a%22%2F%3E%3Crect%20x%3D%226%22%20y%3D%221%22%20width%3D%223%22%20height%3D%221%22%20fill%3D%22%236da33a%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%222%22%20width%3D%225%22%20height%3D%221%22%20fill%3D%22%238fc74a%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%225%22%20height%3D%228%22%20fill%3D%22%23aed378%22%2F%3E%3Crect%20x%3D%222%22%20y%3D%223%22%20width%3D%221%22%20height%3D%228%22%20fill%3D%22%231c2a14%22%2F%3E%3Crect%20x%3D%228%22%20y%3D%223%22%20width%3D%221%22%20height%3D%228%22%20fill%3D%22%231c2a14%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%2211%22%20width%3D%225%22%20height%3D%221%22%20fill%3D%22%234f8a2c%22%2F%3E%3C%2Fsvg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Archivo:wght@500;600;700;800;900&family=Press+Start+2P&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2/dist/galmuri.css">
 <style>
@@ -488,12 +488,68 @@ input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28
 .cal-cell.today .dn{background:var(--yellow);border:none;box-shadow:var(--pxb2)}
 .cal-ev{border:none!important;box-shadow:var(--pxb2);margin:3px 3px 2px}
 .toast{border:none;box-shadow:var(--pxb2),3px 3px 0 0 var(--red)}
+/* ---- v6: 레트로 OS 포인트 (마인크래프트 감성) ---- */
+/* 상단바 고정 해제 */
+.appbar{position:static}
+/* 로고: 굵은 픽셀 SELLERY (2px 쉬프트 볼드) */
+.wordmark{font-family:var(--px14)!important;font-size:22px;text-transform:uppercase!important;text-shadow:2px 0 0 currentColor;color:var(--red);padding:8px 16px 6px;gap:10px}
+.wordmark .dot{color:var(--ink)}
+.wordmark svg{width:24px;height:24px;shape-rendering:crispEdges;image-rendering:pixelated}
+/* 카드 = 레트로 윈도우: 다크 타이틀바 + ◼ ◼ ◼ + 우측 파일명 */
+.card::before,.listcard::before,.tblw::before,.thread::before,.det-head::before{content:'◼ ◼ ◼';height:18px;background:var(--ink);color:var(--yellow);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px}
+.card::after,.listcard::after,.tblw::after,.thread::after,.det-head::after{content:attr(data-win);position:absolute;top:0;right:10px;height:18px;line-height:18px;color:var(--yellow);font-family:var(--px11);font-size:11px;pointer-events:none}
+.card,.det-head,.thread{padding-top:30px}
+.listcard,.tblw{padding-top:18px}
+.mini-stats>div::before,.mini-stats>div::after,.prod .ph::before,.prod .ph::after,.sc-av::before,.sim::before,.exclbox::before,.landing::before{display:none}
+.modal{padding-top:26px}
+.modal::before{content:'◼ ◼ ◼';position:absolute;top:0;left:0;right:0;height:18px;background:var(--ink);color:var(--yellow);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px}
+.modal::after{content:'DIALOG.EXE';position:absolute;top:0;right:10px;height:18px;line-height:18px;color:var(--yellow);font-family:var(--px11);font-size:11px}
+/* 헤드라인 끝 블록 커서 */
+.hero-band h1::after{content:'▮';color:var(--red);margin-left:6px;animation:led 1s steps(1) infinite;font-family:var(--px14)}
+/* KPI 숫자·가격: 원래 폰트 복귀 (픽셀은 태그·뱃지·로고에만) */
+.kpi .val{font-family:'Archivo','IBM Plex Sans KR',sans-serif!important;font-weight:800!important;font-size:29px;letter-spacing:-.02em!important}
+.prod .gp,.landing .pr .g,.mini-stats .ms-v,.hb-val{font-family:'Archivo','IBM Plex Sans KR',sans-serif!important;font-weight:800!important;letter-spacing:-.01em!important}
+.prod .gp{font-size:20px}.landing .pr .g{font-size:30px}.mini-stats .ms-v{font-size:13px}.hb-val{font-family:'IBM Plex Mono',monospace!important;font-weight:400!important;font-size:11px}
+/* 가격: 할인율 픽셀 뱃지 */
+.disc{font-family:var(--px11);font-size:11px;background:var(--danger);color:#fff;padding:2px 6px;box-shadow:var(--pxb2);margin:2px 6px;vertical-align:2px;animation:led 2.4s steps(1) infinite}
+.prod .prices{align-items:center;flex-wrap:wrap;row-gap:6px}
+/* 판매 행 가독성 */
+.rowitem .sub{font-size:13px;color:var(--mute)}
+.rowitem > span.sub{font-size:13px;color:var(--ink);font-family:var(--px11)!important;background:var(--surface-2);padding:2px 8px;box-shadow:var(--pxb2);margin:2px 6px}
+/* 등급 게이지: 마인크래프트 XP바 (세그먼트) */
+.meter{height:14px}
+.meter span{background:repeating-linear-gradient(90deg,var(--red) 0 10px,var(--yellow) 10px 12px,var(--ink) 12px 14px)}
+/* 픽셀 이모지 캔버스 */
+.pxemoji{image-rendering:pixelated;display:block}
+.prod .ph .pxemoji{width:72px;height:72px}
+.rowitem .pxemoji,.det-head .pxemoji{width:36px;height:36px}
+.sc-av .pxemoji{width:44px;height:44px}
+/* 픽셀 커서 · 스크롤바 · 선택 */
+body{cursor:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' shape-rendering='crispEdges'%3E%3Cpath d='M2 1h2v2H2zM2 3h2v12H2zM4 3h2v2H4zM4 5h2v8H4zM6 5h2v2H6zM6 7h2v4H6zM8 7h2v2H8zM8 9h2v2H8zM10 9h2v2H10zM8 11h2v2H8zM10 13h2v2H10zM6 11h2v2H6z' fill='%231c2a14'/%3E%3Cpath d='M4 5h2v6H4zM6 7h2v4H6zM8 9h2v2H8z' fill='%23fff'/%3E%3C/svg%3E") 2 2,auto}
+button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' shape-rendering='crispEdges'%3E%3Cpath d='M6 1h4v6H6zM4 7h8v2H4zM2 9h12v2H2zM2 11h12v2H2zM4 13h8v2H4zM6 15h4v2H6z' fill='%231c2a14'/%3E%3Cpath d='M7 2h2v5H7zM4 10h8v2H4zM6 13h4v1H6z' fill='%23b7e34a'/%3E%3C/svg%3E") 6 2,pointer}
+::selection{background:var(--yellow);color:var(--ink)}
+::-webkit-scrollbar{width:14px;height:14px}
+::-webkit-scrollbar-track{background:var(--surface-2)}
+::-webkit-scrollbar-thumb{background:var(--red);border:3px solid var(--surface-2);box-shadow:inset 2px 2px 0 rgba(255,255,255,.4)}
+/* 부팅 화면 (세션 첫 진입 1회) */
+.boot{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;transition:opacity .3s steps(3)}
+.boot.out{opacity:0}
+.boot-win{width:min(420px,88vw);background:var(--surface);box-shadow:var(--pxb),var(--pxd),var(--bevel);position:relative;padding:36px 28px 30px;text-align:center}
+.boot-bar{position:absolute;top:0;left:0;right:0;height:18px;background:var(--ink);color:var(--yellow);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px;text-align:left}
+.boot-bar span{position:absolute;right:10px;letter-spacing:0}
+.boot-logo{font-family:var(--px14);font-size:42px;color:var(--red);text-shadow:3px 0 0 currentColor;line-height:1.2}
+.boot-logo span{color:var(--ink)}
+.boot-txt{font-family:var(--px11);font-size:11px;color:var(--mute);margin:14px 0 18px}
+.boot-prog{height:16px;box-shadow:var(--pxb2);margin:0 20px;background:var(--surface-2)}
+.boot-prog i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--red) 0 10px,var(--yellow) 10px 12px,var(--ink) 12px 14px);animation:bootfill 1.15s steps(14) forwards}
+@keyframes bootfill{to{width:100%}}
+@media(prefers-reduced-motion:reduce){.boot{display:none}.disc,.hero-band h1::after,.st::before{animation:none}}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
 <body>
 <div class="appbar">
-  <span class="wordmark" data-act="goHome" role="button" tabindex="0" style="cursor:pointer"><svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><g stroke="#141414" stroke-width="1.5"><circle cx="6.5" cy="5.5" r="3" fill="#9cc86a"/><circle cx="17.5" cy="5.5" r="3" fill="#9cc86a"/><circle cx="12" cy="4.4" r="3.4" fill="#6da33a"/><rect x="4.6" y="8.2" width="4.2" height="12.8" rx="2.1" fill="#cfe3a4"/><rect x="15.2" y="8.2" width="4.2" height="12.8" rx="2.1" fill="#cfe3a4"/><rect x="9.9" y="7.4" width="4.2" height="13.6" rx="2.1" fill="#aed378"/></g></svg>Sellery<span class="dot">.</span></span>
+  <span class="wordmark" data-act="goHome" role="button" tabindex="0" style="cursor:pointer"><svg viewBox="0 0 12 12" width="24" height="24" aria-hidden="true" shape-rendering="crispEdges"><rect x="3" y="0" width="1" height="1" fill="#4f8a2c"/><rect x="7" y="0" width="1" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="3" height="1" fill="#6da33a"/><rect x="6" y="1" width="3" height="1" fill="#6da33a"/><rect x="3" y="2" width="5" height="1" fill="#8fc74a"/><rect x="3" y="3" width="1" height="8" fill="#cfe3a4"/><rect x="4" y="3" width="1" height="8" fill="#aed378"/><rect x="5" y="3" width="1" height="8" fill="#cfe3a4"/><rect x="6" y="3" width="1" height="8" fill="#aed378"/><rect x="7" y="3" width="1" height="8" fill="#cfe3a4"/><rect x="3" y="11" width="5" height="1" fill="#4f8a2c"/><rect x="2" y="3" width="1" height="8" fill="#1c2a14"/><rect x="8" y="3" width="1" height="8" fill="#1c2a14"/></svg>Sellery<span class="dot">.</span></span>
   <nav class="roletabs" id="roletabs"></nav>
   <div class="master">
     <button class="iconbtn" data-act="gotoMy" aria-label="마이페이지" title="마이페이지"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4.1-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg></button>
@@ -825,13 +881,36 @@ function render(){
   $('#subnav').innerHTML=scr.map(([k,l])=>
     `<button data-act="screen" data-k="${k}" class="${S.view.screen===k&&!S.view.cid?'on':''}">${l}</button>`).join('')+personaHtml;
   const m=$('#main');
-  if(S.view.cid){ m.innerHTML=vCampDetail(S.view.cid); const box=m.querySelector('.msgs'); if(box) box.scrollTop=box.scrollHeight; return; }
+  if(S.view.cid){ m.innerHTML=vCampDetail(S.view.cid); decorate(); const box=m.querySelector('.msgs'); if(box) box.scrollTop=box.scrollHeight; return; }
   const fn={
     'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
     'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vRequests,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,'brand.my':vBrandMy,
     'admin.home':vAdminHome,'admin.review':vAdminReview,'admin.settle':vAdminSettle
   }[S.view.role+'.'+S.view.screen]||vSellerHome;
   m.innerHTML=fn();
+  decorate();
+}
+/* ---- 레트로 OS 데코: 윈도우 파일명 + 이모지 픽셀화 (스킨 전용, 데이터/기능 무관) ---- */
+function pixelizeEmoji(el){
+  if(!el||el.querySelector('.pxemoji')||el.querySelector('img'))return;
+  const tn=[...el.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
+  if(!tn)return;
+  const ch=tn.textContent.trim();
+  const small=document.createElement('canvas');small.width=16;small.height=16;
+  const sc=small.getContext('2d');sc.font='13px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';sc.textAlign='center';sc.textBaseline='middle';sc.fillText(ch,8,9);
+  const big=document.createElement('canvas');big.width=96;big.height=96;
+  const bc=big.getContext('2d');bc.imageSmoothingEnabled=false;bc.drawImage(small,0,0,96,96);
+  big.className='pxemoji';big.setAttribute('aria-label',ch);
+  tn.replaceWith(big);
+}
+function decorate(){
+  document.querySelectorAll('main .sec').forEach(s=>{
+    const t=s.textContent.replace(/[▶■·—]/g,' ').replace(/\d+명|\d+건/g,'').replace(/\s+/g,' ').trim().split(' ').slice(0,3).join('_').slice(0,14);
+    const n=s.nextElementSibling;if(!n)return;
+    const targets=n.matches('.card,.listcard,.tblw,.thread')?[n]:[...n.querySelectorAll(':scope > .card, :scope > .listcard, :scope > .tblw')];
+    targets.forEach(x=>{if(!x.hasAttribute('data-win'))x.setAttribute('data-win',t.toUpperCase()+'.EXE');});
+  });
+  document.querySelectorAll('.prod .ph, .sc-av.em, .rowitem > div:first-child[style*="font-size:24px"], .det-head > div:first-child[style*="font-size:32px"]').forEach(pixelizeEmoji);
 }
 
 /* ============ shared components ============ */
@@ -919,7 +998,7 @@ function prodCard(p){
     <div><span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> <span class="sub" style="font-size:11px;color:var(--mute)">${p.cat}</span></div>
     <div class="nm" data-act="prodDetail" data-k="${p.id}" style="cursor:pointer">${esc(p.name)}</div>
     <div class="meta">${esc(p.desc)} · 샘플 ${p.sample}</div>
-    <div class="prices"><span class="gp">₩${fmt(p.gp)}</span><span class="cp">₩${fmt(p.cp)}</span><span class="rate">수수료 ${(p.rate*100).toFixed(0)}~${(p.rate*100+GRADES[0].bonus).toFixed(0)}%</span></div>
+    <div class="prices"><span class="gp">₩${fmt(p.gp)}</span><span class="cp">₩${fmt(p.cp)}</span>${p.cp>p.gp?`<span class="disc">-${Math.round((1-p.gp/p.cp)*100)}%</span>`:''}<span class="rate">수수료 ${(p.rate*100).toFixed(0)}~${(p.rate*100+GRADES[0].bonus).toFixed(0)}%</span></div>
     <div class="meta">건당 예상 수수료 ₩${fmt(margin)}${exclLocked?' · <b style="color:var(--danger)">독점 인플루언서 확정 상품</b>':''}</div>
     <div class="btnrow">
       <button class="sm ghost" data-act="prodDetail" data-k="${p.id}">실적·상세</button>
@@ -1230,7 +1309,7 @@ function productDetailModal(pid){
     </div>`;
   }
   openModal(`<h3>${p.em} ${esc(p.name)}</h3>
-  <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px">${b.logo?`<img src="${b.logo}" alt="" style="width:20px;height:20px;vertical-align:-6px;border:1.5px solid var(--ink);margin-right:2px">`:''}<span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> ${p.cat} · 판매가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> · 수수료 ${(p.rate*100).toFixed(0)}~${(p.rate*100+GRADES[0].bonus).toFixed(0)}% (등급 보너스 포함) · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
+  <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px">${b.logo?`<img src="${b.logo}" alt="" style="width:20px;height:20px;vertical-align:-6px;border:1.5px solid var(--ink);margin-right:2px">`:''}<span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> ${p.cat} · 판매가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> ${p.cp>p.gp?`<span class="disc">-${Math.round((1-p.gp/p.cp)*100)}%</span>`:''} · 수수료 ${(p.rate*100).toFixed(0)}~${(p.rate*100+GRADES[0].bonus).toFixed(0)}% (등급 보너스 포함) · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
   ${excl}
   <div class="lbl-sm" style="margin:16px 0 8px">이 상품의 판매 실적 — 인플루언서 익명</div>
   <div class="tblw" style="box-shadow:none"><table style="min-width:480px">
@@ -2250,6 +2329,15 @@ function simSell(cid,n){
   save();render();toast(`주문 ${n}건 발생 (시뮬레이션)`);
 }
 
+/* ============ boot screen (session first load, skin flavor) ============ */
+(function boot(){
+  try{if(sessionStorage.getItem('slry-boot'))return;sessionStorage.setItem('slry-boot','1');}catch(e){}
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const o=document.createElement('div');o.className='boot';
+  o.innerHTML=`<div class="boot-win"><div class="boot-bar">◼ ◼ ◼<span>SELLERY.EXE</span></div><div class="boot-logo">SELLERY<span>.</span></div><div class="boot-txt">LOADING INFLUENCER COMMERCE OS…</div><div class="boot-prog"><i></i></div></div>`;
+  document.body.appendChild(o);
+  setTimeout(()=>o.classList.add('out'),1350);setTimeout(()=>o.remove(),1750);
+})();
 /* ============ events ============ */
 document.addEventListener('click',e=>{
   if(e.target.classList&&e.target.classList.contains('modal-bg')){closeModal();return;}
