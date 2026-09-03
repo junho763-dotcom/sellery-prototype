@@ -165,7 +165,7 @@ main > *:nth-child(5){animation-delay:.16s}
 
 /* ===== customer store (sellery.co.kr 구매 페이지) ===== */
 .store{max-width:760px;margin:0 auto}
-.store-trust{background:var(--ink);color:var(--yellow);font-size:12px;padding:8px 14px;margin:0 6px 10px 3px;cursor:pointer;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.store-trust{background:var(--bar);color:var(--bar-fg);font-size:12px;padding:8px 14px;margin:0 6px 10px 3px;cursor:pointer;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .store-hero{position:relative;height:280px;display:flex;align-items:center;justify-content:center;background:conic-gradient(#f0f5e2 25%,#f7faee 0 50%,#f0f5e2 0 75%,#f7faee 0) 0 0/16px 16px;border-bottom:2px solid var(--ink)}
 .store-hero .store-em{font-size:120px;line-height:1}
 .store-hero .pxemoji{width:160px;height:160px}
@@ -406,6 +406,8 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
   --bevel:inset 0 3px 0 rgba(255,255,255,.8),inset 3px 0 0 rgba(255,255,255,.8),inset 0 -3px 0 rgba(28,42,20,.13),inset -3px 0 0 rgba(28,42,20,.13);
   --bevel2:inset 0 2px 0 rgba(255,255,255,.75),inset 2px 0 0 rgba(255,255,255,.75),inset 0 -2px 0 rgba(28,42,20,.18),inset -2px 0 0 rgba(28,42,20,.18);
   --checker:repeating-linear-gradient(90deg,var(--red) 0 4px,var(--yellow) 4px 8px);
+  --bar:#2f5a1a;   /* 윈도우 타이틀바·인증 띠 (사용자 선택 C: 딥 그린 + 라임 글자) */
+  --bar-fg:#d8ee9a;
 }
 /* ---- 그라운드: 단색, 앱바·탭도 투명해서 배경이 맨 위까지 ---- */
 body{background:var(--bg);background-image:none}
@@ -447,8 +449,8 @@ body{background:var(--bg);background-image:none}
 /* ---- 히어로: 게임 다이얼로그 윈도우 (아바타는 우측 상단 고정 — 가림 방지) ---- */
 .hero-band{background:var(--surface);box-shadow:var(--pxb),var(--pxd),var(--bevel);margin:3px 6px 26px 3px;padding:44px 28px 22px;position:relative}
 .overlap{margin-top:0}
-.hero-band::before{content:'◼ ◼ ◼';position:absolute;top:0;left:0;right:0;height:22px;background:var(--ink);color:var(--yellow);font-size:11px;line-height:22px;padding-left:12px;letter-spacing:4px;font-family:var(--px11)}
-.hero-band::after{content:'SELLERY.EXE';position:absolute;top:0;right:12px;height:22px;color:var(--yellow);font-size:11px;line-height:22px;font-family:var(--px11)}
+.hero-band::before{content:'◼ ◼ ◼';position:absolute;top:0;left:0;right:0;height:22px;background:var(--bar);color:var(--bar-fg);font-size:11px;line-height:22px;padding-left:12px;letter-spacing:4px;font-family:var(--px11)}
+.hero-band::after{content:'SELLERY.EXE';position:absolute;top:0;right:12px;height:22px;color:var(--bar-fg);font-size:11px;line-height:22px;font-family:var(--px11)}
 .hero-av{position:absolute!important;top:40px!important;right:18px!important;left:auto!important;margin:0!important;transform:none;border-radius:0;border:none!important;box-shadow:var(--pxb),var(--pxd)}
 @media(max-width:640px){.hero-av{width:64px!important;height:64px!important;top:34px!important;right:12px!important}}
 .hero-band .ey{color:var(--red)}
@@ -524,14 +526,14 @@ body{background:conic-gradient(#eef3dc 25%,#eaf0d6 0 50%,#eef3dc 0 75%,#eaf0d6 0
 .wordmark .dot{color:var(--ink)}
 .wordmark svg{width:24px;height:24px;shape-rendering:crispEdges;image-rendering:pixelated}
 /* 카드 = 레트로 윈도우: 다크 타이틀바 + ◼ ◼ ◼ + 우측 파일명 */
-.card::before,.listcard::before,.tblw::before,.thread::before,.det-head::before{content:'◼ ◼ ◼';height:18px;background:var(--ink);color:var(--yellow);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px}
-.card::after,.listcard::after,.tblw::after,.thread::after,.det-head::after{content:attr(data-win);position:absolute;top:0;right:10px;height:18px;line-height:18px;color:var(--yellow);font-family:var(--px11);font-size:11px;pointer-events:none}
+.card::before,.listcard::before,.tblw::before,.thread::before,.det-head::before{content:'◼ ◼ ◼';height:18px;background:var(--bar);color:var(--bar-fg);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px}
+.card::after,.listcard::after,.tblw::after,.thread::after,.det-head::after{content:attr(data-win);position:absolute;top:0;right:10px;height:18px;line-height:18px;color:var(--bar-fg);font-family:var(--px11);font-size:11px;pointer-events:none}
 .card,.det-head,.thread{padding-top:30px}
 .listcard,.tblw{padding-top:18px}
 .mini-stats>div::before,.mini-stats>div::after,.prod .ph::before,.prod .ph::after,.sc-av::before,.sim::before,.exclbox::before,.landing::before{display:none}
 .modal{padding-top:26px}
-.modal::before{content:'◼ ◼ ◼';position:absolute;top:0;left:0;right:0;height:18px;background:var(--ink);color:var(--yellow);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px}
-.modal::after{content:'DIALOG.EXE';position:absolute;top:0;right:10px;height:18px;line-height:18px;color:var(--yellow);font-family:var(--px11);font-size:11px}
+.modal::before{content:'◼ ◼ ◼';position:absolute;top:0;left:0;right:0;height:18px;background:var(--bar);color:var(--bar-fg);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px}
+.modal::after{content:'DIALOG.EXE';position:absolute;top:0;right:10px;height:18px;line-height:18px;color:var(--bar-fg);font-family:var(--px11);font-size:11px}
 /* 헤드라인 끝 블록 커서 */
 .hero-band h1::after{content:'';display:inline-block;width:.22em;height:.82em;background:var(--red);margin-left:.18em;vertical-align:-.06em;animation:led 1s steps(1) infinite}
 /* KPI 숫자·가격: 원래 폰트 복귀 (픽셀은 태그·뱃지·로고에만) */
@@ -563,7 +565,7 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 .boot{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;transition:opacity .3s steps(3)}
 .boot.out{opacity:0}
 .boot-win{width:min(420px,88vw);background:var(--surface);box-shadow:var(--pxb),var(--pxd),var(--bevel);position:relative;padding:36px 28px 30px;text-align:center}
-.boot-bar{position:absolute;top:0;left:0;right:0;height:18px;background:var(--ink);color:var(--yellow);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px;text-align:left}
+.boot-bar{position:absolute;top:0;left:0;right:0;height:18px;background:var(--bar);color:var(--bar-fg);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px;text-align:left}
 .boot-bar span{position:absolute;right:10px;letter-spacing:0}
 .boot-logo{font-family:var(--px14);font-size:42px;color:var(--red);text-shadow:3px 0 0 currentColor,6px 0 0 currentColor,0 3px 0 currentColor,3px 3px 0 currentColor,6px 3px 0 currentColor;line-height:1.2}
 .boot-logo span{color:var(--ink)}
