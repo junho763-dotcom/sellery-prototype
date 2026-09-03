@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>셀러리 프로토타입</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cg%20stroke%3D%22%23141414%22%20stroke-width%3D%221.5%22%3E%3Ccircle%20cx%3D%226.5%22%20cy%3D%225.5%22%20r%3D%223%22%20fill%3D%22%239cc86a%22%2F%3E%3Ccircle%20cx%3D%2217.5%22%20cy%3D%225.5%22%20r%3D%223%22%20fill%3D%22%239cc86a%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%224.4%22%20r%3D%223.4%22%20fill%3D%22%236da33a%22%2F%3E%3Crect%20x%3D%224.6%22%20y%3D%228.2%22%20width%3D%224.2%22%20height%3D%2212.8%22%20rx%3D%222.1%22%20fill%3D%22%23cfe3a4%22%2F%3E%3Crect%20x%3D%2215.2%22%20y%3D%228.2%22%20width%3D%224.2%22%20height%3D%2212.8%22%20rx%3D%222.1%22%20fill%3D%22%23cfe3a4%22%2F%3E%3Crect%20x%3D%229.9%22%20y%3D%227.4%22%20width%3D%224.2%22%20height%3D%2213.6%22%20rx%3D%222.1%22%20fill%3D%22%23aed378%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Archivo:wght@500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Archivo:wght@500;600;700;800;900&family=Press+Start+2P&display=swap">
 <style>
 /* SELLERY — neo-brutalist editorial skin (single committed theme) */
 :root{
@@ -362,6 +362,40 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 @media(max-width:640px){.hero-av{position:static;display:block;width:64px;height:64px;margin:0 0 12px;transform:rotate(-2deg)}}
 .ph.av{background-size:cover;background-position:center;transform:none!important}
 
+/* ======================================================================
+   SKIN: light-pixel-celery (2026-09-02)
+   원복 방법: 이 블록(=== SKIN ~ /SKIN ===)만 삭제하면 네오브루탈 크림 스킨으로 복귀.
+   git 스냅샷: tag skin-neobrutal-v1
+   ====================================================================== */
+:root{
+  --bg:#eef3dc; --surface:#f8faee; --surface-2:#e2ead0;
+  --ink:#1c2a14; --mute:#56663f; --line:#1c2a14; --soft-line:#c9d4ae;
+  --red:#4f8a2c; --red-soft:#dfeccc;            /* 브랜드 액센트 = 셀러리 그린 */
+  --yellow:#b7e34a; --yellow-soft:#e8f3c6;      /* 하이라이트/CTA = 셀러리 라임 */
+  --money:#8a6a12; --money-soft:#f1ecd0;
+  --plat-c:#2f6a1e; --plat-bg:#dfeccc;
+  --seller-c:#b0326a; --seller-bg:#f7e2ec;
+}
+/* 픽셀 감 — 모서리 각지게 */
+.card,.listcard,.tblw,.det-head,.thread,.modal,.landing,.sim,.exclbox,.notice,.mini-stats>div,.sc-hist,.slot,.msg,.hb-track,.cal-ev,.wordmark,.prod .ph{border-radius:0}
+button,.catchip,input,select,textarea,.st,.chip,.toast,.gradebox,.nb,.stp{border-radius:0}
+/* 픽셀 폰트는 영문 로고·라벨·숫자 뱃지에만 (한글 가독성 유지) */
+.wordmark{font-family:'Press Start 2P','IBM Plex Sans KR',monospace;font-size:12px;letter-spacing:.1em;padding:9px 14px;box-shadow:var(--hs-red)}
+.hero-band .ey{font-family:'Press Start 2P',monospace;font-size:8.5px;letter-spacing:.18em}
+.mebadge{font-family:'Press Start 2P',monospace;font-size:6.5px;padding:2px 6px;color:var(--yellow)}
+.badge{font-family:'Press Start 2P',monospace;font-size:7px;line-height:17px}
+/* 주요 액션 = 셀러리 라임 CTA */
+button.pri{background:var(--yellow);color:var(--ink);box-shadow:var(--hs)}
+button.pri:hover{box-shadow:5px 5px 0 var(--ink)}
+button.pri:active{box-shadow:1px 1px 0 var(--ink)}
+.subnav button.on{background:var(--ink);color:var(--yellow);box-shadow:var(--hs-red)}
+.catchip.on{background:var(--yellow)}
+.hero-band h1 em{background:#d8ee9a;box-shadow:3px 3px 0 var(--ink)}
+.st.live{background:var(--red);color:#fff}
+.stp.now{color:var(--yellow)}
+.kpi .val{color:var(--ink)}
+.spark span{background:var(--red)}
+/* ============================ /SKIN ============================ */
 </style>
 </head>
 <body>
