@@ -492,7 +492,8 @@ input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28
 /* 상단바 고정 해제 */
 .appbar{position:static}
 /* 로고: 굵은 픽셀 SELLERY (2px 쉬프트 볼드) */
-.wordmark{font-family:var(--px14)!important;font-size:22px;text-transform:uppercase!important;text-shadow:2px 0 0 currentColor;color:var(--red);padding:8px 16px 6px;gap:10px}
+.wordmark{font-family:var(--px14)!important;font-size:28px;line-height:1.1;text-transform:uppercase!important;text-shadow:2px 0 0 currentColor,4px 0 0 currentColor,0 2px 0 currentColor,2px 2px 0 currentColor,4px 2px 0 currentColor;color:var(--red);padding:8px 18px 8px 16px;gap:12px}
+.wordmark svg{width:28px;height:28px}
 .wordmark .dot{color:var(--ink)}
 .wordmark svg{width:24px;height:24px;shape-rendering:crispEdges;image-rendering:pixelated}
 /* 카드 = 레트로 윈도우: 다크 타이틀바 + ◼ ◼ ◼ + 우측 파일명 */
@@ -537,7 +538,7 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 .boot-win{width:min(420px,88vw);background:var(--surface);box-shadow:var(--pxb),var(--pxd),var(--bevel);position:relative;padding:36px 28px 30px;text-align:center}
 .boot-bar{position:absolute;top:0;left:0;right:0;height:18px;background:var(--ink);color:var(--yellow);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px;text-align:left}
 .boot-bar span{position:absolute;right:10px;letter-spacing:0}
-.boot-logo{font-family:var(--px14);font-size:42px;color:var(--red);text-shadow:3px 0 0 currentColor;line-height:1.2}
+.boot-logo{font-family:var(--px14);font-size:42px;color:var(--red);text-shadow:3px 0 0 currentColor,6px 0 0 currentColor,0 3px 0 currentColor,3px 3px 0 currentColor,6px 3px 0 currentColor;line-height:1.2}
 .boot-logo span{color:var(--ink)}
 .boot-txt{font-family:var(--px11);font-size:11px;color:var(--mute);margin:14px 0 18px}
 .boot-prog{height:16px;box-shadow:var(--pxb2);margin:0 20px;background:var(--surface-2)}
