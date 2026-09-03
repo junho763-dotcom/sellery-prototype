@@ -867,6 +867,11 @@ button,.catchip,.rowitem,.hb-row,.news-item,.st,.gradebox,.nb,.badge,.subnav,.ro
 @media(max-width:640px){.mini-stats.ledger4{grid-template-columns:1fr 1fr}.mini-stats.ledger4 .ms-v{font-size:15px}}
 .btnrow.one{display:flex;flex-wrap:nowrap;gap:6px}
 .btnrow.one button{flex:1;min-width:0;padding:7px 4px;font-size:11.5px;white-space:nowrap;margin:2px 0 4px;overflow:hidden;text-overflow:ellipsis}
+/* 브랜드 홈: 소식·상품현황·TOP5 3열 → 반응형 */
+.homegrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:start}
+@media(max-width:1100px){.homegrid3{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.homegrid3{grid-template-columns:1fr}}
+.modal .pyr-row{max-width:100%}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -2002,73 +2007,128 @@ function vSales(){
 
 /* ============ BRAND ============ */
 function vBrandHome(){
-  const me=S.actingBrand;
-  const myP=D_().products.filter(p=>p.brandId===me).map(p=>p.id);
-  const cs=D_().campaigns.filter(c=>myP.includes(c.productId));
-  const pend=cs.filter(c=>['SAMPLE_REQUESTED','SCHEDULE_PROPOSED','SAMPLE_APPROVED'].includes(c.status));
-  const live=cs.filter(c=>c.status==='LIVE');
-  const gmv=cs.reduce((a,c)=>a+calc(c).net,0);
-  const heroLine = pend.length ? `승인 대기 <em>${pend.length}건</em>부터 확인해볼까요?`
+  const me=S.actingBrand, bd=brand(me);
+  const myP=D_().products.filter(p=>p.brandId===me);
+  const myPid=myP.map(p=>p.id);
+  const cs=D_().campaigns.filter(c=>myPid.includes(c.productId));
+  const {cs:pendCs,xr,n:pendN}=brandPending();
+  const live=cs.filter(c=>c.status==='LIVE'), soon=cs.filter(c=>c.status==='SCHEDULE_CONFIRMED'), clearing=cs.filter(c=>c.status==='CLEARING');
+  const liveNet=live.reduce((a,c)=>a+calc(c).net,0);
+  const pendPay=clearing.reduce((a,c)=>a+calc(c).brandPay,0);
+  const monthPay=cs.filter(c=>c.status==='SETTLED'&&(c.settledAt||'').slice(0,7)===ymd(today()).slice(0,7)).reduce((a,c)=>a+calc(c).brandPay,0);
+  const cids=cs.map(c=>c.id);
+  const unshipped=D_().orders.filter(o=>cids.includes(o.campaignId)&&o.status==='PAID'&&!o.tracking).length;
+  const todayStr=ymd(today());
+  const heroLine = pendN ? `승인 대기 <em>${pendN}건</em>부터 확인해볼까요?`
+    : unshipped ? `미발송 주문 <em>${unshipped}건</em>이 기다려요.`
     : live.length ? `지금 판매 <em>${live.length}건</em>이 진행 중이에요.`
     : `새 상품을 올리고 인플루언서를 만나보세요.`;
-  // top influencers by recent sales
-  const tops=D_().sellers.slice().sort((a,b)=>b.m3Sales-a.m3Sales).slice(0,5);
-  const mxS=tops.length?tops[0].m3Sales:1;
-  const topChart=`<div class="card">
-    <div class="lbl-sm" style="margin-bottom:4px">지금 잘 파는 인플루언서 TOP5</div>
-    <div style="font-size:11px;color:var(--mute);margin-bottom:12px">최근 3개월 확정 매출 기준 · 행을 누르면 바로 판매 제안 · 비공개(○○○)는 ${CEL} 2로 열람 후 제안</div>
-    ${tops.map((x,i)=>`<div class="hb-row" data-act="topSeller" data-k="${x.id}">
-      <span class="hb-nm">${i+1}. ${platIcon(x)} ${x.hidden?'○○○ 인플루언서':esc(x.name)+' '+x.handle}</span>
-      <div class="hb-track"><div class="hb-bar ${i===0?'top':''}" style="width:${Math.max(6,x.m3Sales/mxS*100)}%"></div></div>
-      <span class="hb-val">₩${fmt(x.m3Sales)}</span>
-    </div>`).join('')}
+  /* 2 승인·처리 대기 */
+  const LBL={SAMPLE_REQUESTED:['샘플 요청 검토','검토'],SAMPLE_APPROVED:['샘플 발송 처리','발송'],SCHEDULE_PROPOSED:['일정 승인','승인']};
+  const pendHtml=`<div class="sec">승인·처리 대기 ${pendN?`<span class="badge">${pendN}</span>`:''}</div>
+    <div class="listcard">${pendCs.map(c=>{const p=prod(c.productId),sl=seller(c.sellerId);const [l,btn]=LBL[c.status];
+      return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div>
+      <div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${platIcon(sl)} ${esc(sl.name)} ${sl.handle} <span class="gradebox sm">${gfull(gname(sl))}</span></span></div>
+      <div class="sub">${l}${c.status==='SCHEDULE_PROPOSED'&&c.propStart?` · ${md(P(c.propStart))}–${md(P(c.propEnd))} · 재고 ${fmt(c.propQty)}`:''} · 팔로워 ${fmt(sl.followers)}</div></div>
+      <button class="pri sm">${btn}</button></div>`;}).join('')}
+    ${xr.map(r=>{const sl=seller(r.sellerId),p=prod(r.productId);
+      return `<div class="rowitem" style="cursor:default"><span class="gradebox sm">${gfull(gname(sl))}</span>
+      <div class="grow"><div class="nm">○○○ 인플루언서 → ${esc(p.name)} 독점권 신청</div><div class="sub">3개월 매출 ₩${fmt(sl.m3Sales)} · 팔로워 ${fmt(sl.followers)} · 조건 ${gfull(exGradeOf(p))} 이상 충족 ✓</div></div>
+      <button class="pri sm" data-act="approveExcl" data-k="${r.id}">승인</button><button class="sm danger" data-act="rejectExcl" data-k="${r.id}">거절</button></div>`;}).join('')}
+    ${pendN?'':'<div class="empty" style="padding:14px">대기 중인 요청이 없습니다 ✓</div>'}</div>`;
+  /* 3 진행 중·확정 판매 */
+  const liveCard=c=>{const p=prod(c.productId),sl=seller(c.sellerId),k=calc(c);const os=campOrders(c.id).filter(o=>o.status==='PAID');const tod=os.filter(o=>o.at===todayStr);const un=os.filter(o=>!o.tracking).length;const left=(c.qty||0)-soldQty(c.id);const dd=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
+    return `<div class="card" style="padding:16px 18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><b style="font-size:15px">${p.em} ${esc(p.name)}</b> <span class="sub" style="color:var(--mute);font-size:12px">${platIcon(sl)} ${esc(sl.name)} ${sl.handle} · 수수료 ${(p.rate*100).toFixed(0)}%</span></div><div style="display:flex;gap:6px;align-items:center">${un?`<span class="st amber" style="animation:none">미발송 ${un}건</span>`:''}${stChip('LIVE')}</div></div>
+      <div class="mini-stats" style="margin:12px 0 10px">
+        <div><span class="ms-l">오늘 매출</span><span class="ms-v">₩${fmt(tod.reduce((a,o)=>a+o.unit*o.qty,0))}</span></div>
+        <div><span class="ms-l">확정 매출</span><span class="ms-v">₩${fmt(k.net)}</span></div>
+        <div><span class="ms-l">주문</span><span class="ms-v">${k.paidCnt}건</span></div>
+        <div><span class="ms-l">마감 · 잔여</span><span class="ms-v">D-${dd} · ${fmt(Math.max(0,left))}개</span></div>
+      </div>
+      <div class="btnrow one"><button class="sm ghost" data-act="open" data-k="${c.id}">스레드</button><button class="sm ghost" data-act="preview" data-k="${c.id}">구매 페이지</button><button class="sm ghost" data-act="poCSV">발주서 CSV</button><button class="sm ghost" data-act="screen" data-k="sales">실시간 매출</button></div>
+    </div>`;};
+  const soonRow=c=>{const p=prod(c.productId),sl=seller(c.sellerId);const dd=Math.ceil((P(c.start)-today())/DAY);return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div><div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${platIcon(sl)} ${esc(sl.name)}</span></div><div class="sub">${md(P(c.start))}–${md(P(c.end))} · 배정 재고 ${fmt(c.qty||0)}</div></div><span class="st blue" style="animation:none">오픈 D-${dd}</span></div>`;};
+  const salesHtml=`<div class="sec">진행 중 · 확정 판매</div>
+    ${live.length?`<div class="grid ${live.length>1?'g2':''}" style="margin-bottom:${soon.length||clearing.length?'10px':'0'}">${live.map(liveCard).join('')}</div>`:''}
+    ${(soon.length||clearing.length)?`<div class="listcard">${soon.map(soonRow).join('')}${clearing.map(c=>campRow(c,{who:'brand'})).join('')}</div>`:''}
+    ${(!live.length&&!soon.length&&!clearing.length)?'<div class="listcard"><div class="empty">진행 중 판매 없음 — 인플루언서 갤러리에서 제안해보세요</div></div>':''}`;
+  /* 4 내 장부 */
+  const ledger=`<div class="sec">내 장부</div>
+  <div class="card" style="padding:16px 18px"><div class="mini-stats ledger4">
+    <div class="go" data-act="screen" data-k="sales" title="실시간 매출"><span class="ms-l">진행 중 판매 매출</span><span class="ms-v">₩${fmt(liveNet)}</span><span class="ms-s">확정 기준 · ${live.length}건 LIVE</span></div>
+    <div class="go" data-act="screen" data-k="settle" title="정산"><span class="ms-l">정산 예정액</span><span class="ms-v" style="color:var(--money)">₩${fmt(pendPay)}</span><span class="ms-s">환불기간 ${clearing.length}건 · 브랜드 정산 기준</span></div>
+    <div class="go" data-act="screen" data-k="settle" title="정산"><span class="ms-l">이번 달 확정 정산</span><span class="ms-v">₩${fmt(monthPay)}</span><span class="ms-s">정산 완료 기준</span></div>
+    <div class="go" data-act="screen" data-k="orders" title="주문·발주"><span class="ms-l">미발송 주문</span><span class="ms-v" ${unshipped?'style="color:var(--danger)"':''}>${unshipped}건</span><span class="ms-s">송장 업로드 → 배송중</span></div>
+  </div></div>`;
+  /* 5 인플루언서 찾기 */
+  const bsrow=(sl,note)=>`<div class="rowitem" style="cursor:default">
+    ${sl.img?`<div class="sc-av" style="width:40px;height:40px;background-image:url('${sl.img}')"></div>`:`<div class="sc-av em" style="width:40px;height:40px;font-size:18px">${SEMOJI[sl.id]||'⭐'}</div>`}
+    <div class="grow" style="min-width:0"><div class="nm"><span class="gradebox sm">${gfull(gname(sl))}</span> ${esc(sl.name)} <span style="color:var(--mute);font-weight:400;font-size:12px">${platIcon(sl)} ${sl.handle}</span></div>
+    <div class="sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${note}</div></div>
+    <button class="pri sm" data-act="invite" data-k="${sl.id}">제안</button></div>`;
+  const rel=CATMAP[bd.cat]||[];
+  const recs3=D_().sellers.filter(x=>!x.hidden&&!cs.some(c=>c.sellerId===x.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status))).map(x=>({s:x,fit:rel.includes(x.cat),score:(rel.includes(x.cat)?2:0)+growthOf(x)/50+(x.m3Sales/x.followers)/300})).sort((a,b)=>b.score-a.score).slice(0,3);
+  const views=(D_().productViews||[]).filter(v=>myPid.includes(v.productId)).slice(0,3);
+  const findHtml=`<div class="sec">인플루언서 찾기</div>
+  <div class="grid g2">
+    <div class="card" style="padding:0;overflow:hidden"><div class="lbl-sm" style="padding:16px 18px 6px">✦ ${esc(bd.name)} 맞춤 추천</div>
+      <div class="listcard" style="margin:0;box-shadow:none">${recs3.map(r=>bsrow(r.s,`${r.fit?'카테고리 적합':'매출 효율 상위'} · 성장세 ▲${growthOf(r.s).toFixed(1)}% · ${r.s.cat} · 3개월 ₩${fmt(r.s.m3Sales)}`)).join('')||'<div class="empty">추천할 인플루언서가 없습니다</div>'}</div>
+      <div style="padding:10px 18px"><button class="sm ghost" data-act="screen" data-k="gallery">갤러리에서 더 보기 →</button></div></div>
+    <div class="card" style="padding:0;overflow:hidden"><div class="lbl-sm" style="padding:16px 18px 6px">👀 내 상품을 조회한 인플루언서</div>
+      <div class="listcard" style="margin:0;box-shadow:none">${views.map(v=>{const sl=seller(v.sellerId),p=prod(v.productId);return bsrow(sl,`${p.em} ${esc(p.name)} 조회 · ${v.ago} · 팔로워 ${fmt(sl.followers)} · 참여율 ${(sl.likesAvg/sl.followers*100).toFixed(1)}%`);}).join('')||'<div class="empty">최근 조회 기록이 없습니다</div>'}</div></div>
   </div>`;
+  /* 6 소식 + 상품 현황 + TOP5(축소) */
   const scout1=D_().sellers.find(x=>x.hidden);
   const fresh1=D_().sellers.filter(x=>!x.hidden).slice(-1)[0];
-  const brandNews=`<div class="card" style="padding:0;overflow:hidden">
+  const newsHtml=`<div class="card" style="padding:0;overflow:hidden">
     <div class="lbl-sm" style="padding:16px 18px 6px">📢 인플루언서 소식</div>
     <div class="news">
-      ${pend.length?`<div class="news-item" data-act="screen" data-k="dm"><span class="nb hot">대기</span><div>승인 대기 요청 <b>${pend.length}건</b> — 응답이 늦으면 인플루언서가 다른 상품으로 떠나요</div></div>`:''}
-      <div class="news-item" data-act="screen" data-k="gallery"><span class="nb hot">급증</span><div><b>${CAT_TRENDS[0].cat}</b> 카테고리 인플루언서 활동 급증 — ${CAT_TRENDS[0].note}. 제안 경쟁 전에 선점하세요</div></div>
-      ${scout1?`<div class="news-item" data-act="screen" data-k="gallery"><span class="nb excl">스카우트</span><div>${gfull(gname(scout1))} <b>○○○ 인플루언서</b> 프로필 공개 — 3개월 매출 ₩${fmt(scout1.m3Sales)} · ${scout1.cat} 주력</div></div>`:''}
+      <div class="news-item" data-act="screen" data-k="gallery"><span class="nb hot">급증</span><div><b>${CAT_TRENDS[0].cat}</b> 인플루언서 활동 급증 — ${CAT_TRENDS[0].note}</div></div>
+      ${scout1?`<div class="news-item" data-act="topSeller" data-k="${scout1.id}"><span class="nb excl">스카우트</span><div>${gfull(gname(scout1))} <b>○○○ 인플루언서</b> 프로필 공개 — 3개월 ₩${fmt(scout1.m3Sales)} · ${scout1.cat}</div></div>`:''}
       ${fresh1?`<div class="news-item" data-act="screen" data-k="gallery"><span class="nb new">NEW</span><div><b>${esc(fresh1.name)} ${fresh1.handle}</b> 신규 합류 — ${fresh1.cat} · 팔로워 ${fmt(fresh1.followers)}</div></div>`:''}
+    </div></div>`;
+  const pc=k=>myP.filter(p=>p.status===k).length;
+  const prodHtml=`<div class="card kpi go" data-act="screen" data-k="products" title="상품 관리"><div class="lbl-sm lbl">상품 현황</div>
+    <div class="mini-stats" style="margin-top:10px"><div><span class="ms-l">노출 중</span><span class="ms-v">${pc('listed')}</span></div><div><span class="ms-l">검수 대기</span><span class="ms-v">${pc('pending')}</span></div><div><span class="ms-l">노출 중단</span><span class="ms-v">${pc('paused')}</span></div><div><span class="ms-l">독점 오퍼</span><span class="ms-v">${myP.filter(p=>p.exclusive).length}</span></div></div>
+    <div class="btnrow" style="margin-top:12px"><button class="sm pri" data-act="newProduct">+ 새 상품 등록</button><button class="sm ghost" data-act="screen" data-k="products">상품 관리</button></div></div>`;
+  const tops=D_().sellers.slice().sort((a,b)=>b.m3Sales-a.m3Sales).slice(0,5);const mxS=tops.length?tops[0].m3Sales:1;
+  const topChart=`<div class="card"><div class="lbl-sm" style="margin-bottom:4px">지금 잘 파는 인플루언서 TOP5</div>
+    <div style="font-size:11px;color:var(--mute);margin-bottom:10px">3개월 확정 매출 · 클릭 시 제안 · 비공개는 ${CEL}로 열람</div>
+    ${tops.map((x,i)=>`<div class="hb-row" data-act="topSeller" data-k="${x.id}"><span class="hb-nm">${i+1}. ${platIcon(x)} ${x.hidden?'○○○ 인플루언서':esc(x.name)+' '+x.handle}</span><div class="hb-track"><div class="hb-bar ${i===0?'top':''}" style="width:${Math.max(6,x.m3Sales/mxS*100)}%"></div></div><span class="hb-val">₩${fmt(x.m3Sales)}</span></div>`).join('')}</div>`;
+  /* 7 등급·자산 */
+  const gv=bGmv(bd),bg=bgradeOf(gv),bnext=BGRADES[BGRADES.indexOf(bg)-1];const bpct=bnext?Math.min(100,Math.round(gv/bnext.min*100)):100;
+  const gradeHtml=`<div class="card kpi go" data-act="brandGradeModal" title="등급별 혜택 보기"><div class="lbl-sm lbl">브랜드 등급 — 상위 ${bg.pct}%</div>
+    ${pyrHtml(BGRADES,bg.g)}
+    ${bnext?`<div class="meter" style="margin-top:12px"><span style="width:${bpct}%"></span></div><div style="font-size:12px;color:var(--mute);margin-top:7px">누적 <b>₩${fmt(gv)}</b> · <b>${bnext.g}</b>까지 <b style="color:var(--red)">₩${fmt(bnext.min-gv)}</b> · 달성 시 ${bnext.perk.split('·')[0].trim()}</div>`:`<div style="font-size:12px;color:var(--mute);margin-top:8px">최고 등급 · ${bg.perk}</div>`}</div>`;
+  const freeLeft=freeRefLeft(bd);const toNext=CELERY_PER-(gv%CELERY_PER);
+  const assets=`<div class="card kpi go" data-act="screen" data-k="shop" title="셀러리 샵"><div class="lbl-sm lbl">내 자산</div>
+    <div class="mini-stats" style="margin-top:10px">
+      <div><span class="ms-l">셀러리</span><span class="ms-v" style="display:flex;align-items:center;gap:4px">${CEL} ${celBal(me)}</span></div>
+      <div><span class="ms-l">다음 1🥬까지</span><span class="ms-v">₩${fmt(toNext)}</span></div>
+      <div><span class="ms-l">무료 데이터 열람</span><span class="ms-v">${(bg.g==='다이아'||bg.g==='블랙')?freeLeft+'회 남음':'다이아↑ 혜택'}</span></div>
+      <div><span class="ms-l">자동 제안</span><span class="ms-v">${bd.autoPropose?'ON':'OFF'}</span></div>
     </div>
-  </div>`;
-  const bsrow=(s,note)=>`<div class="rowitem" style="cursor:default">
-    ${s.img?`<div class="sc-av" style="width:44px;height:44px;background-image:url('${s.img}')"></div>`:`<div class="sc-av em" style="width:44px;height:44px;font-size:20px">${SEMOJI[s.id]||'⭐'}</div>`}
-    <div class="grow"><div class="nm"><span class="gradebox sm">${gfull(gname(s))}</span> ${esc(s.name)} <span style="color:var(--mute);font-weight:400;font-size:12px">${platIcon(s)} ${s.handle}</span></div>
-    <div class="sub">${note}</div></div>
-    <button class="pri sm" data-act="invite" data-k="${s.id}">샘플 제안</button></div>`;
-  const catMapH={'건강기능식품':['건기식','다이어트','루테인','비타민'],'이너뷰티':['뷰티','이너뷰티','피부','화장품']};
-  const relH=catMapH[brand(me).cat]||[];
-  const recs3=D_().sellers.filter(s=>!s.hidden).map(s=>({s,fit:relH.includes(s.cat),score:(relH.includes(s.cat)?2:0)+(s.m3Sales/s.followers)/300}))
-    .sort((a,b)=>b.score-a.score).slice(0,3);
-  const views=(D_().productViews||[]).filter(v=>myP.includes(v.productId));
+    <div class="btnrow" style="margin-top:12px"><button class="sm ghost" data-act="screen" data-k="shop">셀러리 샵</button><button class="sm ghost" data-act="gotoMy">마이페이지</button></div></div>`;
   return `<div class="hero-band">
-    ${brand(me).logo?`<img class="hero-av" src="${brand(me).logo}" alt="브랜드 로고">`:''}
+    ${bd.logo?`<img class="hero-av" src="${bd.logo}" alt="브랜드 로고" data-act="gotoMy" style="cursor:pointer" title="마이페이지">`:''}
     <div class="ey">Brand Center</div>
-    <h1>${brand(me).name} 님, 반가워요.<br>${heroLine}</h1>
-    <div class="sub">브랜드 등급 <b>${gfull(bgname(brand(me)))}</b> · 승인 대기 <b>${pend.length}건</b> · 진행 중 판매 <b>${live.length}건</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일</div>
+    <h1>${esc(bd.name)} 님, 반가워요.<br>${heroLine}</h1>
+    <div class="sub">브랜드 등급 <b>${gfull(bgname(bd))}</b> · 승인 대기 <b>${pendN}건</b> · 진행 중 판매 <b>${live.length}건</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일</div>
   </div>
-  <div class="grid g2 overlap">${topChart}${brandNews}</div>
-  <div class="sec">내 현황</div>
-  <div class="grid g4">
-    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">누적 확정 매출 (GMV)</div><div class="val">₩${fmt(gmv)}</div></div>
-    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">승인 대기</div><div class="val">${pend.length}건</div><div class="sub">샘플·일정·발송</div></div>
-    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">진행 중 판매</div><div class="val">${live.length}건</div></div>
-    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">등록 상품</div><div class="val">${myP.length}개</div></div>
-  </div>
-  ${pend.length?`<div class="sec">승인·처리 대기</div><div class="listcard">${pend.map(c=>campRow(c,{who:'brand'})).join('')}</div>`:''}
-  <div class="sec">진행 중 · 확정 판매</div>
-  <div class="listcard">${cs.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c,{who:'brand'})).join('')||'<div class="empty">진행 중 판매 없음</div>'}</div>
-  <div class="sec">👀 내 상품을 조회한 인플루언서</div>
-  <div class="listcard">${views.map(v=>{const s=seller(v.sellerId),p=prod(v.productId);
-    return bsrow(s,`${p.em} <b>${esc(p.name)}</b> 조회 · ${v.ago} · 팔로워 ${fmt(s.followers)} · 참여율 ${(s.likesAvg/s.followers*100).toFixed(1)}%`);}).join('')
-    ||'<div class="empty">최근 조회 기록이 없습니다</div>'}</div>
-  <div class="sec">✦ ${esc(brand(me).name)} 추천 인플루언서</div>
-  <div class="listcard">${recs3.map(r=>bsrow(r.s,`${r.fit?'카테고리 적합':'매출 효율 상위'} · ${r.s.cat} · 3개월 ₩${fmt(r.s.m3Sales)} · 매출/팔로워 ₩${fmt(r.s.m3Sales/r.s.followers)}`)).join('')}</div>
-  ${brandGradeHtml(brand(me))}
-  ${brandRefHtml(brand(me))}`;
+  <div class="overlap" style="height:0"></div>
+  ${pendHtml}
+  ${salesHtml}
+  ${ledger}
+  ${findHtml}
+  <div class="sec">소식 · 상품 현황</div>
+  <div class="homegrid3">${newsHtml}${prodHtml}${topChart}</div>
+  <div class="sec">등급 · 자산</div>
+  <div class="grid g2">${gradeHtml}${assets}</div>
+  <div class="card" style="margin-top:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px">
+    <div><b>브랜드 추천 프로그램</b> <span class="sub" style="color:var(--mute);font-size:12px">— 새 브랜드 첫 ${BREF_TIMES}회 판매 확정매출의 1% 리워드 · 새 브랜드는 ${BREF_TIMES}회간 플랫폼 수수료 −1%p${bd.referredBy?` · 🌱 ${brand(bd.referredBy).name} 추천으로 입점 중`:''}</span></div>
+    <div class="btnrow" style="margin:0"><span class="st gray" style="animation:none;font-family:'Archivo',sans-serif!important;font-weight:800!important">${bd.refCode||'—'}</span><button class="sm pri" data-act="copyBrandRef" data-k="${bd.refCode||''}">코드 복사</button><button class="sm ghost" data-act="gotoMy">추천 현황</button></div>
+  </div>`;
 }
 /* ---- brand grade (pyramid + perks) & brand referral program blocks ---- */
 function brandGradeHtml(b){
@@ -2345,7 +2405,7 @@ function vBrandMy(){
   const si=b.settleInfo||{};
   const ok=si.bank&&si.account&&si.holder&&si.bizNo;
   const myP=D_().products.filter(p=>p.brandId===b.id);
-  return `<h2 class="pg">브랜드 마이페이지 <small>회사 정보와 정산 정보를 관리합니다</small></h2>
+  return `<h2 class="pg">브랜드 마이페이지 <small>회사 정보와 정산 정보 · 등급 · 추천 프로그램</small></h2>
   <div class="grid g2">
     <div class="card">
       <div class="lbl-sm">브랜드 정보</div>
@@ -2391,6 +2451,8 @@ function vBrandMy(){
     <p style="font-size:12px;color:var(--mute)">사업자 진위 확인·계좌 인증은 실서비스에서 자동 처리됩니다. 브랜드 정산액은 이 계좌로 D+${CLEAR_DAYS}에 지급됩니다.</p>
     <button class="pri" data-act="saveBrandInfo">저장</button>
   </div>`;
+  ${brandGradeHtml(b)}
+  ${brandRefHtml(b)}
 }
 
 /* ============ ADMIN ============ */
@@ -3578,6 +3640,7 @@ const ACT={
   dmSearch(){S.dmQ=($('#dmQ')||{}).value||'';render();},
   dmSearchLive(v){S.dmQ=v;clearTimeout(S._dmT);S._dmT=setTimeout(()=>{const el=$('#dmQ');const pos=el?el.selectionStart:0;render();const n=$('#dmQ');if(n){n.focus();n.setSelectionRange(pos,pos);}},220);},
   dmClear(){S.dmQ='';render();},
+  brandGradeModal(){const b=brand(S.actingBrand);openModal(`<h3>브랜드 등급 · 혜택</h3>${brandGradeHtml(b).replace('<div class="sec">','<div class="lbl-sm" style="margin:6px 0 10px">')}<div class="foot"><button class="pri" data-act="closeModal">닫기</button></div>`);},
   toggleAutoPropose(bid){const b=brand(bid);b.autoPropose=!b.autoPropose;save();render();toast(`${b.name} 자동 제안 ${b.autoPropose?'ON':'OFF'}`);},
   runAutoPropose(){
     const list=autoMatches().slice(0,5);let n=0,skip=0;
