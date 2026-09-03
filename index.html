@@ -493,7 +493,7 @@ input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28
 .appbar{position:static}
 /* 로고: 굵은 픽셀 SELLERY (2px 쉬프트 볼드) */
 .wordmark{font-family:var(--px11)!important;font-size:22px;line-height:1.1;letter-spacing:2px!important;text-transform:uppercase!important;text-shadow:2px 0 0 currentColor,0 2px 0 currentColor,2px 2px 0 currentColor;color:var(--red);padding:6px 16px 6px 14px;gap:0}
-.wordmark .ylogo{width:26px;height:26px;margin:0 -1px 0 1px;vertical-align:-5px;display:inline-block;transform:none}
+.wordmark .ylogo{width:24px;height:20px;margin:0 -1px 0 1px;vertical-align:-3px;display:inline-block;transform:none}
 .wordmark .dot{margin-left:1px}
 .wordmark .dot{color:var(--ink)}
 .wordmark svg{width:24px;height:24px;shape-rendering:crispEdges;image-rendering:pixelated}
@@ -546,6 +546,8 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 .boot-prog i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--red) 0 10px,var(--yellow) 10px 12px,var(--ink) 12px 14px);animation:bootfill 1.15s steps(14) forwards}
 @keyframes bootfill{to{width:100%}}
 @media(prefers-reduced-motion:reduce){.boot{display:none}.disc,.hero-band h1::after,.st::before{animation:none}}
+/* DM 안 읽음 점 */
+.dmdot{display:inline-block;width:8px;height:8px;background:var(--danger);margin-left:8px;vertical-align:1px;box-shadow:var(--pxb2);animation:led 1.2s steps(1) infinite}
 /* 인라인 padding:0 카드(주문 피드·뉴스)도 타이틀바 아래로 내용 밀기 */
 .card[style*="padding:0"]{padding-top:18px!important}
 .card[style*="padding:0"] > .lbl-sm{padding-top:14px}
@@ -554,7 +556,7 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 </head>
 <body>
 <div class="appbar">
-  <span class="wordmark" data-act="goHome" role="button" tabindex="0" style="cursor:pointer" aria-label="Sellery 홈">SELLER<svg class="ylogo" viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges"><rect x="1" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="9" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="2" height="1" fill="#6da33a"/><rect x="8" y="1" width="2" height="1" fill="#6da33a"/><rect x="3" y="2" width="2" height="1" fill="#8fc74a"/><rect x="7" y="2" width="2" height="1" fill="#8fc74a"/><rect x="4" y="3" width="1" height="1" fill="#8fc74a"/><rect x="7" y="3" width="1" height="1" fill="#8fc74a"/><rect x="5" y="3" width="2" height="1" fill="#aed378"/><rect x="5" y="4" width="1" height="8" fill="#cfe3a4"/><rect x="6" y="4" width="1" height="8" fill="#aed378"/><rect x="4" y="4" width="1" height="8" fill="#4f8a2c"/><rect x="7" y="4" width="1" height="8" fill="#4f8a2c"/></svg><span class="dot">.</span></span>
+  <span class="wordmark" data-act="goHome" role="button" tabindex="0" style="cursor:pointer" aria-label="Sellery 홈">SELLER<svg class="ylogo" viewBox="0 0 12 10" aria-hidden="true" shape-rendering="crispEdges"><rect x="1" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="9" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="2" height="1" fill="#6da33a"/><rect x="8" y="1" width="2" height="1" fill="#6da33a"/><rect x="3" y="2" width="2" height="1" fill="#8fc74a"/><rect x="7" y="2" width="2" height="1" fill="#8fc74a"/><rect x="4" y="3" width="1" height="1" fill="#8fc74a"/><rect x="7" y="3" width="1" height="1" fill="#8fc74a"/><rect x="5" y="3" width="2" height="1" fill="#aed378"/><rect x="5" y="4" width="1" height="6" fill="#cfe3a4"/><rect x="6" y="4" width="1" height="6" fill="#aed378"/><rect x="4" y="4" width="1" height="6" fill="#4f8a2c"/><rect x="7" y="4" width="1" height="6" fill="#4f8a2c"/></svg><span class="dot">.</span></span>
   <nav class="roletabs" id="roletabs"></nav>
   <div class="master">
     <button class="iconbtn" data-act="gotoMy" aria-label="마이페이지" title="마이페이지"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4.1-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg></button>
@@ -867,8 +869,8 @@ function counts(){
 /* ============ render root ============ */
 const ROLES=[['seller','인플루언서 센터'],['brand','브랜드 센터'],['admin','관리자']];
 const SCREENS={
-  seller:[['home','홈'],['explore','상품 갤러리'],['camps','내 캠페인'],['sales','실시간 매출'],['rank','랭킹·등급'],['ref','추천 프로그램'],['settle','정산']],
-  brand:[['home','홈'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['requests','요청함'],['sales','실시간 매출'],['orders','주문·발주'],['settle','정산']],
+  seller:[['home','홈'],['explore','상품 갤러리'],['camps','내 캠페인'],['dm','DM'],['sales','실시간 매출'],['rank','랭킹·등급'],['ref','추천 프로그램'],['settle','정산']],
+  brand:[['home','홈'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['requests','요청함'],['dm','DM'],['sales','실시간 매출'],['orders','주문·발주'],['settle','정산']],
   admin:[['home','대시보드'],['review','상품 검수'],['settle','정산 실행']]
 };
 function render(){
@@ -888,7 +890,7 @@ function render(){
   const m=$('#main');
   if(S.view.cid){ m.innerHTML=vCampDetail(S.view.cid); decorate(); const box=m.querySelector('.msgs'); if(box) box.scrollTop=box.scrollHeight; return; }
   const fn={
-    'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
+    'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.dm':vDM,'brand.dm':vDM,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
     'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vRequests,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,'brand.my':vBrandMy,
     'admin.home':vAdminHome,'admin.review':vAdminReview,'admin.settle':vAdminSettle
   }[S.view.role+'.'+S.view.screen]||vSellerHome;
@@ -1057,6 +1059,41 @@ function vSellerCamps(){
   return `<h2 class="pg">내 캠페인 <small>클릭하면 캠페인 스레드로 이동</small></h2>
   <div class="listcard">${mine.map(c=>campRow(c)).join('')||'<div class="empty">캠페인이 없습니다</div>'}</div>
   ${calHtml()}`;
+}
+/* ---- DM inbox (instagram-style): one conversation per campaign thread ---- */
+function vDM(){
+  const isBrand=S.view.role==='brand';
+  let cs;
+  if(isBrand){const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);cs=D_().campaigns.filter(c=>myP.includes(c.productId));}
+  else cs=D_().campaigns.filter(c=>c.sellerId===S.actingSeller);
+  const strip=t=>String(t).replace(/<[^>]+>/g,'');
+  const rows=cs.map(c=>{
+    const msgs=D_().messages[c.id]||[];
+    const last=msgs[msgs.length-1]||{type:'sys',txt:'대화 시작',at:c.createdAt};
+    const p=prod(c.productId),b=brand(p.brandId),s=seller(c.sellerId);
+    const myRole=isBrand?'brand':'seller';
+    const unread=last.type==='chat'&&last.role!==myRole;
+    const who=last.type==='chat'?(last.role==='brand'?b.name:s.name)+': ':'';
+    return {c,p,b,s,last,unread,who};
+  }).sort((a,b)=>a.last.at<b.last.at?1:a.last.at>b.last.at?-1:(a.c.createdAt<b.c.createdAt?1:-1));
+  const unreadN=rows.filter(r=>r.unread).length;
+  return `<h2 class="pg">DM <small>${isBrand?'인플루언서와 나눈 대화 — 제안·샘플·일정·정산 이력이 모두 남아요':'브랜드와 나눈 대화 — 샘플 요청·승인·일정·정산 이력이 모두 남아요'}${unreadN?` · <b style="color:var(--danger)">안 읽음 ${unreadN}</b>`:''}</small></h2>
+  <div class="listcard">${rows.map(r=>{
+    const av=isBrand
+      ?(r.s.img?`<div class="sc-av" style="width:44px;height:44px;background-image:url('${r.s.img}')"></div>`:`<div class="sc-av em" style="width:44px;height:44px;font-size:20px">${SEMOJI[r.s.id]||'⭐'}</div>`)
+      :(r.b.logo?`<img src="${r.b.logo}" alt="" style="width:44px;height:44px;object-fit:cover;flex-shrink:0;border:2px solid var(--ink)">`:`<div class="sc-av em" style="width:44px;height:44px;font-size:20px">🏷️</div>`);
+    const title=isBrand?`${platIcon(r.s)} ${esc(r.s.name)} <span style="color:var(--mute);font-weight:400;font-size:12px">${r.s.handle}</span>`:`${esc(r.b.name)}`;
+    return `<div class="rowitem" data-act="open" data-k="${r.c.id}">
+      ${av}
+      <div class="grow" style="min-width:0">
+        <div class="nm">${title} <span style="color:var(--mute);font-weight:400;font-size:12px">· ${r.p.em} ${esc(r.p.name)}</span>${r.unread?'<span class="dmdot"></span>':''}</div>
+        <div class="sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:640px;${r.unread?'color:var(--ink);font-weight:700':''}">${esc(r.who)}${esc(strip(r.last.txt))}</div>
+      </div>
+      <span class="sub" style="font-family:'IBM Plex Mono',monospace;white-space:nowrap">${md(P(r.last.at))}</span>
+      ${stChip(r.c.status)}
+    </div>`;}).join('')||`<div class="empty">${isBrand?'아직 대화가 없습니다 — 인플루언서 갤러리에서 판매를 제안해보세요':'아직 대화가 없습니다 — 상품 갤러리에서 샘플을 요청해보세요'}</div>`}
+  </div>
+  <p style="font-size:12px;color:var(--mute);margin-top:10px">대화를 열면 채팅과 승인·일정·정산 이벤트가 한 타임라인에 보입니다. 연락처·외부 메신저 공유는 자동 감지되어 안내됩니다.</p>`;
 }
 /* ---- my gongu calendar ---- */
 function calHtml(){
@@ -2341,7 +2378,7 @@ function simSell(cid,n){
   try{if(sessionStorage.getItem('slry-boot'))return;sessionStorage.setItem('slry-boot','1');}catch(e){}
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const o=document.createElement('div');o.className='boot';
-  o.innerHTML=`<div class="boot-win"><div class="boot-bar">◼ ◼ ◼<span>SELLERY.EXE</span></div><div class="boot-logo">SELLER<svg class="ylogo" viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges" style="width:50px;height:50px;vertical-align:-9px;margin:0 -2px 0 2px"><rect x="1" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="9" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="2" height="1" fill="#6da33a"/><rect x="8" y="1" width="2" height="1" fill="#6da33a"/><rect x="3" y="2" width="2" height="1" fill="#8fc74a"/><rect x="7" y="2" width="2" height="1" fill="#8fc74a"/><rect x="4" y="3" width="1" height="1" fill="#8fc74a"/><rect x="7" y="3" width="1" height="1" fill="#8fc74a"/><rect x="5" y="3" width="2" height="1" fill="#aed378"/><rect x="5" y="4" width="1" height="8" fill="#cfe3a4"/><rect x="6" y="4" width="1" height="8" fill="#aed378"/><rect x="4" y="4" width="1" height="8" fill="#4f8a2c"/><rect x="7" y="4" width="1" height="8" fill="#4f8a2c"/></svg><span>.</span></div><div class="boot-txt">LOADING INFLUENCER COMMERCE OS…</div><div class="boot-prog"><i></i></div></div>`;
+  o.innerHTML=`<div class="boot-win"><div class="boot-bar">◼ ◼ ◼<span>SELLERY.EXE</span></div><div class="boot-logo">SELLER<svg class="ylogo" viewBox="0 0 12 10" aria-hidden="true" shape-rendering="crispEdges" style="width:48px;height:40px;vertical-align:-6px;margin:0 -2px 0 2px"><rect x="1" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="9" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="2" height="1" fill="#6da33a"/><rect x="8" y="1" width="2" height="1" fill="#6da33a"/><rect x="3" y="2" width="2" height="1" fill="#8fc74a"/><rect x="7" y="2" width="2" height="1" fill="#8fc74a"/><rect x="4" y="3" width="1" height="1" fill="#8fc74a"/><rect x="7" y="3" width="1" height="1" fill="#8fc74a"/><rect x="5" y="3" width="2" height="1" fill="#aed378"/><rect x="5" y="4" width="1" height="6" fill="#cfe3a4"/><rect x="6" y="4" width="1" height="6" fill="#aed378"/><rect x="4" y="4" width="1" height="6" fill="#4f8a2c"/><rect x="7" y="4" width="1" height="6" fill="#4f8a2c"/></svg><span>.</span></div><div class="boot-txt">LOADING INFLUENCER COMMERCE OS…</div><div class="boot-prog"><i></i></div></div>`;
   document.body.appendChild(o);
   setTimeout(()=>o.classList.add('out'),1350);setTimeout(()=>o.remove(),1750);
 })();
