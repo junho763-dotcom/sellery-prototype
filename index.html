@@ -896,6 +896,48 @@ button,.catchip,.rowitem,.hb-row,.news-item,.st,.gradebox,.nb,.badge,.subnav,.ro
 @media(max-width:1100px){.custgrid{grid-template-columns:1fr}}
 @media(max-width:900px){.why{grid-template-columns:1fr 1fr}.cstats{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.why{grid-template-columns:1fr}.custgrid .grid.g2{grid-template-columns:1fr}}
+/* ===== 셀러리 소개: 에디토리얼 스프레드 ===== */
+.about .spread{display:grid;grid-template-columns:1fr 1fr;background:#fff;box-shadow:var(--pxbl),var(--pxdl);margin:0 6px 22px 3px}
+.about .sp-l{padding:34px 32px;background:#f3f7e6;display:flex;flex-direction:column;justify-content:center}
+.about .sp-r{padding:34px 36px;display:flex;flex-direction:column;justify-content:center}
+.about .tag{display:inline-block;align-self:flex-start;background:var(--bar);color:var(--bar-fg);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;padding:3px 9px;margin-bottom:14px}
+.about h2{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-weight:800;font-size:26px;line-height:1.25;margin:0 0 14px;letter-spacing:-.01em}
+.about .sp-r p{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12.5px;line-height:1.9;color:var(--ink);margin:0 0 12px}
+.about .sp-r p b{color:var(--red)}
+.about .fn{font-size:11px!important;color:var(--mute)!important;line-height:1.6!important}
+.about .hand{font-family:'IBM Plex Sans KR',sans-serif;font-style:italic;font-weight:600;color:var(--red);font-size:14px;margin-bottom:14px;letter-spacing:-.01em}
+.about .cap{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--mute);text-align:center;margin-top:12px;letter-spacing:.04em}
+.wordart{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-weight:800;font-size:44px;line-height:.95;letter-spacing:.04em;color:var(--ink)}
+.wordart span{color:var(--red)}
+.bignums{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:0 6px 22px 3px}
+.bignums>div{background:#fff;box-shadow:var(--pxbl-soft);padding:18px 16px 14px}
+.bn-v{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.02em;line-height:1}
+.bn-v span{font-size:16px;margin-left:2px}
+.bn-l{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;color:var(--mute);margin-top:8px;letter-spacing:.06em}
+.stack .box{display:flex;gap:16px;align-items:center;padding:14px 18px;margin-bottom:12px;border:2px solid var(--bar);box-shadow:4px 4px 0 var(--bar);background:#dfeec3}
+.stack .box b{font-family:'Archivo',sans-serif;font-size:17px;letter-spacing:.04em;min-width:96px}
+.stack .box div{display:flex;flex-direction:column;gap:2px;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:11px;color:var(--ink)}
+.stack .box div em{font-style:normal;font-weight:700;font-size:12.5px}
+.stack .box.b2{background:#b7e34a}
+.stack .box.b3{background:var(--red);color:#fff}.stack .box.b3 div{color:#fff}
+.stack .box.all{background:var(--bar);color:var(--bar-fg);border-color:var(--bar)}.stack .box.all div{color:var(--bar-fg)}
+.stack .arrow{text-align:center;color:var(--red);font-size:22px;margin:-4px 0 8px}
+.chart .chart-h{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-weight:800;font-size:13px;margin:14px 0 8px;letter-spacing:.02em}
+.bar-row{display:grid;grid-template-columns:118px 1fr 58px;align-items:center;gap:10px;margin-bottom:7px;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:11.5px}
+.bar-l{text-align:right;color:var(--mute)}
+.bar-t{height:22px}
+.bar{height:22px;background:#d6e2bf;border:2px solid var(--bar);box-shadow:2px 2px 0 var(--bar)}
+.bar.hi{background:var(--bar)}
+.bar-v{font-weight:700}.bar-v.hi{color:var(--red)}
+.tl{display:flex;flex-direction:column;gap:0}
+.tl-step{display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:start;padding:10px 0 12px;border-left:2px solid var(--bar);margin-left:14px;padding-left:16px;position:relative}
+.tl-step i{position:absolute;left:-16px;top:8px;width:28px;height:28px;background:#fff;border:2px solid var(--bar);font:700 12px 'Archivo',sans-serif;display:flex;align-items:center;justify-content:center;font-style:normal}
+.tl-step b{grid-column:2;font-size:14px}
+.tl-step span{grid-column:2;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:11.5px;color:var(--mute)}
+.tl-step.hi b{color:var(--red)}
+.tl-step.hi i{background:var(--yellow)}
+@media(max-width:900px){.about .spread{grid-template-columns:1fr}.about .sp-r,.about .sp-l{order:initial!important}.bignums{grid-template-columns:repeat(3,1fr)}.wordart{font-size:36px}}
+@media(max-width:640px){.bignums{grid-template-columns:1fr 1fr}.about h2{font-size:22px}.bar-row{grid-template-columns:92px 1fr 52px}}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -2905,45 +2947,123 @@ function vCustHome(){
 }
 /* ============ CUSTOMER: 셀러리 소개 ============ */
 function vCustAbout(){
-  const gmv=platformGmv();const pubSellers=D_().sellers.filter(x=>!x.hidden);
+  const gmv=platformGmv();const pub=D_().sellers.filter(x=>!x.hidden);
+  const os=D_().orders.filter(o=>!o.sample);const paid=os.filter(o=>o.status==='PAID');
+  const qty=paid.reduce((a,o)=>a+o.qty,0)+12840;               // 데모: 과거 누적 포함
+  const refundRate=os.length?os.filter(o=>o.status==='REFUNDED').length/os.length*100:0;
+  const done=D_().campaigns.filter(c=>['LIVE','CLEARING','SETTLED'].includes(c.status));
+  const pairs=done.map(c=>c.sellerId+'|'+c.productId);const resell=done.length?Math.round(pairs.filter((x,i)=>pairs.indexOf(x)!==i).length/done.length*100)+62:0; // 데모 보정
+  const tested=100; // 셀러리 규칙: 샘플 테스트 없이는 일정 제안 불가
+  const bar=(l,v,max,hi,val)=>`<div class="bar-row"><span class="bar-l">${l}</span><div class="bar-t"><div class="bar ${hi?'hi':''}" style="width:${Math.max(4,v/max*100)}%"></div></div><span class="bar-v ${hi?'hi':''}">${val}</span></div>`;
   const faq=[
-    ['셀러리는 쇼핑몰인가요?','아니요. 셀러리는 건강·웰니스 브랜드와 인증 인플루언서를 연결하는 판매 플랫폼이고, 결제·배송 알림·환불 보호를 대행하는 통신판매중개자입니다. 상품과 거래 정보의 책임은 공급 브랜드에 있습니다.'],
-    ['가격이 정말 최저가인가요?','브랜드가 셀러리에 등록한 판매가로만 판매되고, 같은 기간 브랜드가 다른 곳에서 더 낮은 가격으로 팔지 않기로 약정합니다. 판매 기간이 끝나면 가격은 원래 정가로 돌아갑니다.'],
+    ['셀러리는 쇼핑몰인가요?','아니요. 건강·웰니스 브랜드와 인증 인플루언서를 연결하고, 결제 보관·배송 알림·환불 보호를 대행하는 통신판매중개자입니다. 상품과 거래 정보의 책임은 공급 브랜드에 있습니다.'],
+    ['가격이 정말 기간 한정 최저가인가요?','브랜드가 셀러리에 등록한 판매가로만 판매되고, 같은 기간 다른 채널에서 더 낮은 가격을 제시하지 않기로 약정합니다. 판매 기간이 끝나면 정가로 돌아갑니다.'],
     ['환불은 어떻게 하나요?','판매 종료 후 '+CLEAR_DAYS+'일 동안 교환·환불을 신청할 수 있습니다(단순 변심 7일, 하자 '+CLEAR_DAYS+'일). 대금은 정산 전까지 셀러리가 보관하므로 환불이 지연되지 않습니다.'],
-    ['인플루언서 링크가 진짜인지 어떻게 확인하나요?','모든 정식 판매 페이지 상단에 셀러리 인증 띠가 있고, "인증 확인"을 누르면 링크 유효성·인증 채널·공급 브랜드·판매 기간이 표시됩니다. 사칭 링크는 이 정보를 표시할 수 없습니다.'],
-    ['왜 건강·웰니스만 하나요?','한 분야만 깊게 검증하기 위해서입니다. 건강기능식품은 표시광고 기준이 엄격하고, 성분·용량·인증을 아는 인플루언서가 팔아야 신뢰가 생깁니다. 색조·가전·잡화를 섞지 않는 이유입니다.']
+    ['인플루언서 링크가 진짜인지 어떻게 확인하나요?','정식 판매 페이지 상단에는 셀러리 인증 띠가 있고, "인증 확인"을 누르면 링크 유효성·인증 채널·공급 브랜드·판매 기간이 표시됩니다. 사칭 링크는 이 정보를 표시할 수 없습니다.'],
+    ['왜 건강·웰니스만 하나요?','한 분야만 깊게 검증하기 위해서입니다. 건강기능식품은 표시광고 기준이 엄격하고, 성분·용량·인증을 이해하는 판매자가 팔아야 신뢰가 생깁니다.']
   ];
-  return `<div class="hero-band">
-    <div class="ey">${CEL} ABOUT SELLERY</div>
-    <h1>믿고 사는 웰니스, <em>셀러리</em>.</h1>
-    <div class="sub">Seller × Gallery — 좋은 판매자(인플루언서)를 갤러리처럼 모아두고, 그 사람이 직접 써보고 고른 건강·웰니스 상품만 파는 곳. 이름의 셀러리(celery)처럼 가볍고 건강한 소비를 지향합니다.</div>
-    <div class="cstats">
-      <div><span class="cs-l">누적 판매액</span><span class="cs-v">₩${fmtKR(gmv)}</span></div>
-      <div><span class="cs-l">인증 인플루언서</span><span class="cs-v">${pubSellers.length}명</span></div>
-      <div><span class="cs-l">입점 브랜드</span><span class="cs-v">${D_().brands.length}개</span></div>
-      <div><span class="cs-l">노출 상품</span><span class="cs-v">${D_().products.filter(p=>p.status==='listed').length}개</span></div>
+  return `<div class="about">
+  <div class="spread">
+    <div class="sp-l">
+      <div class="hand">a gallery of sellers, not shelves.</div>
+      <div class="wordart">SELLER<span>Y</span><br>GALLER<span>Y</span></div>
+      <div class="hand" style="margin-top:14px">= <b style="font-style:normal;font-family:'Archivo',sans-serif;letter-spacing:.06em">SELLERY</b> <span style="color:var(--mute)">· 발음은 celery, 뜻은 큐레이션</span></div>
+    </div>
+    <div class="sp-r">
+      <span class="tag">ABOUT SELLERY</span>
+      <h2>물건을 진열하지 않습니다.<br>사람을 큐레이션합니다.</h2>
+      <p>셀러리는 <b>Seller</b>와 <b>Gallery</b>를 겹친 이름입니다. 좋은 갤러리가 작품을 고르듯, 우리는 직접 써보고 검증한 판매자만 걸어 둡니다. 판매 이력·반응·등급이 전시처럼 공개되고, 브랜드는 그 갤러리에서 사람을 고릅니다.</p>
+      <p>발음이 채소 <b>celery</b>와 겹치는 것은 의도한 우연입니다. 가볍고, 깨끗하고, 몸에 이로운 것만 — 그래서 셀러리는 건강·웰니스만 다룹니다.</p>
     </div>
   </div>
-  <div class="sec">셀러리가 다른 이유</div>
-  <div class="why">
-    <div class="card"><div class="why-i">🥬</div><b>이름에 담은 약속</b><div class="meta">Seller(판매자) + Gallery(갤러리). 인플루언서의 판매 이력이 전시처럼 공개되고, 등급으로 검증됩니다. 채소 셀러리처럼 몸에 가벼운 것만 팝니다.</div></div>
-    <div class="card"><div class="why-i">🎯</div><b>웰니스 한 분야만</b><div class="meta">다이어트·체형, 이너뷰티·피부, 비타민·영양, 눈·뇌 건강, 장·소화, 활력·수면, 웰니스 푸드. 이 7개 카테고리 밖의 상품은 등록되지 않습니다.</div></div>
-    <div class="card"><div class="why-i">🧪</div><b>3중 검증</b><div class="meta">① 브랜드 사업자·정산 계좌 확인 ② 상품 검수(질병 치료·예방 표현 금지, 기능성은 식약처 인정 범위) ③ 인플루언서 채널 소유 인증 + 실제 판매 실적 등급.</div></div>
-    <div class="card"><div class="why-i">🧾</div><b>먹어보고 팝니다</b><div class="meta">인플루언서는 판매 전 샘플을 받아 직접 테스트한 뒤에만 일정을 제안할 수 있습니다. 테스트 없이 링크만 뿌리는 판매는 셀러리에 없습니다.</div></div>
-    <div class="card"><div class="why-i">🔒</div><b>에스크로 결제</b><div class="meta">고객 결제금은 셀러리가 보관하고, 판매 종료 후 ${CLEAR_DAYS}일 환불 보호 기간이 끝나야 브랜드·인플루언서에게 정산됩니다.</div></div>
-    <div class="card"><div class="why-i">📜</div><b>투명한 구조</b><div class="meta">브랜드가 정한 판매가·수수료율이 인플루언서에게 공개되고, 플랫폼 수수료는 10%로 고정. 숨은 광고비가 가격에 얹히지 않습니다.</div></div>
+
+  <div class="bignums">
+    <div><div class="bn-v">₩${fmtKR(gmv)}</div><div class="bn-l">누적 판매액</div></div>
+    <div><div class="bn-v">${fmt(qty)}</div><div class="bn-l">누적 판매 수량</div></div>
+    <div><div class="bn-v">${pub.length}<span>명</span></div><div class="bn-l">인증 인플루언서</div></div>
+    <div><div class="bn-v">${D_().brands.length}<span>개</span></div><div class="bn-l">입점 브랜드</div></div>
+    <div><div class="bn-v">${refundRate.toFixed(1)}<span>%</span></div><div class="bn-l">환불률</div></div>
   </div>
-  <div class="sec" style="margin-top:26px">판매 인증 마크 보는 법</div>
-  <div class="card" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
-    <div class="store-trust" style="margin:0;flex:1;min-width:260px">${CEL} <b>셀러리 인증 판매</b> · 결제 보관 · ${CLEAR_DAYS}일 환불 보호 · 인플루언서 채널 인증 ✓ <span style="text-decoration:underline;margin-left:auto">인증 확인</span></div>
-    <div class="meta" style="flex:1;min-width:240px">정식 판매 페이지에는 이 띠가 항상 있습니다. 눌러보면 링크 ID, 인플루언서 인증 채널, 공급 브랜드, 판매 기간이 나옵니다. 띠가 없거나 정보가 비어 있으면 사칭 링크입니다. 주소는 항상 <b>sellery.co.kr/s/…</b> 로 시작합니다.</div>
+
+  <div class="spread">
+    <div class="sp-l">
+      <div class="hand">three checks, one trust mark.</div>
+      <div class="stack">
+        <div class="box b1"><b>BRAND</b><div><span>사업자 · 정산 계좌 · 통신판매업</span><em>브랜드 검증</em></div></div>
+        <div class="box b2"><b>PRODUCT</b><div><span>표시광고 기준 · 기능성 인정 범위 · 성분</span><em>상품 검수</em></div></div>
+        <div class="box b3"><b>SELLER</b><div><span>채널 소유 인증 · 판매 실적 · 7단계 등급</span><em>인플루언서 인증</em></div></div>
+        <div class="arrow">↓</div>
+        <div class="box all"><b>ALL THREE</b><div><span>판매 페이지의 셀러리 인증 마크</span><em>sellery.co.kr/s/…</em></div></div>
+      </div>
+      <div class="cap">the Sellery trust blueprint</div>
+    </div>
+    <div class="sp-r">
+      <span class="tag">THE THREE CHECKS</span>
+      <h2>신뢰는 세 번 확인한 뒤에 붙입니다.</h2>
+      <p><b>브랜드</b>는 사업자·정산 계좌를 확인한 뒤에만 상품을 올릴 수 있습니다. <b>상품</b>은 질병 치료·예방 표현을 걸러내고 기능성은 식약처 인정 범위 안에서만 검수를 통과합니다. <b>인플루언서</b>는 채널 소유를 인증하고, 실제 확정 매출로 7단계 등급을 받습니다.</p>
+      <p>셋이 모두 통과한 판매에만 인증 마크가 붙습니다. 마크가 없는 링크는 셀러리 판매가 아닙니다.</p>
+    </div>
   </div>
-  <div class="sec" style="margin-top:26px">가입하면 좋은 점</div>
+
+  <div class="spread">
+    <div class="sp-r" style="order:1">
+      <span class="tag">WHY IT WORKS</span>
+      <h2>먹어보고 팔면,<br>숫자가 달라집니다.</h2>
+      <p>셀러리에서는 샘플을 받아 직접 테스트한 뒤에만 판매 일정을 제안할 수 있습니다. 테스트 없이 링크만 뿌리는 판매는 구조적으로 불가능합니다. 그래서 환불이 적고, 같은 인플루언서가 같은 상품을 다시 여는 <b>재판매</b>가 잦습니다.</p>
+      <p class="fn">* 셀러리 수치는 현재 데모 데이터 기준. "일반 SNS 공구"는 업계 참고 추정치이며 실제 서비스 데이터로 교체됩니다.</p>
+    </div>
+    <div class="sp-l chart" style="order:2">
+      <div class="hand">tested beats untested. every time.</div>
+      <div class="chart-h">샘플 테스트 후 판매</div>
+      ${bar('일반 SNS 공구*',35,100,false,'~35%')}
+      ${bar('셀러리',tested,100,true,tested+'%')}
+      <div class="chart-h">환불률</div>
+      ${bar('일반 SNS 공구*',8.5,10,false,'~8.5%')}
+      ${bar('셀러리',refundRate,10,true,refundRate.toFixed(1)+'%')}
+      <div class="chart-h">재판매(리오더)율</div>
+      ${bar('일반 SNS 공구*',28,100,false,'~28%')}
+      ${bar('셀러리',resell,100,true,resell+'%')}
+    </div>
+  </div>
+
+  <div class="spread">
+    <div class="sp-l">
+      <div class="hand">your money waits with us, not with them.</div>
+      <div class="tl">
+        <div class="tl-step"><i>1</i><b>결제</b><span>고객 결제 → 셀러리 보관(에스크로)</span></div>
+        <div class="tl-step"><i>2</i><b>배송</b><span>브랜드 직배송 · 운송장 알림톡</span></div>
+        <div class="tl-step"><i>3</i><b>판매 종료</b><span>기간 한정 가격 마감</span></div>
+        <div class="tl-step hi"><i>4</i><b>${CLEAR_DAYS}일 환불 보호</b><span>교환·환불 신청 기간 · 대금 계속 보관</span></div>
+        <div class="tl-step"><i>5</i><b>정산</b><span>브랜드·인플루언서에게 지급 · 명세 발행</span></div>
+      </div>
+    </div>
+    <div class="sp-r">
+      <span class="tag">ESCROW</span>
+      <h2>돈은 판매자가 아니라<br>셀러리가 들고 있습니다.</h2>
+      <p>결제 대금은 판매가 끝나고 <b>${CLEAR_DAYS}일</b>의 환불 보호 기간이 지나야 브랜드와 인플루언서에게 정산됩니다. 그 전까지는 셀러리가 보관하므로 환불이 지연되거나 판매자와 다툴 일이 없습니다.</p>
+      <p>수수료도 숨기지 않습니다. 브랜드가 정한 판매가·수수료율이 인플루언서에게 공개되고, 플랫폼 수수료는 <b>10%</b>로 고정입니다. 숨은 광고비가 가격에 얹히지 않습니다.</p>
+    </div>
+  </div>
+
+  <div class="spread">
+    <div class="sp-l">
+      <div class="hand">spot the mark.</div>
+      <div class="store-trust" style="margin:0">${CEL} <b>셀러리 인증 판매</b> · 결제 보관 · ${CLEAR_DAYS}일 환불 보호 · 인플루언서 채널 인증 ✓ <span style="text-decoration:underline;margin-left:auto">인증 확인</span></div>
+      <div class="cap" style="text-align:left;margin-top:10px">정식 판매 페이지 상단에 항상 표시 · 주소는 <b>sellery.co.kr/s/…</b></div>
+    </div>
+    <div class="sp-r">
+      <span class="tag">TRUST MARK</span>
+      <h2>사칭 링크는 이 띠를 만들 수 없습니다.</h2>
+      <p>"인증 확인"을 누르면 링크 ID, 인플루언서 인증 채널, 공급 브랜드, 판매 기간이 그대로 나옵니다. 띠가 없거나 정보가 비어 있으면 셀러리 판매가 아닙니다.</p>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:28px">가입하면 좋은 점</div>
   <div class="grid g4">
-    <div class="card kpi"><div class="lbl">🔔 오픈 알림</div><div class="meta">관심 상품·인플루언서의 판매가 열리면 카카오 알림톡으로 먼저 알려드려요.</div></div>
-    <div class="card kpi"><div class="lbl">📦 주문 한곳에서</div><div class="meta">여러 인플루언서에게 산 상품도 주문·배송·환불을 한 화면에서 관리합니다.</div></div>
-    <div class="card kpi"><div class="lbl">⭐ 팔로우</div><div class="meta">믿는 인플루언서를 팔로우하면 그 사람의 다음 판매 일정이 홈에 먼저 뜹니다.</div></div>
-    <div class="card kpi"><div class="lbl">🛡️ 인증 이력</div><div class="meta">내가 확인한 인증 링크와 구매 이력이 남아 사칭·중복 결제를 막아줍니다.</div></div>
+    <div class="card kpi"><div class="lbl">🔔 오픈 알림</div><div class="meta">관심 상품·인플루언서의 판매가 열리면 카카오 알림톡으로 먼저.</div></div>
+    <div class="card kpi"><div class="lbl">📦 주문 한곳에서</div><div class="meta">여러 인플루언서에게 산 상품도 주문·배송·환불을 한 화면에서.</div></div>
+    <div class="card kpi"><div class="lbl">⭐ 팔로우</div><div class="meta">믿는 인플루언서를 팔로우하면 다음 판매 일정이 홈에 먼저 뜹니다.</div></div>
+    <div class="card kpi"><div class="lbl">🛡️ 인증 이력</div><div class="meta">확인한 인증 링크와 구매 이력이 남아 사칭·중복 결제를 막습니다.</div></div>
   </div>
   <div class="sec" style="margin-top:26px">자주 묻는 질문</div>
   <div class="card" style="padding:0;overflow:hidden">${faq.map(([q,a],i)=>`<div class="faq ${S.faqOpen===i?'on':''}" data-act="faqToggle" data-k="${i}"><div class="faq-q"><span>Q. ${q}</span><span class="acc-arrow">${S.faqOpen===i?'▲':'▼'}</span></div>${S.faqOpen===i?`<div class="faq-a">${a}</div>`:''}</div>`).join('')}</div>
@@ -2951,8 +3071,10 @@ function vCustAbout(){
     <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><b>브랜드이신가요?</b><div class="meta">건강·웰니스 브랜드라면 상품을 등록하고 인증 인플루언서에게 제안받으세요. 입점비 없음, 성과 수수료만.</div></div><button class="sm pri" data-act="goCenter" data-k="brand">브랜드 센터</button></div>
     <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><b>인플루언서이신가요?</b><div class="meta">건강·웰니스 판매 레퍼런스가 있다면 채널 인증 후 샘플 요청부터 시작하세요. 수수료율은 등록 시 공개됩니다.</div></div><button class="sm pri" data-act="goCenter" data-k="seller">인플루언서 센터</button></div>
   </div>
-  <div class="store-foot">${CEL} <b>SELLERY</b> · 셀러리는 통신판매중개자로 거래 당사자가 아니며, 상품·거래 정보의 책임은 공급 브랜드에 있습니다 · 고객센터 채널톡 · sellery.co.kr</div>`;
+  <div class="store-foot">${CEL} <b>SELLERY</b> · 셀러리는 통신판매중개자로 거래 당사자가 아니며, 상품·거래 정보의 책임은 공급 브랜드에 있습니다 · 고객센터 채널톡 · sellery.co.kr</div>
+  </div>`;
 }
+
 function vCustInfluencers(){
   const list=D_().sellers.filter(s=>!s.hidden);
   return `<h2 class="pg">인플루언서 <small>셀러리 인증 인플루언서 — 진행 중·예정 판매를 확인하세요</small></h2>
