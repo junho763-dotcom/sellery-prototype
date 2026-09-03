@@ -582,6 +582,11 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 .celery-bal{display:inline-flex;align-items:center;gap:4px;font-family:var(--px11)!important;font-size:13px;background:#fff;color:var(--ink);padding:6px 12px;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2);margin:2px 8px 6px 2px;cursor:pointer}
 .celprice{font-family:var(--px11)!important;font-size:13px;background:var(--yellow);padding:4px 10px;box-shadow:var(--pxb2);white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:4px}
 .blurrow td{filter:blur(4px);user-select:none;pointer-events:none}
+/* 갤러리 데이터 게이트 (🥬 2) */
+.gate{position:relative;display:flex;flex-direction:column;flex:1}
+.gate.locked .mini-stats,.gate.locked .sc-cols{filter:blur(5px);user-select:none;pointer-events:none}
+.gate-cta{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(238,243,220,.35);text-align:center}
+.gate-cta span{font-size:11px;color:var(--ink);background:var(--surface);padding:3px 10px;box-shadow:var(--pxb2)}
 .kpi .val .celic{width:16px;height:22px}
 /* DM 안 읽음 점 */
 .dmdot{display:inline-block;width:8px;height:8px;background:var(--danger);margin-left:8px;vertical-align:1px;box-shadow:var(--pxb2);animation:led 1.2s steps(1) infinite}
@@ -691,6 +696,7 @@ function seedData(){
       {sellerId:'s6',productId:'p5',ago:'어제'}
     ],
     unlockedRefs:[],
+    brandDataUnlocks:{b1:['s1'],b2:['s7']},
     exclusiveReqs:[
       {id:'x1',productId:'p1',sellerId:'s4',status:'PENDING',at:D(-1)}
     ],
@@ -769,10 +775,10 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v13';
+const LS='sellery-proto-v14';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
-const CELERY_PER=10000000; // 확정 매출 ₩1,000만당 1🥬
+const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
 const CELOGO=`<svg class="celic" viewBox="0 0 12 14" width="11" height="15" shape-rendering="crispEdges" aria-label="셀러리"><rect x="4" y="0" width="1" height="1" fill="#6da33a"/><rect x="8" y="0" width="1" height="1" fill="#6da33a"/><rect x="3" y="1" width="3" height="1" fill="#8fc74a"/><rect x="7" y="1" width="3" height="1" fill="#8fc74a"/><rect x="2" y="2" width="4" height="1" fill="#8fc74a"/><rect x="7" y="2" width="4" height="1" fill="#8fc74a"/><rect x="4" y="2" width="1" height="1" fill="#3f7a24"/><rect x="9" y="2" width="1" height="1" fill="#3f7a24"/><rect x="3" y="3" width="7" height="1" fill="#6da33a"/><rect x="4" y="4" width="1" height="1" fill="#3f7a24"/><rect x="5" y="4" width="3" height="1" fill="#8fc74a"/><rect x="8" y="4" width="1" height="1" fill="#3f7a24"/><rect x="3" y="5" width="1" height="8" fill="#2f5a1a"/><rect x="4" y="5" width="1" height="8" fill="#d8ecb0"/><rect x="5" y="5" width="1" height="8" fill="#aed378"/><rect x="6" y="5" width="1" height="8" fill="#d8ecb0"/><rect x="7" y="5" width="1" height="8" fill="#aed378"/><rect x="8" y="5" width="1" height="8" fill="#d8ecb0"/><rect x="9" y="5" width="1" height="8" fill="#2f5a1a"/><rect x="3" y="13" width="7" height="1" fill="#2f5a1a"/></svg>`;
 const CEL=CELOGO.replace('width="11" height="15"','width="13" height="15"');
 const SHOP={
@@ -785,6 +791,8 @@ const SHOP={
   brand:[
     {id:'diamond',name:'다이아↑ 인플루언서 제안권',price:10,desc:'다이아·블랙 등급 인플루언서에게 판매 제안 1회 — 제안 시 자동 차감',auto:true},
     {id:'ref',name:'익명 레퍼런스 열람권',price:2,desc:'비공개 인플루언서의 상세 지표 열람 — 스카우트에서 자동 사용',auto:true},
+    {id:'sdata',name:'인플루언서 데이터 확인',price:2,desc:'갤러리에서 인플루언서 1명의 매출·참여율·이력·게시물 반응 열람 — 카드에서 자동 사용',auto:true},
+    {id:'datapass',name:'인플루언서 데이터 패스 (30일)',price:30,desc:'30일간 갤러리 전체 인플루언서 데이터 무제한 열람 — 만료 후 재구매',days:30},
     {id:'boost',name:'상품 상단 부스트 (24h)',price:3,desc:'내 대표 상품을 상품 갤러리 최상단에 고정 + 부스트 뱃지'},
     {id:'fastreview',name:'우선 검수권',price:1,desc:'검수 대기 상품을 즉시 노출 승인'}
   ]
@@ -799,6 +807,7 @@ function celBal(who){return celEarned(who)+(D_().celeryLedger||[]).filter(e=>e.w
 function sampleQuota(s){const i=tierIdx(gname(s));return i<=tierIdx('플래티넘')?5:(i<=tierIdx('실버')?2:1);}
 function sampleUsed(s){const ym=ymd(today()).slice(0,7);return D_().campaigns.filter(c=>c.sellerId===s.id&&!c.invited&&(c.createdAt||'').slice(0,7)===ym).length;}
 function sampleLeft(s){const q=sampleQuota(s);return q===Infinity?Infinity:Math.max(0,q+(s.sampleExtra||0)-sampleUsed(s));}
+function passActive(ent,id,days){const d=ent&&ent.celeryItems&&ent.celeryItems[id];if(!d)return false;if(!days)return true;return (today()-P(d))/DAY<days;}
 function celSpend(who,n,memo){
   if(celBal(who)<n){toast(`🥬 셀러리가 부족합니다 (보유 ${celBal(who)} / 필요 ${n}) — 셀러리 샵에서 충전하세요`);return false;}
   (D_().celeryLedger=D_().celeryLedger||[]).push({who,at:ymd(today()),delta:-n,memo});return true;
@@ -1494,7 +1503,7 @@ function vShop(){
   return `<h2 class="pg">셀러리 샵 <small>판매로 모은 셀러리로 프리미엄 기능을 사용하세요 · 1 ${CEL} ≈ ₩20,000 가치</small></h2>
   <div class="grid g3">
     <div class="card kpi"><div class="lbl">내 셀러리</div><div class="val" style="display:flex;align-items:center;gap:8px">${CEL} ${bal}</div><div class="sub">획득 ${earned} + 이벤트/충전 − 사용</div></div>
-    <div class="card kpi"><div class="lbl">획득 규칙</div><div class="val" style="font-size:20px;display:flex;align-items:center;gap:6px">₩1,000만 = 1 ${CEL}</div><div class="sub">확정 매출 기준 · 다음 1개까지 ₩${fmt(toNext)}</div></div>
+    <div class="card kpi"><div class="lbl">획득 규칙</div><div class="val" style="font-size:20px;display:flex;align-items:center;gap:6px">₩500만 = 1 ${CEL}</div><div class="sub">확정 매출 기준 · 다음 1개까지 ₩${fmt(toNext)}</div></div>
     <div class="card"><div class="lbl-sm">충전 (시뮬 결제)</div>
       <div class="btnrow" style="margin-top:10px">${TOPUP.map(t=>`<button class="sm" data-act="topup" data-k="${t.n}">${CEL} ${t.n} · ₩${fmt(t.won)}</button>`).join('')}</div>
       <p style="font-size:11.5px;color:var(--mute);margin:10px 0 0">충전 셀러리는 환불 불가 · 획득 셀러리와 합산 사용</p></div>
@@ -1507,7 +1516,7 @@ function vShop(){
       </div>
       <div class="btnrow" style="margin-top:12px">
         ${it.auto?`<span class="st gray" style="animation:none">사용 시 자동 차감</span>`
-          :(owned[it.id]&&!it.repeat)?`<span class="st green">보유 중${it.id==='featured'||it.id==='boost'?' · 활성':''}</span>`
+          :(owned[it.id]&&!it.repeat&&passActive(ent,it.id,it.days))?`<span class="st green">보유 중${it.days?` · ${Math.max(0,it.days-Math.floor((today()-P(owned[it.id]))/DAY))}일 남음`:(it.id==='featured'||it.id==='boost'?' · 활성':'')}</span>`
           :`<button class="pri sm" data-act="buyItem" data-k="${it.id}">${CEL} ${it.price} 로 구매</button>${it.id==='sample'&&!isBrand?`<span class="st ${sampleLeft(ent)===Infinity?'green':sampleLeft(ent)>0?'blue':'red'}" style="animation:none">이번 달 남은 횟수 ${sampleLeft(ent)===Infinity?'무제한':sampleLeft(ent)+'회'}</span>`:''}`}
       </div>
     </div>`).join('')}</div>
@@ -1704,15 +1713,18 @@ function sellerCard(s,reason){
   const rl=s.recentLikes||[];
   const mxL=Math.max(...rl,1);
   const trendUp=rl.length>1&&rl[rl.length-1]>=rl[0];
+  const bv=S.view.role==='brand'?brand(S.actingBrand):null;
+  const unlocked=!bv||passActive(bv,'datapass',30)||(((D_().brandDataUnlocks||{})[bv.id])||[]).includes(s.id);
   return `<div class="card scard">
     ${reason?`<div class="rec-tag">✦ 추천 — ${reason}</div>`:''}
     <div style="display:flex;gap:14px;align-items:center">
       ${s.img?`<div class="sc-av" style="background-image:url('${s.img}')"></div>`:`<div class="sc-av em">${SEMOJI[s.id]||'⭐'}</div>`}
       <div style="flex:1;min-width:0">
         <div><span class="gradebox sm">${gfull(gname(s))}</span> <b style="font-size:15.5px">${esc(s.name)}</b> <span style="color:var(--mute);font-size:12px">${platIcon(s)} ${s.handle}</span></div>
-        <div style="font-size:12px;color:var(--mute)">${s.cat} · ${esc(s.intro)}</div>
+        <div style="font-size:12px;color:var(--mute)">${s.cat} · 팔로워 ${fmt(s.followers)} · ${esc(s.intro)}</div>
       </div>
     </div>
+    <div class="gate ${unlocked?'':'locked'}">
     <div class="mini-stats">
       <div><span class="ms-l">3개월 매출</span><span class="ms-v">₩${fmt(s.m3Sales)}</span></div>
       <div><span class="ms-l">팔로워</span><span class="ms-v">${fmt(s.followers)}</span></div>
@@ -1731,6 +1743,8 @@ function sellerCard(s,reason){
         <div class="spark">${rl.map(v=>`<span style="height:${Math.max(12,v/mxL*100)}%"></span>`).join('')}</div>
         <div style="font-size:10.5px;color:var(--mute);margin-top:4px">최근 ${rl.length}개 게시물 좋아요</div>
       </div>
+    </div>
+    ${unlocked?'':`<div class="gate-cta"><button class="pri sm" data-act="unlockSellerData" data-k="${s.id}">${CEL} 2 · 데이터 확인하기</button><span>3개월 매출 · 좋아요 · 참여율 · 판매 이력 · 게시물 반응</span></div>`}
     </div>
     <button class="pri" data-act="invite" data-k="${s.id}" style="margin-top:12px;width:100%">판매 직접 제안</button>
   </div>`;
@@ -2236,6 +2250,13 @@ const ACT={
     save();S.view={role:'seller',screen:'camps',cid:id};render();toast('샘플 요청 완료 — 브랜드 승인 대기');
   },
   invite(sid){inviteModal(sid);},
+  unlockSellerData(sid){
+    const b=S.actingBrand;
+    if(!celSpend(b,2,`데이터 확인 · ${seller(sid).name} ${seller(sid).handle}`))return;
+    const m=D_().brandDataUnlocks=D_().brandDataUnlocks||{};
+    (m[b]=m[b]||[]).push(sid);
+    save();render();toast(`🥬 2 사용 — ${seller(sid).name}님의 성과 데이터가 열렸습니다`);
+  },
   unlockRef(sid){
     if(!celSpend(S.actingBrand,2,'익명 레퍼런스 열람 · ○○○ 인플루언서'))return;
     (D_().unlockedRefs=D_().unlockedRefs||[]).push(sid);
