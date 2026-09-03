@@ -878,6 +878,24 @@ button,.catchip,.rowitem,.hb-row,.news-item,.st,.gradebox,.nb,.badge,.subnav,.ro
 .sc-hist{background:var(--surface-2)}
 .sc-hist span{background:transparent}
 @media(max-width:1100px){.sc-cols{grid-template-columns:1fr}}
+/* 고객 홈·소개 */
+.cstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.cstats>div{background:#fff;box-shadow:var(--pxbl-soft);padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.cs-l{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;color:var(--mute);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-v{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.custgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;align-items:start}
+.why{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.why .card{padding:16px 18px}
+.why .meta,.card .meta{font-size:12.5px;color:var(--mute);line-height:1.6;margin-top:4px}
+.why-i{font-size:24px;margin-bottom:6px}
+.faq{border-bottom:1.5px solid #e3ecd2;padding:12px 18px;cursor:pointer}
+.faq:last-child{border-bottom:none}
+.faq-q{display:flex;justify-content:space-between;gap:10px;font-weight:700;font-size:13.5px}
+.faq-a{font-size:13px;color:var(--mute);line-height:1.7;margin-top:8px}
+.faq.on{background:#f3f7e6}
+@media(max-width:1100px){.custgrid{grid-template-columns:1fr}}
+@media(max-width:900px){.why{grid-template-columns:1fr 1fr}.cstats{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.why{grid-template-columns:1fr}.custgrid .grid.g2{grid-template-columns:1fr}}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1368,7 +1386,7 @@ const SCREENS={
   seller:[['home','홈'],['camps','내 캠페인'],['dm','DM'],['explore','상품 갤러리'],['sales','실시간 매출'],['settle','정산'],['rank','랭킹·등급'],['shop','셀러리 샵'],['ref','추천 프로그램']],
   brand:[['home','홈'],['dm','DM'],['orders','주문·발주'],['sales','실시간 매출'],['settle','정산'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['shop','셀러리 샵']],
   admin:[['home','대시보드'],['products','상품'],['influencers','인플루언서'],['brands','브랜드'],['orders','주문·CS'],['match','매칭·자동 제안'],['revenue','매출·순수익'],['settle','정산 실행']],
-  customer:[['home','진행 중인 판매'],['influencers','인플루언서']]
+  customer:[['home','진행 중인 판매'],['influencers','인플루언서'],['about','셀러리 소개']]
 };
 function render(){
   autoTick();
@@ -1394,7 +1412,7 @@ function render(){
     'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.dm':vDM,'brand.dm':vDM,'seller.shop':vShop,'brand.shop':vShop,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
     'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vDM,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,'brand.my':vBrandMy,
     'admin.home':vAdminHome,'admin.products':vAdminProducts,'admin.review':vAdminProducts,'admin.influencers':vAdminInfluencers,'admin.brands':vAdminBrands,'admin.orders':vAdminOrders,'admin.match':vAdminMatch,'admin.revenue':vAdminRevenue,'admin.settle':vAdminSettle,
-    'customer.home':vCustHome,'customer.influencers':vCustInfluencers
+    'customer.home':vCustHome,'customer.influencers':vCustInfluencers,'customer.about':vCustAbout
   }[S.view.role+'.'+S.view.screen]||(S.view.role==='customer'?vCustHome:vSellerHome);
   m.innerHTML=fn();
   decorate();
@@ -2816,34 +2834,124 @@ function custCard(c){
     <div class="nm" data-act="preview" data-k="${c.id}" style="cursor:pointer">${esc(p.name)}</div>
     <div class="meta">${esc(p.desc)} · ${esc(b.name)}</div>
     <div class="prices"><span class="gp">₩${fmt(p.gp)}</span><span class="cp">₩${fmt(p.cp)}</span>${p.cp>p.gp?`<span class="disc">-${Math.round((1-p.gp/p.cp)*100)}%</span>`:''}</div>
-    <div class="meta">${live?`${md(P(c.start))}–${md(P(c.end))} · 잔여 ${fmt(Math.max(0,left))}개 · ${fmt(soldQty(c.id))}개 판매됨`:`${md(P(c.start))} 오픈 예정 · 한정 ${fmt(c.qty||0)}개`}</div>
+    <div class="meta">${live?`${md(P(c.start))}–${md(P(c.end))} · 잔여 ${fmt(Math.max(0,left))}개 · <b>${fmt(soldQty(c.id))}개 판매됨</b> · <span style="color:var(--red)">👀 ${viewersOf(c.id)}명 보는 중</span>`:`${md(P(c.start))} 오픈 예정 · 한정 ${fmt(c.qty||0)}개 · 🔔 알림 ${12+viewersOf(c.id)}명`}</div>
     <div class="btnrow">${live?`<button class="pri sm" data-act="preview" data-k="${c.id}">구매하기</button>`:`<button class="sm ghost" data-act="notifyMe" data-k="${c.id}">🔔 오픈 알림</button>`}<button class="sm ghost" data-act="verifyStore" data-k="${c.id}">${CEL} 인증 확인</button></div>
   </div>`;
 }
+/* 실시간 관심(시뮬): 캠페인별 의사난수 + 20초 단위 변동 */
+function viewersOf(cid){const seed=[...String(cid)].reduce((a,ch)=>a+ch.charCodeAt(0),0);const t=Math.floor(Date.now()/20000);return 14+((seed*31+t*7)%53);}
+function platformGmv(){return D_().brands.reduce((a,b)=>a+(b.gmvBase||0),0)+D_().campaigns.reduce((a,c)=>a+netOf(c),0);}
+function fmtKR(v){if(v>=1e8)return (v/1e8).toFixed(1).replace(/\.0$/,'')+'억';if(v>=1e4)return Math.round(v/1e4).toLocaleString()+'만';return fmt(v);}
 function vCustHome(){
   const sel=S.custSel?seller(S.custSel):null;
-  const live=D_().campaigns.filter(c=>c.status==='LIVE'&&custVisible(c)&&(!sel||c.sellerId===sel.id)).sort((a,b)=>(isHomeFeat(b)-isHomeFeat(a))||(soldQty(b.id)-soldQty(a.id)));
-  const soon=D_().campaigns.filter(c=>c.status==='SCHEDULE_CONFIRMED'&&custVisible(c)&&(!sel||c.sellerId===sel.id)).sort((a,b)=>(isHomeFeat(b)-isHomeFeat(a))||(P(a.start)-P(b.start)));
-  const pubSellers=D_().sellers.filter(s=>!s.hidden);
+  const cat=S.custCat||'전체';
+  const inCat=c=>cat==='전체'||prod(c.productId).cat===cat;
+  const live=D_().campaigns.filter(c=>c.status==='LIVE'&&custVisible(c)&&(!sel||c.sellerId===sel.id)&&inCat(c)).sort((a,b)=>(isHomeFeat(b)-isHomeFeat(a))||(soldQty(b.id)-soldQty(a.id)));
+  const soon=D_().campaigns.filter(c=>c.status==='SCHEDULE_CONFIRMED'&&custVisible(c)&&(!sel||c.sellerId===sel.id)&&inCat(c)).sort((a,b)=>(isHomeFeat(b)-isHomeFeat(a))||(P(a.start)-P(b.start)));
+  const allLive=D_().campaigns.filter(c=>c.status==='LIVE'&&custVisible(c));
+  const todayStr=ymd(today());
+  const todayOrders=D_().orders.filter(o=>o.at===todayStr&&o.status==='PAID'&&!o.sample);
+  const viewers=allLive.reduce((a,c)=>a+viewersOf(c.id),0)+41;
+  const pubSellers=D_().sellers.filter(x=>!x.hidden);
+  const catCount=k=>D_().campaigns.filter(c=>['LIVE','SCHEDULE_CONFIRMED'].includes(c.status)&&custVisible(c)&&(k==='전체'||prod(c.productId).cat===k)).length;
+  /* 실시간 순위: 진행 중·예정 판매를 판매량 기준 */
+  const rank=D_().campaigns.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)&&custVisible(c)).map(c=>({c,q:soldQty(c.id)})).sort((a,b)=>b.q-a.q).slice(0,5);
+  const mxq=rank.length?Math.max(1,rank[0].q):1;
   return `<div class="hero-band">
-    <div class="ey">${CEL} Sellery — 건강·웰니스 인플루언서 추천 판매제품</div>
-    <h1>${sel?`${esc(sel.name)}님이 추천하는 <em>진행 중인 상품</em>`:`지금 진행 중인 <em>최저가 상품</em>만 모았어요.`}</h1>
-    <div class="sub">인증 인플루언서 · 브랜드 직배송 · 결제는 <b>셀러리</b>가 보관하고 종료 후 ${CLEAR_DAYS}일 환불 보호${sel?` <button class="sm ghost" data-act="custAll" style="margin-left:10px">전체 보기</button>`:''}</div>
+    <div class="ey">${CEL} SELLERY — 건강·웰니스 인플루언서 추천 판매</div>
+    <h1>${sel?`${esc(sel.name)}님이 추천하는 <em>진행 중인 상품</em>`:`셀러리에 오신 고객님, <em>환영합니다.</em>`}</h1>
+    <div class="sub">${sel?'':'검증된 웰니스 상품만 · 인증 인플루언서 · 브랜드 직배송 · 결제는 <b>셀러리</b>가 보관하고 종료 후 '+CLEAR_DAYS+'일 환불 보호'}${sel?` <button class="sm ghost" data-act="custAll" style="margin-left:10px">전체 보기</button>`:` <button class="sm ghost" data-act="screen" data-k="about" style="margin-left:10px">셀러리가 뭔가요? →</button>`}</div>
+    <div class="cstats">
+      <div><span class="cs-l">👀 지금 보는 중</span><span class="cs-v"><span class="pulse" style="color:var(--red)"></span>${fmt(viewers)}명</span></div>
+      <div><span class="cs-l">오늘 판매</span><span class="cs-v">${fmt(todayOrders.reduce((a,o)=>a+o.qty,0))}개</span></div>
+      <div><span class="cs-l">누적 판매액</span><span class="cs-v">₩${fmtKR(platformGmv())}</span></div>
+      <div><span class="cs-l">인증 인플루언서 · 브랜드</span><span class="cs-v">${pubSellers.length}명 · ${D_().brands.length}개</span></div>
+    </div>
   </div>
   ${S.linkCtx?`<div class="notice" style="margin-bottom:14px">🔗 인플루언서 링크로 들어오셨어요 — 이 판매와 같은 상품·카테고리의 다른 판매는 표시되지 않습니다 (인플루언서 판매 보호 정책).</div>`:''}
-  <div class="sec">진행 중 <span class="badge">${live.length}</span></div>
-  <div class="grid g3">${live.map(custCard).join('')||'<div class="empty" style="grid-column:1/-1">지금 진행 중인 판매가 없어요</div>'}</div>
-  <div class="sec" style="margin-top:26px">오픈 예정 <span class="badge">${soon.length}</span></div>
-  <div class="grid g3">${soon.map(custCard).join('')||'<div class="empty" style="grid-column:1/-1">예정된 판매가 없어요</div>'}</div>
-  ${sel?'':`<div class="sec" style="margin-top:26px">인플루언서</div>
-  <div class="card"><div style="display:flex;gap:10px;flex-wrap:wrap">${pubSellers.map(s=>`<button class="catchip" data-act="custSeller" data-k="${s.id}">${platIcon(s)} ${esc(s.name)} <span class="gradebox sm">${gfull(gname(s))}</span></button>`).join('')}</div></div>`}
-  <div class="card" style="margin-top:26px"><h4>${CEL} 셀러리에서 사면 다른 점</h4>
-    <div class="grid g4" style="gap:12px">
-      <div><b>인증된 인플루언서</b><div class="meta">채널 소유 인증 + 등급제. 모든 판매 페이지에 인증 마크와 링크 검증.</div></div>
-      <div><b>안전 결제</b><div class="meta">결제 대금은 셀러리가 보관, 판매 종료 후 ${CLEAR_DAYS}일 교환·환불 기간이 끝나야 정산.</div></div>
-      <div><b>기간 한정 · 정가 대비 할인</b><div class="meta">브랜드가 셀러리에 등록한 판매가로만 판매. 같은 기간 다른 곳에서 더 싸게 팔지 않습니다.</div></div>
-      <div><b>건강·웰니스만</b><div class="meta">건강기능식품·이너뷰티·더마·웰니스 푸드만 다룹니다. 색조·가전·잡화는 없고, 판매 인플루언서도 건강 분야 레퍼런스가 있는 채널만.</div></div>
-    </div></div>`;
+  <div class="cats" style="margin:0 0 6px">${CATS.map(k=>`<button class="catchip ${cat===k?'on':''}" data-act="custCat" data-k="${k}">${k} <span style="color:var(--mute);font-weight:400">${catCount(k)}</span></button>`).join('')}</div>
+  <div class="catguide">${cat==='전체'?`<b>건강·웰니스 전용</b> — 건강기능식품·이너뷰티·더마·웰니스 푸드만 있어요. 색조·가전·잡화는 없습니다.`:`<b>${cat}</b> <span class="en">${CAT_INFO[cat].en}</span> — ${CAT_INFO[cat].desc} · 예: ${CAT_INFO[cat].ex}`}</div>
+  <div class="custgrid">
+    <div>
+      <div class="sec" style="margin-top:8px">진행 중 <span class="badge">${live.length}</span></div>
+      <div class="grid g2">${live.map(custCard).join('')||'<div class="empty" style="grid-column:1/-1">이 카테고리에 진행 중인 판매가 없어요</div>'}</div>
+      <div class="sec" style="margin-top:22px">오픈 예정 <span class="badge">${soon.length}</span></div>
+      <div class="grid g2">${soon.map(custCard).join('')||'<div class="empty" style="grid-column:1/-1">예정된 판매가 없어요</div>'}</div>
+    </div>
+    <div>
+      <div class="sec" style="margin-top:8px">실시간 판매 순위</div>
+      <div class="card">
+        <div style="font-size:11px;color:var(--mute);margin-bottom:10px">판매 수량 기준 · 20초마다 갱신</div>
+        ${rank.map(({c,q},i)=>{const p=prod(c.productId),sl=seller(c.sellerId);return `<div class="hb-row" data-act="preview" data-k="${c.id}"><span class="hb-nm">${i+1}. ${p.em} ${esc(p.name)} <span style="color:var(--mute);font-weight:400">· ${esc(sl.name)}</span></span><div class="hb-track"><div class="hb-bar ${i===0?'top':''}" style="width:${Math.max(6,q/mxq*100)}%"></div></div><span class="hb-val">${fmt(q)}개</span></div>`;}).join('')||'<div class="empty">순위 집계 중</div>'}
+      </div>
+      <div class="sec" style="margin-top:22px">인플루언서</div>
+      <div class="card"><div style="display:flex;gap:8px;flex-wrap:wrap">${pubSellers.map(x=>`<button class="catchip" data-act="custSeller" data-k="${x.id}">${platIcon(x)} ${esc(x.name)} <span class="gradebox sm">${gfull(gname(x))}</span></button>`).join('')}</div>
+        <div style="margin-top:10px"><button class="sm ghost" data-act="screen" data-k="influencers">인플루언서 전체 보기 →</button></div></div>
+    </div>
+  </div>
+  <div class="sec" style="margin-top:26px">왜 셀러리에서 사야 할까요</div>
+  <div class="why">
+    <div class="card"><div class="why-i">🥬</div><b>건강·웰니스만</b><div class="meta">건강기능식품·이너뷰티·더마·웰니스 푸드만 다룹니다. 색조·가전·잡화는 없어요. 한 분야만 깊게.</div></div>
+    <div class="card"><div class="why-i">✅</div><b>검증된 상품</b><div class="meta">브랜드 사업자 확인 + 상품 검수(표시광고 기준) 후에만 노출. 브랜드가 셀러리에 등록한 판매가로만 판매합니다.</div></div>
+    <div class="card"><div class="why-i">🛡️</div><b>인증 인플루언서</b><div class="meta">채널 소유 인증 + 판매 실적 기반 7단계 등급. 모든 판매 페이지에 인증 마크와 링크 검증.</div></div>
+    <div class="card"><div class="why-i">🔒</div><b>안전 결제 · ${CLEAR_DAYS}일 환불 보호</b><div class="meta">결제 대금은 셀러리가 보관하고, 판매 종료 후 ${CLEAR_DAYS}일 교환·환불 기간이 끝나야 정산됩니다. 환불이 늦어질 일이 없어요.</div></div>
+    <div class="card"><div class="why-i">🚚</div><b>브랜드 직배송</b><div class="meta">중간 유통 없이 브랜드가 바로 보냅니다. 운송장은 알림톡으로, 문의는 셀러리 고객센터로.</div></div>
+    <div class="card"><div class="why-i">⏱️</div><b>기간 한정 · 정가 대비 할인</b><div class="meta">인플루언서 판매 기간에만 열리는 가격. 같은 기간 다른 곳에서 더 싸게 팔지 않습니다.</div></div>
+  </div>
+  <div class="card" style="margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 20px">
+    <div><b>셀러리 회원이 되면</b> <span class="meta">오픈 알림 · 주문/배송/환불 한곳에서 · 관심 인플루언서 팔로우 · 인증 마크 검증 이력</span></div>
+    <div class="btnrow" style="margin:0"><button class="pri sm" data-act="custJoin">카카오로 3초 가입</button><button class="sm ghost" data-act="screen" data-k="about">셀러리 소개</button></div>
+  </div>`;
+}
+/* ============ CUSTOMER: 셀러리 소개 ============ */
+function vCustAbout(){
+  const gmv=platformGmv();const pubSellers=D_().sellers.filter(x=>!x.hidden);
+  const faq=[
+    ['셀러리는 쇼핑몰인가요?','아니요. 셀러리는 건강·웰니스 브랜드와 인증 인플루언서를 연결하는 판매 플랫폼이고, 결제·배송 알림·환불 보호를 대행하는 통신판매중개자입니다. 상품과 거래 정보의 책임은 공급 브랜드에 있습니다.'],
+    ['가격이 정말 최저가인가요?','브랜드가 셀러리에 등록한 판매가로만 판매되고, 같은 기간 브랜드가 다른 곳에서 더 낮은 가격으로 팔지 않기로 약정합니다. 판매 기간이 끝나면 가격은 원래 정가로 돌아갑니다.'],
+    ['환불은 어떻게 하나요?','판매 종료 후 '+CLEAR_DAYS+'일 동안 교환·환불을 신청할 수 있습니다(단순 변심 7일, 하자 '+CLEAR_DAYS+'일). 대금은 정산 전까지 셀러리가 보관하므로 환불이 지연되지 않습니다.'],
+    ['인플루언서 링크가 진짜인지 어떻게 확인하나요?','모든 정식 판매 페이지 상단에 셀러리 인증 띠가 있고, "인증 확인"을 누르면 링크 유효성·인증 채널·공급 브랜드·판매 기간이 표시됩니다. 사칭 링크는 이 정보를 표시할 수 없습니다.'],
+    ['왜 건강·웰니스만 하나요?','한 분야만 깊게 검증하기 위해서입니다. 건강기능식품은 표시광고 기준이 엄격하고, 성분·용량·인증을 아는 인플루언서가 팔아야 신뢰가 생깁니다. 색조·가전·잡화를 섞지 않는 이유입니다.']
+  ];
+  return `<div class="hero-band">
+    <div class="ey">${CEL} ABOUT SELLERY</div>
+    <h1>믿고 사는 웰니스, <em>셀러리</em>.</h1>
+    <div class="sub">Seller × Gallery — 좋은 판매자(인플루언서)를 갤러리처럼 모아두고, 그 사람이 직접 써보고 고른 건강·웰니스 상품만 파는 곳. 이름의 셀러리(celery)처럼 가볍고 건강한 소비를 지향합니다.</div>
+    <div class="cstats">
+      <div><span class="cs-l">누적 판매액</span><span class="cs-v">₩${fmtKR(gmv)}</span></div>
+      <div><span class="cs-l">인증 인플루언서</span><span class="cs-v">${pubSellers.length}명</span></div>
+      <div><span class="cs-l">입점 브랜드</span><span class="cs-v">${D_().brands.length}개</span></div>
+      <div><span class="cs-l">노출 상품</span><span class="cs-v">${D_().products.filter(p=>p.status==='listed').length}개</span></div>
+    </div>
+  </div>
+  <div class="sec">셀러리가 다른 이유</div>
+  <div class="why">
+    <div class="card"><div class="why-i">🥬</div><b>이름에 담은 약속</b><div class="meta">Seller(판매자) + Gallery(갤러리). 인플루언서의 판매 이력이 전시처럼 공개되고, 등급으로 검증됩니다. 채소 셀러리처럼 몸에 가벼운 것만 팝니다.</div></div>
+    <div class="card"><div class="why-i">🎯</div><b>웰니스 한 분야만</b><div class="meta">다이어트·체형, 이너뷰티·피부, 비타민·영양, 눈·뇌 건강, 장·소화, 활력·수면, 웰니스 푸드. 이 7개 카테고리 밖의 상품은 등록되지 않습니다.</div></div>
+    <div class="card"><div class="why-i">🧪</div><b>3중 검증</b><div class="meta">① 브랜드 사업자·정산 계좌 확인 ② 상품 검수(질병 치료·예방 표현 금지, 기능성은 식약처 인정 범위) ③ 인플루언서 채널 소유 인증 + 실제 판매 실적 등급.</div></div>
+    <div class="card"><div class="why-i">🧾</div><b>먹어보고 팝니다</b><div class="meta">인플루언서는 판매 전 샘플을 받아 직접 테스트한 뒤에만 일정을 제안할 수 있습니다. 테스트 없이 링크만 뿌리는 판매는 셀러리에 없습니다.</div></div>
+    <div class="card"><div class="why-i">🔒</div><b>에스크로 결제</b><div class="meta">고객 결제금은 셀러리가 보관하고, 판매 종료 후 ${CLEAR_DAYS}일 환불 보호 기간이 끝나야 브랜드·인플루언서에게 정산됩니다.</div></div>
+    <div class="card"><div class="why-i">📜</div><b>투명한 구조</b><div class="meta">브랜드가 정한 판매가·수수료율이 인플루언서에게 공개되고, 플랫폼 수수료는 10%로 고정. 숨은 광고비가 가격에 얹히지 않습니다.</div></div>
+  </div>
+  <div class="sec" style="margin-top:26px">판매 인증 마크 보는 법</div>
+  <div class="card" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+    <div class="store-trust" style="margin:0;flex:1;min-width:260px">${CEL} <b>셀러리 인증 판매</b> · 결제 보관 · ${CLEAR_DAYS}일 환불 보호 · 인플루언서 채널 인증 ✓ <span style="text-decoration:underline;margin-left:auto">인증 확인</span></div>
+    <div class="meta" style="flex:1;min-width:240px">정식 판매 페이지에는 이 띠가 항상 있습니다. 눌러보면 링크 ID, 인플루언서 인증 채널, 공급 브랜드, 판매 기간이 나옵니다. 띠가 없거나 정보가 비어 있으면 사칭 링크입니다. 주소는 항상 <b>sellery.co.kr/s/…</b> 로 시작합니다.</div>
+  </div>
+  <div class="sec" style="margin-top:26px">가입하면 좋은 점</div>
+  <div class="grid g4">
+    <div class="card kpi"><div class="lbl">🔔 오픈 알림</div><div class="meta">관심 상품·인플루언서의 판매가 열리면 카카오 알림톡으로 먼저 알려드려요.</div></div>
+    <div class="card kpi"><div class="lbl">📦 주문 한곳에서</div><div class="meta">여러 인플루언서에게 산 상품도 주문·배송·환불을 한 화면에서 관리합니다.</div></div>
+    <div class="card kpi"><div class="lbl">⭐ 팔로우</div><div class="meta">믿는 인플루언서를 팔로우하면 그 사람의 다음 판매 일정이 홈에 먼저 뜹니다.</div></div>
+    <div class="card kpi"><div class="lbl">🛡️ 인증 이력</div><div class="meta">내가 확인한 인증 링크와 구매 이력이 남아 사칭·중복 결제를 막아줍니다.</div></div>
+  </div>
+  <div class="sec" style="margin-top:26px">자주 묻는 질문</div>
+  <div class="card" style="padding:0;overflow:hidden">${faq.map(([q,a],i)=>`<div class="faq ${S.faqOpen===i?'on':''}" data-act="faqToggle" data-k="${i}"><div class="faq-q"><span>Q. ${q}</span><span class="acc-arrow">${S.faqOpen===i?'▲':'▼'}</span></div>${S.faqOpen===i?`<div class="faq-a">${a}</div>`:''}</div>`).join('')}</div>
+  <div class="grid g2" style="margin-top:26px">
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><b>브랜드이신가요?</b><div class="meta">건강·웰니스 브랜드라면 상품을 등록하고 인증 인플루언서에게 제안받으세요. 입점비 없음, 성과 수수료만.</div></div><button class="sm pri" data-act="goCenter" data-k="brand">브랜드 센터</button></div>
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><b>인플루언서이신가요?</b><div class="meta">건강·웰니스 판매 레퍼런스가 있다면 채널 인증 후 샘플 요청부터 시작하세요. 수수료율은 등록 시 공개됩니다.</div></div><button class="sm pri" data-act="goCenter" data-k="seller">인플루언서 센터</button></div>
+  </div>
+  <div class="store-foot">${CEL} <b>SELLERY</b> · 셀러리는 통신판매중개자로 거래 당사자가 아니며, 상품·거래 정보의 책임은 공급 브랜드에 있습니다 · 고객센터 채널톡 · sellery.co.kr</div>`;
 }
 function vCustInfluencers(){
   const list=D_().sellers.filter(s=>!s.hidden);
@@ -3707,6 +3815,10 @@ const ACT={
   },
   custSeller(sid){S.custSel=sid;S.view={role:S.view.role==='customer'?'customer':S.view.role,screen:'home',cid:null,store:null};if(S.view.role!=='customer'){S.view.role='customer';S.lockedRole=S.lockedRole;}render();},
   custAll(){S.custSel=null;render();},
+  custCat(k){S.custCat=k;render();},
+  faqToggle(i){S.faqOpen=S.faqOpen===+i?null:+i;render();},
+  custJoin(){toast('카카오 로그인 가입은 실서비스에서 제공됩니다 (시뮬레이션)');},
+  goCenter(role){S.lockedRole=false;S.view={role,screen:'home',cid:null,store:null};render();},
   notifyMe(){toast('오픈 알림 신청 완료 — 판매 시작 시 카카오 알림톡으로 안내 (시뮬레이션)');},
   /* ---- 관리자: 자동 제안 ---- */
   saveOpex(){const o={};Object.keys(OPEX_DEF).forEach(k=>{const el=$('#ox_'+k);o[k]=el?Math.max(0,+el.value||0):OPEX_DEF[k];});D_().opex=o;save();render();toast('운영 비용 저장 — 순이익 재계산');},
