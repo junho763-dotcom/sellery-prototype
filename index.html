@@ -987,6 +987,13 @@ body[data-stage="podium"] .prod .ph .p3d{transform:translateY(-6px)}
   .acc-head{padding:12px 14px}
   .acc-head .st{font-size:10px;padding:2px 7px}
 }
+@media(max-width:640px){
+  .rowitem .grow .sub{white-space:normal}
+  .rowitem .grow .sub .gradebox{max-width:100%}
+  .sc-hist{flex-wrap:wrap;row-gap:4px}
+  .modal{padding-left:16px;padding-right:16px}
+  .modal .grid.g2{grid-template-columns:1fr}
+}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -2335,7 +2342,7 @@ function vBrandProducts(){
     <td class="num">${(p.rate*100).toFixed(0)}%<div style="color:var(--mute);font-size:11px">+플랫폼 ${(PLAT_RATE*100).toFixed(0)}</div></td>
     <td style="white-space:nowrap">${p.sample}<div style="font-size:11px;color:var(--mute)">${spOf(p).freeGrade}↑ 무상 · 구매 ₩${fmt(samplePrice(p))}${spOf(p).refund?' · 환급':''}</div><div style="font-size:11px;color:var(--mute)">재고 ${fmt(p.stock)}</div></td>
     <td style="white-space:nowrap">${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))}</span> 이상${p.exclusiveSellerId?`<div><span class="st green">확정</span></div>`:''}`:dash}</td>
-    <td style="white-space:nowrap">${stTag}<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">${p.status==='pending'?'':`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}<button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td>
+    <td style="white-space:nowrap">${stTag}<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap"><button class="sm pri" data-act="editProduct" data-k="${p.id}">수정</button>${p.status==='pending'?'':`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}<button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td>
     <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;white-space:nowrap">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||dash}</td></tr>`;}).join('')}
   </tbody></table></div>
   <p style="font-size:12px;color:var(--mute);margin-top:10px">판매가·수수료율은 진행 중인 판매가 있으면 변경할 수 없습니다(신뢰 보호). 노출 중단 시 새 샘플 요청만 막히고 진행 중 판매는 유지됩니다.</p>`;
@@ -3391,46 +3398,50 @@ function fileToDataURL(file,maxW,cb){
   };
   img.src=URL.createObjectURL(file);
 }
-function productModal(){
-  NP={thumb:null,imgs:[]};
-  openModal(`<h3>새 상품 등록</h3>
-  <div class="fld"><label>상품명</label><input id="npName" placeholder="예: 콜라겐 부스터 샷"></div>
-  <div class="fld"><label>한 줄 설명</label><input id="npDesc" placeholder="예: 저분자 콜라겐 · 30포"></div>
+function productModal(pid){
+  const ed=pid?prod(pid):null;
+  const sp=ed?spOf(ed):{freeGrade:'실버',buyMode:'auto',fixedPrice:0,refund:false};
+  const locked=ed&&D_().campaigns.some(c=>c.productId===ed.id&&['SCHEDULE_CONFIRMED','LIVE','CLEARING'].includes(c.status));
+  NP={thumb:ed?ed.thumb:null,imgs:ed&&ed.imgs?ed.imgs.slice():[]};
+  openModal(`<h3>${ed?'상품 수정 — '+esc(ed.name):'새 상품 등록'}</h3>
+  ${locked?`<div class="notice" style="margin:0 0 12px">진행 중·확정된 판매가 있어 <b>판매가·수수료율은 변경할 수 없습니다</b>(신뢰 보호). 재고·샘플 정책·옵션·이미지·독점권은 수정 가능합니다.</div>`:''}
+  <div class="fld"><label>상품명</label><input id="npName" value="${ed?esc(ed.name):''}" placeholder="예: 콜라겐 부스터 샷"></div>
+  <div class="fld"><label>한 줄 설명</label><input id="npDesc" value="${ed?esc(ed.desc):''}" placeholder="예: 저분자 콜라겐 · 30포"></div>
   <div class="grid g2">
     <div class="fld"><label>썸네일 이미지 <span style="font-weight:400">— 누끼(배경 제거) PNG 권장</span></label>
-      <div class="btnrow"><button class="sm ghost" data-act="npThumbPick">이미지 선택</button><span id="npThumbInfo" style="font-size:11.5px;color:var(--mute);align-self:center">미첨부</span></div></div>
+      <div class="btnrow"><button class="sm ghost" data-act="npThumbPick">이미지 선택</button><span id="npThumbInfo" style="font-size:11.5px;color:var(--mute);align-self:center">${ed&&ed.thumb?`✓ 등록됨 <img src="${ed.thumb}" alt="" style="height:24px;vertical-align:middle;margin-left:6px">`:'미첨부'}</span></div></div>
     <div class="fld"><label>상세페이지 이미지 <span style="font-weight:400">(최대 4장)</span></label>
-      <div class="btnrow"><button class="sm ghost" data-act="npImgPick">이미지 추가</button><span id="npImgInfo" style="font-size:11.5px;color:var(--mute);align-self:center">0장</span></div></div>
+      <div class="btnrow"><button class="sm ghost" data-act="npImgPick">이미지 추가</button><span id="npImgInfo" style="font-size:11.5px;color:var(--mute);align-self:center">${ed&&ed.imgs?ed.imgs.length:0}장</span></div></div>
   </div>
   <div class="grid g2">
     <div class="fld"><label>독점권 오퍼 <span style="font-weight:400">(선택 · 등급 기준)</span></label>
-      <select id="npExcl"><option value="">사용 안 함</option>${GRADES.slice(0,4).map(t=>`<option value="${t.g}">${t.g} 등급 이상</option>`).join('')}</select></div>
-    <div class="fld"><label>독점권 내용</label><input id="npExclLabel" placeholder="예: 인스타그램 판매 독점권 · 3개월"></div>
+      <select id="npExcl"><option value="">사용 안 함</option>${GRADES.slice(0,4).map(t=>`<option value="${t.g}" ${ed&&ed.exclusive&&exGradeOf(ed)===t.g?'selected':''}>${t.g} 등급 이상</option>`).join('')}</select></div>
+    <div class="fld"><label>독점권 내용</label><input id="npExclLabel" value="${ed&&ed.exclusive?esc(ed.exclusive.label||''):''}" placeholder="예: 인스타그램 판매 독점권 · 3개월"></div>
   </div>
-  <div class="fld"><label>카테고리 <span style="font-weight:400">— 건강·웰니스만 등록 가능</span></label><select id="npCat">${CATS.filter(c=>c!=='전체').map(c=>`<option value="${c}">${c} — ${CAT_INFO[c].desc} (${CAT_INFO[c].ex})</option>`).join('')}</select>
+  <div class="fld"><label>카테고리 <span style="font-weight:400">— 건강·웰니스만 등록 가능</span></label><select id="npCat">${CATS.filter(c=>c!=='전체').map(c=>`<option value="${c}" ${ed&&ed.cat===c?'selected':''}>${c} — ${CAT_INFO[c].desc} (${CAT_INFO[c].ex})</option>`).join('')}</select>
     <div style="font-size:11.5px;color:var(--mute);margin-top:5px">${CAT_POLICY} 범위 밖 상품은 검수에서 반려됩니다.</div></div>
   <div class="grid g2">
-    <div class="fld"><label>소비자가 (₩)</label><input id="npCp" type="number" value="39000" step="1000"></div>
-    <div class="fld"><label>판매가 (₩)</label><input id="npGp" type="number" value="29900" step="100"></div>
-    <div class="fld"><label>총 수수료율 (%) — 플랫폼 10%p 포함</label><input id="npRate" type="number" value="30" min="11" max="50">
+    <div class="fld"><label>소비자가 (₩)</label><input id="npCp" type="number" value="${ed?ed.cp:39000}" step="1000" ${locked?'disabled':''}></div>
+    <div class="fld"><label>판매가 (₩)</label><input id="npGp" type="number" value="${ed?ed.gp:29900}" step="100" ${locked?'disabled':''}></div>
+    <div class="fld"><label>총 수수료율 (%) — 플랫폼 10%p 포함</label><input id="npRate" type="number" value="${ed?Math.round((ed.rate+PLAT_RATE)*100):30}" min="11" max="50" ${locked?'disabled':''}>
       <div id="npRateCalc" style="font-size:11.5px;margin-top:5px;color:var(--mute)">→ 플랫폼 <b>10%p</b> + 제안 수수료 <b style="color:var(--red)">20%</b> · 등급 보너스 포함 최대 <b>23%</b> (블랙, 보너스는 플랫폼 부담)</div></div>
-    <div class="fld"><label>재고</label><input id="npStock" type="number" value="1000" step="100"></div>
+    <div class="fld"><label>재고</label><input id="npStock" type="number" value="${ed?ed.stock:1000}" step="100"></div>
   </div>
-  <div class="fld"><label>샘플 내용</label><input id="npSample" value="무상 1개" placeholder="예: 무상 1박스"></div>
+  <div class="fld"><label>샘플 내용</label><input id="npSample" value="${ed?esc(ed.sample):'무상 1개'}" placeholder="예: 무상 1박스"></div>
   <div class="card" style="padding:14px 16px;margin:4px 0 12px;background:var(--surface-2)"><div class="lbl-sm" style="margin-bottom:8px">🎁 샘플 정책</div>
     <div class="grid g2">
-      <div class="fld"><label>무상 샘플 기준 등급 <span style="font-weight:400">(이상 · 1회)</span></label><select id="npFreeGrade">${GRADES.slice().reverse().map(t=>`<option value="${t.g}" ${t.g==='실버'?'selected':''}>${t.g} 이상</option>`).join('')}</select>
+      <div class="fld"><label>무상 샘플 기준 등급 <span style="font-weight:400">(이상 · 1회)</span></label><select id="npFreeGrade">${GRADES.slice().reverse().map(t=>`<option value="${t.g}" ${t.g===sp.freeGrade?'selected':''}>${t.g} 이상</option>`).join('')}</select>
         <div style="font-size:11px;color:var(--mute);margin-top:4px">권장: 3만원 미만 브론즈 · 3~8만원 실버 · 8만원 이상 골드</div></div>
-      <div class="fld"><label>등급 미달 시 샘플 구매가</label><select id="npBuyMode"><option value="auto">자동 — 판매가 − 인플루언서 수수료</option><option value="fixed">브랜드 지정가 (1회 한정)</option></select>
-        <input id="npFixed" type="number" step="100" placeholder="지정가 (₩) — 지정가 선택 시" style="margin-top:6px"></div>
+      <div class="fld"><label>등급 미달 시 샘플 구매가</label><select id="npBuyMode"><option value="auto" ${sp.buyMode!=='fixed'?'selected':''}>자동 — 판매가 − 인플루언서 수수료</option><option value="fixed" ${sp.buyMode==='fixed'?'selected':''}>브랜드 지정가 (1회 한정)</option></select>
+        <input id="npFixed" type="number" step="100" value="${sp.fixedPrice||''}" placeholder="지정가 (₩) — 지정가 선택 시" style="margin-top:6px"></div>
     </div>
-    <label style="display:flex;gap:8px;align-items:center;font-size:12.5px;margin-top:4px"><input type="checkbox" id="npRefund" style="width:auto;margin:0"> 판매 확정 시 샘플 구매액 환급 (신규 인플루언서 유입용)</label>
+    <label style="display:flex;gap:8px;align-items:center;font-size:12.5px;margin-top:4px"><input type="checkbox" id="npRefund" style="width:auto;margin:0" ${sp.refund?'checked':''}> 판매 확정 시 샘플 구매액 환급 (신규 인플루언서 유입용)</label>
     <div style="font-size:11px;color:var(--mute);margin-top:6px">샘플 구매는 인플루언서 수수료 0의 판매 1건으로 정산됩니다(플랫폼 10% 동일). 인플루언서는 현금 또는 셀러리(1🥬=₩20,000)로 결제합니다.</div>
   </div>
   <div class="fld"><label>구매 옵션 <span style="font-weight:400">— 한 줄에 하나, "옵션명 | 가격" (비우면 1개/2개 세트/3개 세트 자동 생성)</span></label>
-    <textarea id="npOpts" rows="3" placeholder="1박스 (30포) | 29900&#10;2박스 세트 | 56800&#10;3박스 + 쉐이커 | 79900"></textarea></div>
-  <p style="font-size:12px;color:var(--mute)">등록 후 플랫폼 검수(관리자 탭)를 통과하면 인플루언서에게 노출됩니다. 고객 구매 페이지에는 옵션·가격·상세 이미지가 그대로 노출됩니다.</p>
-  <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="createProduct">검수 요청</button></div>`);
+    <textarea id="npOpts" rows="3" placeholder="1박스 (30포) | 29900&#10;2박스 세트 | 56800&#10;3박스 + 쉐이커 | 79900">${ed&&ed.options?ed.options.map(o=>esc(o.n)+' | '+o.price).join('\n'):''}</textarea></div>
+  <p style="font-size:12px;color:var(--mute)">${ed?'수정한 내용은 저장 즉시 인플루언서·고객 화면에 반영됩니다. 판매가·수수료율을 바꾸면 재검수가 필요할 수 있습니다.':'등록 후 플랫폼 검수(관리자 탭)를 통과하면 인플루언서에게 노출됩니다. 고객 구매 페이지에는 옵션·가격·상세 이미지가 그대로 노출됩니다.'}</p>
+  <div class="foot"><button data-act="closeModal">취소</button>${ed?`<button class="danger" data-act="deleteProduct" data-k="${ed.id}">삭제</button>`:''}<button class="pri" data-act="${ed?'saveProduct':'createProduct'}" data-k="${ed?ed.id:''}">${ed?'저장':'검수 요청'}</button></div>`);
 }
 function previewModal(cid){
   const c=camp(cid),p=prod(c.productId),s=seller(c.sellerId),b=brand(p.brandId);
@@ -3913,6 +3924,31 @@ const ACT={
   approveProduct(pid){const p=prod(pid);p.status='listed';p.stock=p.stock||500;save();render();toast(`${p.name} 노출 승인`);},
   rejectProduct(pid){const p=prod(pid);D_().products=D_().products.filter(x=>x.id!==pid);save();render();toast('반려 처리');},
   newProduct(){productModal();},
+  editProduct(pid){productModal(pid);},
+  saveProduct(pid){
+    const p=prod(pid);if(!p)return;
+    const nm=$('#npName').value.trim();if(!nm){toast('상품명을 입력하세요');return;}
+    const locked=D_().campaigns.some(c=>c.productId===pid&&['SCHEDULE_CONFIRMED','LIVE','CLEARING'].includes(c.status));
+    const exg=$('#npExcl').value;
+    p.name=nm;p.desc=$('#npDesc').value.trim()||'—';p.cat=$('#npCat').value||p.cat;
+    if(NP.thumb)p.thumb=NP.thumb;
+    if(NP.imgs&&NP.imgs.length)p.imgs=NP.imgs.slice(0,4);
+    p.stock=+$('#npStock').value||0;p.sample=$('#npSample').value||p.sample;
+    p.options=$('#npOpts').value.split(/\n/).map(l=>l.split('|')).filter(a=>a.length>=2&&a[0].trim()&&+a[1].replace(/[^\d]/g,'')).map(a=>({n:a[0].trim(),price:+a[1].replace(/[^\d]/g,'')}));
+    p.samplePolicy={freeGrade:$('#npFreeGrade').value||'실버',buyMode:$('#npBuyMode').value||'auto',fixedPrice:+$('#npFixed').value||0,refund:!!($('#npRefund')&&$('#npRefund').checked)};
+    if(exg)p.exclusive={grade:exg,label:$('#npExclLabel').value.trim()||exg+' 등급 독점권'};else if(!p.exclusiveSellerId)delete p.exclusive;
+    if(!locked){const cp=+$('#npCp').value||p.cp,gp=+$('#npGp').value||p.gp,rate=Math.max(5,(+$('#npRate').value||30)-PLAT_RATE*100)/100;
+      const priceChanged=(gp!==p.gp||rate!==p.rate);p.cp=cp;p.gp=gp;p.rate=rate;
+      if(priceChanged&&p.status==='listed'){p.status='pending';toast('판매가·수수료율 변경 — 재검수 대기로 전환됩니다');}}
+    NP={thumb:null,imgs:[]};closeModal();save();render();toast(`${p.name} 수정 저장 완료`);
+  },
+  deleteProduct(pid){
+    const p=prod(pid);if(!p)return;
+    const used=D_().campaigns.some(c=>c.productId===pid&&!['REJECTED','PASSED'].includes(c.status));
+    if(used){toast('진행 이력이 있는 상품은 삭제할 수 없습니다 — 노출 중단을 사용하세요');return;}
+    if(!confirm(`${p.name}을(를) 삭제할까요?`))return;
+    D_().products=D_().products.filter(x=>x.id!==pid);closeModal();save();render();toast('상품 삭제됨');
+  },
   toggleListing(pid){
     const p=prod(pid);if(!p||p.status==='pending')return;
     p.status=p.status==='listed'?'paused':'listed';
