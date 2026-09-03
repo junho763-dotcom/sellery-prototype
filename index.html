@@ -425,7 +425,8 @@ body{background:var(--bg);background-image:none}
 .hb-track{border:none;box-shadow:var(--pxb2);margin:2px 3px}
 .notice{border:none;box-shadow:var(--pxb2);margin:3px}
 /* ---- 히어로: 게임 다이얼로그 윈도우 (아바타는 우측 상단 고정 — 가림 방지) ---- */
-.hero-band{background:var(--surface);box-shadow:var(--pxb),var(--pxd),var(--bevel);margin:3px 6px 0 3px;padding:44px 28px 60px;position:relative}
+.hero-band{background:var(--surface);box-shadow:var(--pxb),var(--pxd),var(--bevel);margin:3px 6px 26px 3px;padding:44px 28px 40px;position:relative}
+.overlap{margin-top:0}
 .hero-band::before{content:'◼ ◼ ◼';position:absolute;top:0;left:0;right:0;height:22px;background:var(--ink);color:var(--yellow);font-size:11px;line-height:22px;padding-left:12px;letter-spacing:4px;font-family:var(--px11)}
 .hero-band::after{content:'SELLERY.EXE';position:absolute;top:0;right:12px;height:22px;color:var(--yellow);font-size:11px;line-height:22px;font-family:var(--px11)}
 .hero-av{position:absolute!important;top:40px!important;right:18px!important;left:auto!important;margin:0!important;transform:none;border-radius:0;border:none!important;box-shadow:var(--pxb),var(--pxd)}
@@ -493,7 +494,7 @@ input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28
 .appbar{position:static}
 /* 로고: 굵은 픽셀 SELLERY (2px 쉬프트 볼드) */
 .wordmark{font-family:var(--px11)!important;font-size:22px;line-height:1.1;letter-spacing:2px!important;text-transform:uppercase!important;text-shadow:2px 0 0 currentColor,0 2px 0 currentColor,2px 2px 0 currentColor;color:var(--red);padding:6px 16px 6px 14px;gap:0}
-.wordmark .ylogo{width:24px;height:20px;margin:0 -1px 0 1px;vertical-align:-3px;display:inline-block;transform:none}
+.wordmark .ylogo{width:14px;height:18px;margin:0 2px 0 3px;vertical-align:-2px;display:inline-block;transform:none}
 .wordmark .dot{margin-left:1px}
 .wordmark .dot{color:var(--ink)}
 .wordmark svg{width:24px;height:24px;shape-rendering:crispEdges;image-rendering:pixelated}
@@ -507,7 +508,7 @@ input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28
 .modal::before{content:'◼ ◼ ◼';position:absolute;top:0;left:0;right:0;height:18px;background:var(--ink);color:var(--yellow);font-family:var(--px11);font-size:11px;line-height:18px;padding-left:10px;letter-spacing:3px}
 .modal::after{content:'DIALOG.EXE';position:absolute;top:0;right:10px;height:18px;line-height:18px;color:var(--yellow);font-family:var(--px11);font-size:11px}
 /* 헤드라인 끝 블록 커서 */
-.hero-band h1::after{content:'▮';color:var(--red);margin-left:6px;animation:led 1s steps(1) infinite;font-family:var(--px14)}
+.hero-band h1::after{content:'';display:inline-block;width:.22em;height:.82em;background:var(--red);margin-left:.18em;vertical-align:-.06em;animation:led 1s steps(1) infinite}
 /* KPI 숫자·가격: 원래 폰트 복귀 (픽셀은 태그·뱃지·로고에만) */
 .kpi .val{font-family:'Archivo','IBM Plex Sans KR',sans-serif!important;font-weight:800!important;font-size:29px;letter-spacing:-.02em!important}
 .prod .gp,.landing .pr .g,.mini-stats .ms-v,.hb-val{font-family:'Archivo','IBM Plex Sans KR',sans-serif!important;font-weight:800!important;letter-spacing:-.01em!important}
@@ -556,7 +557,7 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 </head>
 <body>
 <div class="appbar">
-  <span class="wordmark" data-act="goHome" role="button" tabindex="0" style="cursor:pointer" aria-label="Sellery 홈">SELLER<svg class="ylogo" viewBox="0 0 12 10" aria-hidden="true" shape-rendering="crispEdges"><rect x="1" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="9" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="2" height="1" fill="#6da33a"/><rect x="8" y="1" width="2" height="1" fill="#6da33a"/><rect x="3" y="2" width="2" height="1" fill="#8fc74a"/><rect x="7" y="2" width="2" height="1" fill="#8fc74a"/><rect x="4" y="3" width="1" height="1" fill="#8fc74a"/><rect x="7" y="3" width="1" height="1" fill="#8fc74a"/><rect x="5" y="3" width="2" height="1" fill="#aed378"/><rect x="5" y="4" width="1" height="6" fill="#cfe3a4"/><rect x="6" y="4" width="1" height="6" fill="#aed378"/><rect x="4" y="4" width="1" height="6" fill="#4f8a2c"/><rect x="7" y="4" width="1" height="6" fill="#4f8a2c"/></svg><span class="dot">.</span></span>
+  <span class="wordmark" data-act="goHome" role="button" tabindex="0" style="cursor:pointer" aria-label="Sellery 홈">SELLER<svg class="ylogo" viewBox="0 0 7 9" aria-hidden="true" shape-rendering="crispEdges"><rect x="0" y="0" width="2" height="1" fill="#8fc74a"/><rect x="5" y="0" width="2" height="1" fill="#8fc74a"/><rect x="0" y="1" width="2" height="1" fill="#4f8a2c"/><rect x="5" y="1" width="2" height="1" fill="#4f8a2c"/><rect x="1" y="2" width="2" height="1" fill="#4f8a2c"/><rect x="4" y="2" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="3" width="3" height="1" fill="#4f8a2c"/><rect x="2" y="4" width="1" height="4" fill="#4f8a2c"/><rect x="3" y="4" width="1" height="4" fill="#cfe3a4"/><rect x="4" y="4" width="1" height="4" fill="#4f8a2c"/><rect x="2" y="8" width="3" height="1" fill="#4f8a2c"/></svg><span class="dot">.</span></span>
   <nav class="roletabs" id="roletabs"></nav>
   <div class="master">
     <button class="iconbtn" data-act="gotoMy" aria-label="마이페이지" title="마이페이지"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4.1-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg></button>
@@ -2378,7 +2379,7 @@ function simSell(cid,n){
   try{if(sessionStorage.getItem('slry-boot'))return;sessionStorage.setItem('slry-boot','1');}catch(e){}
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const o=document.createElement('div');o.className='boot';
-  o.innerHTML=`<div class="boot-win"><div class="boot-bar">◼ ◼ ◼<span>SELLERY.EXE</span></div><div class="boot-logo">SELLER<svg class="ylogo" viewBox="0 0 12 10" aria-hidden="true" shape-rendering="crispEdges" style="width:48px;height:40px;vertical-align:-6px;margin:0 -2px 0 2px"><rect x="1" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="9" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="2" height="1" fill="#6da33a"/><rect x="8" y="1" width="2" height="1" fill="#6da33a"/><rect x="3" y="2" width="2" height="1" fill="#8fc74a"/><rect x="7" y="2" width="2" height="1" fill="#8fc74a"/><rect x="4" y="3" width="1" height="1" fill="#8fc74a"/><rect x="7" y="3" width="1" height="1" fill="#8fc74a"/><rect x="5" y="3" width="2" height="1" fill="#aed378"/><rect x="5" y="4" width="1" height="6" fill="#cfe3a4"/><rect x="6" y="4" width="1" height="6" fill="#aed378"/><rect x="4" y="4" width="1" height="6" fill="#4f8a2c"/><rect x="7" y="4" width="1" height="6" fill="#4f8a2c"/></svg><span>.</span></div><div class="boot-txt">LOADING INFLUENCER COMMERCE OS…</div><div class="boot-prog"><i></i></div></div>`;
+  o.innerHTML=`<div class="boot-win"><div class="boot-bar">◼ ◼ ◼<span>SELLERY.EXE</span></div><div class="boot-logo">SELLER<svg class="ylogo" viewBox="0 0 7 9" aria-hidden="true" shape-rendering="crispEdges" style="width:28px;height:36px;vertical-align:-4px;margin:0 4px 0 6px"><rect x="0" y="0" width="2" height="1" fill="#8fc74a"/><rect x="5" y="0" width="2" height="1" fill="#8fc74a"/><rect x="0" y="1" width="2" height="1" fill="#4f8a2c"/><rect x="5" y="1" width="2" height="1" fill="#4f8a2c"/><rect x="1" y="2" width="2" height="1" fill="#4f8a2c"/><rect x="4" y="2" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="3" width="3" height="1" fill="#4f8a2c"/><rect x="2" y="4" width="1" height="4" fill="#4f8a2c"/><rect x="3" y="4" width="1" height="4" fill="#cfe3a4"/><rect x="4" y="4" width="1" height="4" fill="#4f8a2c"/><rect x="2" y="8" width="3" height="1" fill="#4f8a2c"/></svg><span>.</span></div><div class="boot-txt">LOADING INFLUENCER COMMERCE OS…</div><div class="boot-prog"><i></i></div></div>`;
   document.body.appendChild(o);
   setTimeout(()=>o.classList.add('out'),1350);setTimeout(()=>o.remove(),1750);
 })();
