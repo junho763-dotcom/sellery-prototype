@@ -1465,7 +1465,7 @@ const SCREENS={
 };
 function render(){
   autoTick();
-  document.body.setAttribute('data-stage',S.stage||localStorage.getItem('slry-stage')||'glow');
+  document.body.setAttribute('data-stage','studio');   // 사용자 확정(2026-09-03): 스튜디오 비네트 무대
   const cnt=counts();
   $('#roletabs').innerHTML=S.lockedRole?'':ROLES.map(([k,l])=>
     `<button data-act="role" data-k="${k}" class="${S.view.role===k?'on':''}">${l}${cnt[k]?`<span class="badge">${cnt[k]}</span>`:''}</button>`).join('');
@@ -1721,7 +1721,6 @@ function vExplore(){
   ${cur==='전체'&&trendPicks.length?`<div class="sec">트렌드 픽 — 매출 급등 상품</div>
   <div class="grid g3" style="margin-bottom:26px">${trendPicks.map(prodCard).join('')}</div>
   <div class="sec">전체 상품</div>`:''}
-  ${S.lockedRole?'':`<div class="cats" style="margin-bottom:6px"><span style="font-size:11px;color:var(--mute);align-self:center;margin-right:4px">썸네일 무대(마스터 미리보기)</span>${[['glow','글로우'],['studio','스튜디오'],['podium','포디움']].map(([k,l])=>`<button class="catchip ${(S.stage||localStorage.getItem('slry-stage')||'glow')===k?'on':''}" data-act="setStage" data-k="${k}">${l}</button>`).join('')}</div>`}
   <div class="cats">${CATS.map(c=>`<button class="catchip ${c===cur?'on':''}" data-act="setCat" data-k="${c}" title="${CAT_INFO[c]?CAT_INFO[c].desc+' · '+CAT_INFO[c].ex:'건강·웰니스 전 카테고리'}">${c}</button>`).join('')}</div>
   <div class="catguide">${cur==='전체'?`<b>건강·웰니스 전용 갤러리</b> — ${CAT_POLICY}`:`<b>${cur}</b> <span class="en">${CAT_INFO[cur].en}</span> — ${CAT_INFO[cur].desc} · 예: ${CAT_INFO[cur].ex}`}</div>
   <div class="grid g3">${list.map(prodCard).join('')||'<div class="empty" style="grid-column:1/-1;background:var(--surface);border:2px solid var(--line);border-radius:6px">해당 카테고리에 노출 중인 상품이 없습니다</div>'}</div>`;
