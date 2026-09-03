@@ -1001,6 +1001,9 @@ function seedData(){
   mkOrders('c12',26900,57,2,-3,5);
   mkOrders('c5',24900,412,14,-18,5);
   mkOrders('c6',31900,548,11,-40,5);
+  // 시드 배송 상태: 종료·정산 판매(c5,c6)는 전량 발송 완료, 진행 중(c1,c12)은 어제까지 주문만 발송 (오늘 주문은 미발송)
+  const couriers=['CJ대한통운','우체국택배','한진택배','롯데택배'];
+  data.orders.forEach((o,i)=>{if(o.status!=='PAID')return;const shipped=['c5','c6'].includes(o.campaignId)||o.at<D(0);if(shipped){o.tracking='6890-'+String(1000+(i*37)%9000).padStart(4,'0')+'-'+String(1000+(i*53)%9000).padStart(4,'0');o.courier=couriers[i%4];}});
   // seed messages
   const sys=(cid,txt,d)=>{(data.messages[cid]=data.messages[cid]||[]).push({type:'sys',txt,at:d})};
   const chat=(cid,role,txt,d)=>{(data.messages[cid]=data.messages[cid]||[]).push({type:'chat',role,txt,at:d})};
@@ -1030,7 +1033,7 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v19';
+const LS='sellery-proto-v20';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
