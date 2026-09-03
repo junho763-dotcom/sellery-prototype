@@ -1111,7 +1111,7 @@ function render(){
   $('#subnav').innerHTML=scr.map(([k,l])=>
     `<button data-act="screen" data-k="${k}" class="${S.view.screen===k&&!S.view.cid?'on':''}">${l}</button>`).join('')+personaHtml;
   const m=$('#main');
-  if(S.view.store){ m.innerHTML=vStore(S.view.store); decorate(); window.scrollTo(0,0); return; }
+  if(S.view.store){ const y=window.scrollY; m.innerHTML=vStore(S.view.store); decorate(); window.scrollTo(0,S.storeTop?0:y); S.storeTop=false; return; }
   if(S.view.cid){ m.innerHTML=vCampDetail(S.view.cid); decorate(); const box=m.querySelector('.msgs'); if(box) box.scrollTop=box.scrollHeight; return; }
   const fn={
     'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.dm':vDM,'brand.dm':vDM,'seller.shop':vShop,'brand.shop':vShop,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
@@ -3030,7 +3030,7 @@ const ACT={
     inp.click();
   },
   /* ---- 고객 구매 페이지 / 고객 화면 ---- */
-  preview(cid){S.view.store=cid;S.storeOpt=0;S.storeQty=1;render();},
+  preview(cid){S.view.store=cid;S.storeOpt=0;S.storeQty=1;S.storeTop=true;render();},
   storeBack(){S.view.store=null;if(S.view.role==='customer')S.linkCtx=null;render();},
   pickOpt(i){S.storeOpt=+i;render();},
   qtyDelta(d){S.storeQty=Math.max(1,Math.min(10,(S.storeQty||1)+ +d));render();},
