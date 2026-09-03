@@ -1074,6 +1074,16 @@ button:active{transform:translate(1px,1px);box-shadow:var(--pxbl)}
 .subnav button.on{box-shadow:0 -2px 0 0 var(--bar),0 2px 0 0 var(--bar),-2px 0 0 0 var(--bar),2px 0 0 0 var(--bar),var(--pxd-s2)}
 .roletabs button.on{box-shadow:var(--pxbl),var(--pxd-s2)!important}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}.card:hover,.prod:hover,.kpi.go:hover,button:hover{transform:none!important}}
+/* 상단 탭·칩도 동일 리프트 */
+.subnav button{box-shadow:var(--pxbl),var(--pxd-s1);transition:transform .12s ease-out,box-shadow .12s ease-out}
+.subnav button:hover{transform:translate(-1px,-1px);box-shadow:var(--pxbl),var(--pxd-s2)}
+.subnav button.on:hover{box-shadow:0 -2px 0 0 var(--bar),0 2px 0 0 var(--bar),-2px 0 0 0 var(--bar),2px 0 0 0 var(--bar),var(--pxd-2)}
+.roletabs button{transition:transform .12s ease-out,box-shadow .12s ease-out}
+.roletabs button:hover{transform:translate(-1px,-1px)}
+.roletabs button.on:hover{box-shadow:var(--pxbl),var(--pxd-2)!important}
+.wordmark{transition:transform .14s ease-out,box-shadow .14s ease-out}
+.wordmark:hover{transform:translate(-1px,-1px);box-shadow:var(--pxbl),var(--pxd-2)}
+.st,.gradebox,.nb,.trendbadge,.exclbadge,.stp,.cal-ev,.disc,.rowitem > span.sub,.celprice{box-shadow:var(--pxbl-soft),var(--pxd-s1)}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
