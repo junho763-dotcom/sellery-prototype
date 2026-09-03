@@ -1084,6 +1084,16 @@ button:active{transform:translate(1px,1px);box-shadow:var(--pxbl)}
 .wordmark{transition:transform .14s ease-out,box-shadow .14s ease-out}
 .wordmark:hover{transform:translate(-1px,-1px);box-shadow:var(--pxbl),var(--pxd-2)}
 .st,.gradebox,.nb,.trendbadge,.exclbadge,.stp,.cal-ev,.disc,.rowitem > span.sub,.celprice{box-shadow:var(--pxbl-soft),var(--pxd-s1)}
+/* 리프트 최종 통일 (이전 규칙보다 우선) */
+.card:hover,.listcard:hover,.tblw:hover,.det-head:hover,.thread:hover,.landing:hover,.sim:hover,.exclbox:hover{
+  transform:translate(-2px,-2px)!important;box-shadow:var(--pxbl),var(--pxd-3)!important}
+.card.prod:hover,.kpi.go:hover{transform:translate(-3px,-3px)!important;box-shadow:var(--pxbl),var(--pxd-3)!important}
+.hero-band:hover{transform:none!important;box-shadow:var(--pxbl),var(--pxd-2)!important}
+button:hover,button.pri:hover,button.ghost:hover,button.sm:hover,button.danger:hover{
+  transform:translate(-1px,-1px)!important;box-shadow:var(--pxbl),var(--pxd-s2)!important}
+button:active{transform:translate(1px,1px)!important;box-shadow:var(--pxbl)!important}
+.subnav button:hover,.catchip:hover{transform:translate(-1px,-1px)!important;box-shadow:var(--pxbl),var(--pxd-s2)!important}
+.subnav button.on:hover{box-shadow:0 -2px 0 0 var(--bar),0 2px 0 0 var(--bar),-2px 0 0 0 var(--bar),2px 0 0 0 var(--bar),var(--pxd-2)!important}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
