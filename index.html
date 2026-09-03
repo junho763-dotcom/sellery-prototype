@@ -880,7 +880,7 @@ const ST = {
 };
 const FLOW = ['SAMPLE_REQUESTED','SAMPLE_APPROVED','SAMPLE_SHIPPED','TESTING','SCHEDULE_PROPOSED','SCHEDULE_CONFIRMED','LIVE','CLEARING','SETTLED'];
 const FLOW_L = ['샘플요청','샘플승인','배송','테스트','일정제안','일정확정','판매 LIVE','환불기간','정산'];
-const PG_RATE = 0.029, PLAT_RATE = 0.10, WHT = 0.033, CLEAR_DAYS = 21;
+const PG_RATE = 0.019, PLAT_RATE = 0.10, WHT = 0.033, CLEAR_DAYS = 21;
 
 /* ============ seed ============ */
 const svgURI=s=>'data:image/svg+xml;utf8,'+encodeURIComponent(s);
@@ -2436,7 +2436,7 @@ function vAdminRevenue(){
         ${row('손익분기 월 GMV','₩'+fmt(Math.round(bep)),'','운영비 ÷ 순 테이크레이트 '+(takeNet*100).toFixed(2)+'%')}
         ${row('운영비율 (운영비 ÷ GMV)',T.net?(opexTotal/T.net*100).toFixed(2)+'%':'—')}
       </table>
-      <p style="font-size:11.5px;color:var(--mute);margin-top:10px">PG 2.9%는 브랜드 정산에서 차감되는 통과 비용이라 위 순수익에 이미 반영(플랫폼 부담 아님). 운영비는 월 단위 추정치이며, 확정 매출은 누적 기준이라 실서비스에서는 월별로 끊어 봅니다.</p></div>
+      <p style="font-size:11.5px;color:var(--mute);margin-top:10px">PG 1.9%는 브랜드 정산에서 차감되는 통과 비용이라 위 순수익에 이미 반영(플랫폼 부담 아님). 운영비는 월 단위 추정치이며, 확정 매출은 누적 기준이라 실서비스에서는 월별로 끊어 봅니다.</p></div>
   </div>
   <div class="sec">판매별 손익</div>
   <div class="tblw"><table>
