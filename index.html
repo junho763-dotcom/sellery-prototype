@@ -1030,7 +1030,7 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v18';
+const LS='sellery-proto-v19';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
@@ -1300,7 +1300,7 @@ const ROLES=[['seller','인플루언서 센터'],['brand','브랜드 센터'],['
 const SCREENS={
   seller:[['home','홈'],['explore','상품 갤러리'],['camps','내 캠페인'],['dm','DM'],['sales','실시간 매출'],['rank','랭킹·등급'],['ref','추천 프로그램'],['shop','셀러리 샵'],['settle','정산']],
   brand:[['home','홈'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['requests','요청함'],['dm','DM'],['sales','실시간 매출'],['orders','주문·발주'],['shop','셀러리 샵'],['settle','정산']],
-  admin:[['home','대시보드'],['match','매칭·자동 제안'],['revenue','매출·순수익'],['review','상품 검수'],['settle','정산 실행']],
+  admin:[['home','대시보드'],['products','상품'],['influencers','인플루언서'],['brands','브랜드'],['orders','주문·CS'],['match','매칭·자동 제안'],['revenue','매출·순수익'],['settle','정산 실행']],
   customer:[['home','진행 중인 판매'],['influencers','인플루언서']]
 };
 function render(){
@@ -1325,7 +1325,7 @@ function render(){
   const fn={
     'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.dm':vDM,'brand.dm':vDM,'seller.shop':vShop,'brand.shop':vShop,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
     'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vRequests,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,'brand.my':vBrandMy,
-    'admin.home':vAdminHome,'admin.match':vAdminMatch,'admin.revenue':vAdminRevenue,'admin.review':vAdminReview,'admin.settle':vAdminSettle,
+    'admin.home':vAdminHome,'admin.products':vAdminProducts,'admin.review':vAdminProducts,'admin.influencers':vAdminInfluencers,'admin.brands':vAdminBrands,'admin.orders':vAdminOrders,'admin.match':vAdminMatch,'admin.revenue':vAdminRevenue,'admin.settle':vAdminSettle,
     'customer.home':vCustHome,'customer.influencers':vCustInfluencers
   }[S.view.role+'.'+S.view.screen]||(S.view.role==='customer'?vCustHome:vSellerHome);
   m.innerHTML=fn();
@@ -2256,27 +2256,141 @@ function vBrandMy(){
 /* ============ ADMIN ============ */
 function vAdminHome(){
   const cs=D_().campaigns;
-  const gmv=cs.reduce((a,c)=>a+calc(c).net,0);
-  const fee=cs.reduce((a,c)=>a+calc(c).pf,0);
+  const done=cs.filter(c=>['LIVE','CLEARING','SETTLED'].includes(c.status));
+  const gmv=done.reduce((a,c)=>a+calc(c).net,0);
+  const net=done.reduce((a,c)=>a+calc(c).pfNet,0);
   const os=D_().orders;
   const refRate=os.length?os.filter(o=>o.status==='REFUNDED').length/os.length*100:0;
+  const pendP=D_().products.filter(p=>p.status==='pending').length;
+  const due=cs.filter(c=>c.status==='CLEARING'&&settleDue(c)<=today()).length;
+  const exq=(D_().exclusiveReqs||[]).filter(r=>r.status==='PENDING').length;
+  const unver=D_().sellers.reduce((a,x)=>a+(x.channels||[]).filter(c=>!c.verified).length,0);
+  const noSettle=D_().brands.filter(b=>!(b.settleInfo&&b.settleInfo.account)).length+D_().sellers.filter(x=>!(x.settleInfo&&x.settleInfo.account)).length;
+  const cands=autoMatches().length;
+  const unshipped=os.filter(o=>o.status==='PAID'&&!o.tracking).length;
+  const todo=[
+    [pendP,'상품 검수 대기','products','pending'],[due,'정산 실행 가능','settle',null],[exq,'독점권 신청 대기','home',null],
+    [unshipped,'미발송 주문','orders','PAID'],[unver,'미인증 채널','influencers',null],[noSettle,'정산정보 미등록 계정','brands',null],[cands,'자동 제안 후보','match',null]
+  ];
+  const feed=[];Object.entries(D_().messages||{}).forEach(([cid,ms])=>ms.forEach(m=>{if(m.type==='sys')feed.push({cid,at:m.at,txt:m.txt});}));
+  feed.sort((a,b)=>b.at<a.at?-1:b.at>a.at?1:0);
+  const f=S.admCF||'all';
+  const flist=cs.filter(c=>f==='all'||c.status===f).sort((a,b)=>b.createdAt<a.createdAt?-1:1);
+  const stCounts=Object.keys(ST).map(k=>[k,ST[k].l,cs.filter(c=>c.status===k).length]).filter(x=>x[2]);
   return `<div class="hero-band">
     <div class="ey">Sellery Operations</div>
     <h1>셀러리 전체 <em>거래 현황</em>을 한눈에.</h1>
-    <div class="sub">전체 캠페인 <b>${cs.length}건</b> · 주문 <b>${fmt(os.length)}건</b> <button class="sm ghost" data-act="reset" style="margin-left:12px">데이터 초기화</button></div>
+    <div class="sub">캠페인 <b>${cs.length}건</b> · 주문 <b>${fmt(os.length)}건</b> · 상품 <b>${D_().products.length}개</b> · 인플루언서 <b>${D_().sellers.length}명</b> · 브랜드 <b>${D_().brands.length}개</b> <button class="sm ghost" data-act="reset" style="margin-left:12px">데이터 초기화</button></div>
   </div>
   <div class="grid g4 overlap">
     <div class="card kpi go" data-act="screen" data-k="revenue" title="매출·순수익 보기"><div class="lbl">누적 GMV (확정)</div><div class="val">₩${fmt(gmv)}</div></div>
-    <div class="card kpi go" data-act="screen" data-k="revenue" title="매출·순수익 보기"><div class="lbl">플랫폼 수수료 수익</div><div class="val" style="color:var(--accent-ink)">₩${fmt(fee)}</div><div class="sub">테이크레이트 ${(PLAT_RATE*100).toFixed(0)}%</div></div>
-    <div class="card kpi go" data-act="screen" data-k="revenue" title="매출·순수익 보기"><div class="lbl">진행 중 판매</div><div class="val">${cs.filter(c=>c.status==='LIVE').length}건</div></div>
-    <div class="card kpi go" data-act="screen" data-k="revenue" title="매출·순수익 보기"><div class="lbl">환불률</div><div class="val">${refRate.toFixed(1)}%</div><div class="sub">주문 ${fmt(os.length)}건 기준</div></div>
+    <div class="card kpi go" data-act="screen" data-k="revenue" title="매출·순수익 보기"><div class="lbl">플랫폼 순수익 (VAT 제외)</div><div class="val" style="color:var(--accent-ink)">₩${fmt(net)}</div><div class="sub">순 테이크레이트 ${gmv?(net/gmv*100).toFixed(2):'0.00'}%</div></div>
+    <div class="card kpi go" data-act="admCF" data-k="LIVE" title="진행 중 판매만 보기"><div class="lbl">진행 중 판매</div><div class="val">${cs.filter(c=>c.status==='LIVE').length}건</div><div class="sub">오늘 주문 ${os.filter(o=>o.at===ymd(today())).length}건</div></div>
+    <div class="card kpi go" data-act="screen" data-k="orders" title="주문·CS 보기"><div class="lbl">환불률</div><div class="val">${refRate.toFixed(1)}%</div><div class="sub">주문 ${fmt(os.length)}건 기준</div></div>
   </div>
-  <div class="sec">전체 캠페인</div>
-  <div class="tblw"><table>
-  <thead><tr><th>캠페인</th><th>인플루언서</th><th>브랜드</th><th>기간</th><th class="num">확정 매출</th><th>상태</th></tr></thead>
-  <tbody>${cs.map(c=>{const p=prod(c.productId);const k=calc(c);
-    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td><b>${esc(p.name)}</b></td><td>${seller(c.sellerId).handle}</td><td>${brand(p.brandId).name}</td>
-    <td class="num">${c.start?md(P(c.start))+'–'+md(P(c.end)):'—'}</td><td class="num">₩${fmt(k.net)}</td><td>${stChip(c.status)}</td></tr>`;}).join('')}
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card"><div class="lbl-sm" style="margin-bottom:10px">✅ 오늘 할 일</div>
+      ${todo.map(([n,l,scr,k])=>`<div class="rowitem" data-act="admGo" data-k="${scr}|${k||''}" style="padding:8px 4px"><div class="grow"><div class="nm" style="font-size:13px">${l}</div></div><span class="st ${n?'amber':'gray'}" style="animation:none">${n}건</span></div>`).join('')}
+    </div>
+    <div class="card" style="padding:0;overflow:hidden"><div class="lbl-sm" style="padding:16px 18px 6px">🕒 최근 활동</div>
+      <div class="news">${feed.slice(0,8).map(x=>{const c=camp(x.cid);const p=c&&prod(c.productId);return `<div class="news-item" data-act="open" data-k="${x.cid}"><span class="nb new" style="min-width:52px;text-align:center">${md(P(x.at))}</span><div><b>${p?esc(p.name):x.cid}</b> · ${x.txt}</div></div>`;}).join('')||'<div class="empty">활동 없음</div>'}</div></div>
+  </div>
+  <div class="sec">전체 캠페인 <span class="badge">${flist.length}</span></div>
+  ${admChips([['all','전체',cs.length],...stCounts],f,'admCF')}
+  <div class="tblw compact"><table>
+  <thead><tr><th>캠페인</th><th>인플루언서</th><th>브랜드</th><th class="num">기간</th><th class="num">주문</th><th class="num">확정 매출</th><th class="num">플랫폼 순수익</th><th>상태</th></tr></thead>
+  <tbody>${flist.map(c=>{const p=prod(c.productId);const k=calc(c);
+    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td class="nm"><b>${p.em} ${esc(p.name)}</b> <span style="color:var(--mute);font-size:11px">${c.id.toUpperCase()}${c.auto?' · 🤖 자동':''}${c.invited&&!c.auto?' · 브랜드 제안':''}</span></td><td>${platIcon(seller(c.sellerId))} ${seller(c.sellerId).handle}</td><td>${brand(p.brandId).name}</td>
+    <td class="num">${c.start?md(P(c.start))+'–'+md(P(c.end)):'—'}</td><td class="num">${k.paidCnt}${k.refCnt?` <span style="color:var(--danger)">−${k.refCnt}</span>`:''}</td><td class="num">₩${fmt(k.net)}</td><td class="num">₩${fmt(k.pfNet)}</td><td>${stChip(c.status)}</td></tr>`;}).join('')||'<tr><td colspan="8" class="empty">해당 상태의 캠페인이 없습니다</td></tr>'}
+  </tbody></table></div>`;
+}
+function pstChip(st){const m=PSTAT[st]||[st,'gray'];return `<span class="st ${m[1]}" style="animation:none">${m[0]}</span>`;}
+function admChips(list,cur,act){return `<div class="cats" style="margin:0 0 12px">${list.map(([k,l,n])=>`<button class="catchip ${cur===k?'on':''}" data-act="${act}" data-k="${k}">${l}${n!=null?` <span style="color:var(--mute);font-weight:400">${n}</span>`:''}</button>`).join('')}</div>`;}
+function vAdminProducts(){
+  const all=D_().products;
+  const sf=S.admPS||'all', bf=S.admPB||'all', cf=S.admPC||'all';
+  const list=all.filter(p=>(sf==='all'||p.status===sf)&&(bf==='all'||p.brandId===bf)&&(cf==='all'||p.cat===cf));
+  const cnt=k=>all.filter(p=>p.status===k).length;
+  const totalRate=p=>((p.rate+PLAT_RATE)*100).toFixed(0);
+  const campsOf=p=>D_().campaigns.filter(c=>c.productId===p.id);
+  const gmvOf=p=>campsOf(p).reduce((a,c)=>a+calc(c).net,0);
+  return `<h2 class="pg">상품 <small>전 브랜드 등록 상품 ${all.length}개 · 검수 승인/반려, 노출 제어, 상세페이지 확인</small></h2>
+  <div class="notice" style="margin-bottom:14px"><b>카테고리 정책</b> — ${CAT_POLICY} 건강기능식품은 표시광고 사전 심의 대상: 질병 치료·예방 표현 금지, 기능성 문구는 식약처 인정 범위 내.</div>
+  ${admChips([['all','전체',all.length],['pending','검수 대기',cnt('pending')],['listed','노출 중',cnt('listed')],['paused','노출 중단',cnt('paused')]],sf,'admPS')}
+  <div style="display:flex;gap:18px;flex-wrap:wrap">
+    ${admChips([['all','모든 브랜드'],...D_().brands.map(b=>[b.id,b.name,all.filter(p=>p.brandId===b.id).length])],bf,'admPB')}
+    ${admChips([['all','모든 카테고리'],...CATS.filter(c=>c!=='전체').map(c=>[c,c,all.filter(p=>p.cat===c).length])],cf,'admPC')}
+  </div>
+  <div class="tblw compact"><table>
+  <thead><tr><th>상품</th><th>브랜드</th><th>카테고리</th><th class="num">판매가</th><th class="num">총 수수료</th><th class="num">재고</th><th class="num">판매·매출</th><th>독점</th><th>상태</th><th>관리</th></tr></thead>
+  <tbody>${list.map(p=>{const b=brand(p.brandId);const cs=campsOf(p);const live=cs.filter(c=>c.status==='LIVE').length;
+    return `<tr><td class="nm"><b>${p.thumb?`<img src="${p.thumb}" alt="" style="height:22px;vertical-align:middle">`:p.em} ${esc(p.name)}</b><div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)} · ${p.id.toUpperCase()}</div></td>
+    <td style="white-space:nowrap">${esc(b.name)} <span class="gradebox sm">${gfull(bgname(b))}</span></td>
+    <td style="white-space:nowrap">${p.cat}</td>
+    <td class="num"><b>₩${fmt(p.gp)}</b><div style="font-size:11px;color:var(--mute);text-decoration:line-through">₩${fmt(p.cp)}</div></td>
+    <td class="num">${totalRate(p)}%<div style="font-size:11px;color:var(--mute)">인플 ${(p.rate*100).toFixed(0)} + 플랫폼 ${(PLAT_RATE*100).toFixed(0)}</div></td>
+    <td class="num">${fmt(p.stock)}</td>
+    <td class="num">${cs.length}건${live?` <span class="st live" style="animation:none">LIVE ${live}</span>`:''}<div style="font-size:11px;color:var(--mute)">₩${fmt(gmvOf(p))}</div></td>
+    <td style="white-space:nowrap">${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))}</span>${p.exclusiveSellerId?' <span class="st green" style="animation:none">확정</span>':''}`:'<span style="color:var(--mute)">—</span>'}</td>
+    <td>${pstChip(p.status)}</td>
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap">${p.status==='pending'?`<button class="sm pri" data-act="approveProduct" data-k="${p.id}">승인</button><button class="sm danger" data-act="rejectProduct" data-k="${p.id}">반려</button>`
+      :`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}
+      <button class="sm ghost" data-act="prodDetail" data-k="${p.id}">실적</button><button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td></tr>`;}).join('')||'<tr><td colspan="10" class="empty">조건에 맞는 상품이 없습니다</td></tr>'}
+  </tbody></table></div>`;
+}
+function vAdminInfluencers(){
+  const all=D_().sellers;
+  const gf=S.admIG||'all';
+  const list=all.filter(x=>gf==='all'||gname(x)===gf).sort((a,b)=>b.m3Sales-a.m3Sales);
+  const unverified=all.reduce((a,x)=>a+(x.channels||[]).filter(c=>!c.verified).length,0);
+  return `<h2 class="pg">인플루언서 <small>가입 ${all.length}명 · 비공개 ${all.filter(x=>x.hidden).length} · 미인증 채널 ${unverified}개</small></h2>
+  ${admChips([['all','전체',all.length],...GRADES.map(t=>[t.g,t.g,all.filter(x=>gname(x)===t.g).length]).filter(x=>x[2])],gf,'admIG')}
+  <div class="tblw compact"><table>
+  <thead><tr><th>인플루언서</th><th>등급</th><th class="num">팔로워</th><th class="num">3개월 매출</th><th class="num">판매</th><th>채널 인증</th><th class="num">셀러리</th><th>상태</th><th>관리</th></tr></thead>
+  <tbody>${list.map(x=>{const cs=D_().campaigns.filter(c=>c.sellerId===x.id);const done=cs.filter(c=>['LIVE','CLEARING','SETTLED'].includes(c.status)).length;const ch=x.channels||[];const ver=ch.filter(c=>c.verified).length;
+    return `<tr><td class="nm"><span class="sc-av ${x.img?'':'em'}" style="width:26px;height:26px;font-size:13px;display:inline-flex;vertical-align:middle;margin-right:6px;${x.img?`background-image:url(${x.img})`:''}">${x.img?'':(SEMOJI[x.id]||'👤')}</span><b>${esc(x.name)}</b> <span style="color:var(--mute);font-size:12px">${platIcon(x)} ${x.handle}</span><div style="font-size:11.5px;color:var(--mute)">${x.cat} · ${esc(x.intro)}</div></td>
+    <td><span class="gradebox sm">${gfull(gname(x))}</span></td>
+    <td class="num">${fmt(x.followers)}</td><td class="num"><b>₩${fmt(x.m3Sales)}</b></td>
+    <td class="num">${done}<span style="color:var(--mute)">/${cs.length}</span></td>
+    <td style="white-space:nowrap">${ch.length?`<span class="st ${ver===ch.length?'green':'amber'}" style="animation:none">${ver}/${ch.length} 인증</span>`:'<span style="color:var(--mute)">—</span>'}${x.referredBy?`<div style="font-size:11px;color:var(--mute)">추천: ${seller(x.referredBy).name}</div>`:''}</td>
+    <td class="num">${CEL} ${celBal(x.id)}</td>
+    <td>${x.hidden?'<span class="st gray" style="animation:none">비공개</span>':'<span class="st green" style="animation:none">공개</span>'}</td>
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="sm ghost" data-act="admToggleHidden" data-k="${x.id}">${x.hidden?'공개 전환':'비공개 전환'}</button><button class="sm ghost" data-act="admGrant" data-k="${x.id}">${CEL} +3 지급</button></div></td></tr>`;}).join('')}
+  </tbody></table></div>`;
+}
+function vAdminBrands(){
+  const all=D_().brands;
+  return `<h2 class="pg">브랜드 <small>입점 ${all.length}개 · 등급·정산정보·자동 제안·셀러리</small></h2>
+  <div class="tblw compact"><table>
+  <thead><tr><th>브랜드</th><th>등급 · 누적 GMV</th><th class="num">상품</th><th class="num">판매</th><th>정산 정보</th><th class="num">셀러리</th><th>자동 제안</th><th>관리</th></tr></thead>
+  <tbody>${all.map(b=>{const ps=D_().products.filter(p=>p.brandId===b.id);const pid=ps.map(p=>p.id);const cs=D_().campaigns.filter(c=>pid.includes(c.productId));const live=cs.filter(c=>c.status==='LIVE').length;const si=b.settleInfo||{};
+    return `<tr><td class="nm">${b.logo?`<img src="${b.logo}" alt="" style="width:26px;height:26px;vertical-align:middle;margin-right:6px;border:1.5px solid var(--line-soft)">`:''}<b>${esc(b.name)}</b><div style="font-size:11.5px;color:var(--mute)">${b.cat} · ${esc(b.manager||'')} · ${esc(b.email||'')}${b.referredBy?` · 추천: ${brand(b.referredBy).name}`:''}</div></td>
+    <td style="white-space:nowrap"><span class="gradebox sm">${gfull(bgname(b))}</span><div style="font-size:11.5px;color:var(--mute)">₩${fmt(bGmv(b))}</div></td>
+    <td class="num">${ps.length}<div style="font-size:11px;color:var(--mute)">노출 ${ps.filter(p=>p.status==='listed').length} · 대기 ${ps.filter(p=>p.status==='pending').length}</div></td>
+    <td class="num">${cs.length}${live?` <span class="st live" style="animation:none">LIVE ${live}</span>`:''}</td>
+    <td>${si.account?`<span class="st green" style="animation:none">등록</span><div style="font-size:11px;color:var(--mute)">${esc(si.bank)} · 사업자 ${esc(si.bizNo||'—')}</div>`:'<span class="st amber" style="animation:none">미등록</span>'}</td>
+    <td class="num">${CEL} ${celBal(b.id)}</td>
+    <td><button class="sm ${b.autoPropose?'pri':'ghost'}" data-act="toggleAutoPropose" data-k="${b.id}">${b.autoPropose?'ON':'OFF'}</button></td>
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="sm ghost" data-act="admGrant" data-k="${b.id}">${CEL} +3 지급</button><button class="sm ghost" data-act="admBrandProducts" data-k="${b.id}">상품 보기</button></div></td></tr>`;}).join('')}
+  </tbody></table></div>`;
+}
+function vAdminOrders(){
+  const os=D_().orders.slice().sort((a,b)=>b.at<a.at?-1:b.at>a.at?1:(+b.id.slice(1))-(+a.id.slice(1)));
+  const f=S.admOF||'all';
+  const list=os.filter(o=>f==='all'||(f==='PAID'&&o.status==='PAID'&&!o.tracking)||(f==='SHIP'&&o.status==='PAID'&&o.tracking)||(f==='REFUNDED'&&o.status==='REFUNDED')).slice(0,60);
+  const c=k=>os.filter(o=>k==='PAID'?(o.status==='PAID'&&!o.tracking):k==='SHIP'?(o.status==='PAID'&&o.tracking):o.status==='REFUNDED').length;
+  return `<h2 class="pg">주문·CS <small>전체 주문 ${fmt(os.length)}건 · 환불 처리·배송 상태 확인 (최근 60건 표시)</small></h2>
+  ${admChips([['all','전체',os.length],['PAID','결제완료·미발송',c('PAID')],['SHIP','배송중',c('SHIP')],['REFUNDED','환불',c('REFUNDED')]],f,'admOF')}
+  <div class="tblw compact"><table>
+  <thead><tr><th>주문</th><th>상품 · 옵션</th><th>판매</th><th class="num">금액</th><th>배송</th><th>상태</th><th>관리</th></tr></thead>
+  <tbody>${list.map(o=>{const cp=camp(o.campaignId),p=prod(cp.productId),sl=seller(cp.sellerId),b=brand(p.brandId);
+    return `<tr><td class="nm"><b>${o.id.toUpperCase()}</b><div style="font-size:11.5px;color:var(--mute)">${md(P(o.at))} · ${esc(o.buyer)}</div></td>
+    <td>${p.em} ${esc(p.name)}<div style="font-size:11.5px;color:var(--mute)">${o.opt?esc(o.opt)+' · ':''}${o.qty}개</div></td>
+    <td style="white-space:nowrap">${platIcon(sl)} ${esc(sl.name)}<div style="font-size:11.5px;color:var(--mute)">${esc(b.name)} · ${cp.id.toUpperCase()}</div></td>
+    <td class="num"><b>₩${fmt(o.unit*o.qty)}</b></td>
+    <td>${o.tracking?`<span class="st blue" style="animation:none">배송중</span><div style="font-size:11px;color:var(--mute)">${esc(o.courier||'')} ${esc(o.tracking)}</div>`:o.status==='PAID'?'<span class="st amber" style="animation:none">미발송</span>':'—'}</td>
+    <td>${o.status==='PAID'?'<span class="st green" style="animation:none">결제완료</span>':'<span class="st red" style="animation:none">환불</span>'}</td>
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="sm ghost" data-act="open" data-k="${cp.id}">스레드</button>${o.status==='PAID'?`<button class="sm danger" data-act="refund" data-k="${o.id}">환불 처리</button>`:''}</div></td></tr>`;}).join('')||'<tr><td colspan="7" class="empty">주문이 없습니다</td></tr>'}
   </tbody></table></div>`;
 }
 function vAdminReview(){
@@ -2292,7 +2406,9 @@ function vAdminReview(){
 }
 function vAdminSettle(){
   const ready=D_().campaigns.filter(c=>c.status==='CLEARING');
+  const dueList=ready.filter(c=>settleDue(c)<=today());
   return `<h2 class="pg">정산 실행 <small>판매 종료 + ${CLEAR_DAYS}일 경과 건 일괄 지급</small></h2>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><span class="st ${dueList.length?'amber':'gray'}" style="animation:none">실행 가능 ${dueList.length}건</span><span class="st gray" style="animation:none">대기 ${ready.length-dueList.length}건</span><button class="pri sm" data-act="runSettleAll" ${dueList.length?'':'disabled style="opacity:.5"'}>실행 가능 건 일괄 정산 (${dueList.length})</button></div>
   <div class="listcard">${ready.map(c=>{const k=calc(c),p=prod(c.productId);const due=settleDue(c);const isDue=due<=today();
     return `<div class="rowitem">
     <div style="font-size:24px">${p.em}</div>
@@ -2316,9 +2432,9 @@ function vAdminMatch(){
   <div class="grid g2">
     <div class="card">
       <div class="lbl-sm" style="margin-bottom:4px">📈 요즘 뜨는 인플루언서</div>
-      <div style="font-size:11px;color:var(--mute);margin-bottom:12px">최근 게시물 반응 성장률 (후반 평균 vs 전반 평균) · 비공개는 익명</div>
+      <div style="font-size:11px;color:var(--mute);margin-bottom:12px">최근 게시물 반응 성장률 (후반 평균 vs 전반 평균) · 관리자는 비공개 인플루언서도 실명 표시</div>
       ${rising.map(({s,g},i)=>`<div class="hb-row" style="cursor:default">
-        <span class="hb-nm">${i+1}. ${platIcon(s)} ${s.hidden?'○○○ 인플루언서':esc(s.name)+' '+s.handle} <span class="gradebox sm">${gfull(gname(s))}</span></span>
+        <span class="hb-nm">${i+1}. ${platIcon(s)} ${esc(s.name)} ${s.handle}${s.hidden?' <span class="st gray" style="animation:none">비공개</span>':''} <span class="gradebox sm">${gfull(gname(s))}</span></span>
         <div class="hb-track"><div class="hb-bar ${i===0?'top':''}" style="width:${Math.max(6,Math.min(100,g/Math.max(1,rising[0].g)*100))}%"></div></div>
         <span class="hb-val" style="color:var(--red)">▲${g.toFixed(1)}%</span></div>`).join('')}
     </div>
@@ -2338,7 +2454,7 @@ function vAdminMatch(){
     <div class="tblw" style="margin:0;box-shadow:none;padding-top:0"><table>
     <thead><tr><th>브랜드 · 상품</th><th>인플루언서</th><th class="num">성장세</th><th class="num">3개월 매출</th><th class="num">매칭 점수</th></tr></thead>
     <tbody>${cands.map(({b,p,s,growth,score})=>`<tr><td><b>${esc(p.name)}</b> <span class="sub" style="color:var(--mute)">${esc(b.name)} · ${p.cat}</span></td>
-      <td>${platIcon(s)} ${s.hidden?'○○○ (비공개)':esc(s.name)+' '+s.handle} <span class="gradebox sm">${gfull(gname(s))}</span></td>
+      <td>${platIcon(s)} ${esc(s.name)} ${s.handle}${s.hidden?' <span class="st gray" style="animation:none">비공개</span>':''} <span class="gradebox sm">${gfull(gname(s))}</span></td>
       <td class="num" style="color:var(--red)">▲${growth.toFixed(1)}%</td><td class="num">₩${fmt(s.m3Sales)}</td><td class="num"><b>${score}</b></td></tr>`).join('')||'<tr><td colspan="5" class="empty">자동 제안 ON 브랜드의 후보가 없습니다</td></tr>'}
     </tbody></table></div>
   </div>
@@ -3310,6 +3426,13 @@ const ACT={
   /* ---- 관리자: 자동 제안 ---- */
   saveOpex(){const o={};Object.keys(OPEX_DEF).forEach(k=>{const el=$('#ox_'+k);o[k]=el?Math.max(0,+el.value||0):OPEX_DEF[k];});D_().opex=o;save();render();toast('운영 비용 저장 — 순이익 재계산');},
   resetOpex(){delete D_().opex;save();render();toast('운영 비용 기본값으로 복원');},
+  admPS(k){S.admPS=k;render();}, admPB(k){S.admPB=k;render();}, admPC(k){S.admPC=k;render();},
+  admIG(k){S.admIG=k;render();}, admOF(k){S.admOF=k;render();}, admCF(k){S.admCF=k;S.view.screen='home';render();},
+  admGo(k){const [scr,f]=k.split('|');if(scr==='products'&&f)S.admPS=f;if(scr==='orders'&&f)S.admOF=f;S.view={role:'admin',screen:scr,cid:null,store:null};render();},
+  admBrandProducts(bid){S.admPB=bid;S.admPS='all';S.view={role:'admin',screen:'products',cid:null,store:null};render();},
+  admToggleHidden(sid){const x=seller(sid);x.hidden=!x.hidden;save();render();toast(`${x.name} ${x.hidden?'비공개':'공개'} 전환`);},
+  admGrant(who){(D_().celeryLedger=D_().celeryLedger||[]).push({who,at:ymd(today()),delta:3,memo:'관리자 이벤트 지급'});save();render();toast('🥬 3 지급 완료');},
+  runSettleAll(){const list=D_().campaigns.filter(c=>c.status==='CLEARING'&&settleDue(c)<=today());list.forEach(c=>ACT.runSettle(c.id));toast(`일괄 정산 ${list.length}건 완료`);},
   toggleAutoPropose(bid){const b=brand(bid);b.autoPropose=!b.autoPropose;save();render();toast(`${b.name} 자동 제안 ${b.autoPropose?'ON':'OFF'}`);},
   runAutoPropose(){
     const list=autoMatches().slice(0,5);let n=0,skip=0;
