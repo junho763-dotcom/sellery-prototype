@@ -1677,15 +1677,19 @@ function vBrandProducts(){
   return `<h2 class="pg">상품 관리 <small>판매가·수수료율은 등록 시 책정, 판매 진행 중 변경 불가</small></h2>
   <div style="margin-bottom:14px"><button class="pri" data-act="newProduct">+ 새 상품 등록</button></div>
   <div class="tblw"><table>
-  <thead><tr><th>상품</th><th class="num">소비자가</th><th class="num">판매가</th><th class="num">수수료율</th><th>샘플 정책</th><th class="num">재고</th><th>상태</th><th>판매 일정</th></tr></thead>
+  <thead><tr><th>상품</th><th class="num">소비자가</th><th class="num">판매가</th><th class="num">수수료율</th><th>샘플 정책</th><th class="num">재고</th><th>독점권</th><th>상태</th><th>판매 일정</th><th></th></tr></thead>
   <tbody>${mine.map(p=>{
     const slots=D_().campaigns.filter(c=>c.productId===p.id&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status));
-    return `<tr><td><b>${p.em} ${esc(p.name)}</b><div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)}</div></td>
-    <td class="num">₩${fmt(p.cp)}</td><td class="num">₩${fmt(p.gp)}</td><td class="num">${(p.rate*100).toFixed(0)}%</td>
+    const stTag=p.status==='listed'?'<span class="st green">노출 중</span>':p.status==='paused'?'<span class="st gray">노출 중단</span>':'<span class="st amber">검수 대기</span>';
+    return `<tr><td><b>${p.thumb?`<img src="${p.thumb}" alt="" style="height:22px;vertical-align:middle">`:p.em} ${esc(p.name)}</b>${p.boosted?' <span class="st blue" style="animation:none">부스트</span>':''}<div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)}</div></td>
+    <td class="num">₩${fmt(p.cp)}</td><td class="num">₩${fmt(p.gp)}</td><td class="num">${(p.rate*100).toFixed(0)}% <span style="color:var(--mute);font-size:11px">(+플랫폼 ${(PLAT_RATE*100).toFixed(0)})</span></td>
     <td>${p.sample}</td><td class="num">${fmt(p.stock)}</td>
-    <td>${p.status==='listed'?'<span class="st green">노출 중</span>':'<span class="st amber">검수 대기</span>'}</td>
-    <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||'<span style="color:var(--mute);font-size:12px">—</span>'}</td></tr>`;}).join('')}
-  </tbody></table></div>`;
+    <td>${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))}</span> 이상${p.exclusiveSellerId?` · <span class="st green">확정</span>`:''}`:'<span style="color:var(--mute);font-size:12px">—</span>'}</td>
+    <td>${stTag}</td>
+    <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||'<span style="color:var(--mute);font-size:12px">—</span>'}</td>
+    <td>${p.status==='pending'?'':`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}</td></tr>`;}).join('')}
+  </tbody></table></div>
+  <p style="font-size:12px;color:var(--mute);margin-top:10px">판매가·수수료율은 진행 중인 판매가 있으면 변경할 수 없습니다(신뢰 보호). 노출 중단 시 새 샘플 요청만 막히고 진행 중 판매는 유지됩니다.</p>`;
 }
 function sellerCard(s,reason){
   const hist=D_().campaigns.filter(c=>c.sellerId===s.id&&['LIVE','CLEARING','SETTLED'].includes(c.status))
@@ -1814,7 +1818,10 @@ function vBrandOrders(){
 function vBrandSettle(){
   const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
   const cs=D_().campaigns.filter(c=>myP.includes(c.productId)&&['LIVE','CLEARING','SETTLED'].includes(c.status));
+  const bsi=brand(S.actingBrand).settleInfo||{};
+  const bNoAcct=!(bsi.bank&&bsi.account&&bsi.bizNo);
   return `<h2 class="pg">정산 <small>확정 매출 − PG ${(PG_RATE*100).toFixed(1)}% − 인플루언서 수수료 − 플랫폼 ${(PLAT_RATE*100).toFixed(0)}%</small></h2>
+  ${bNoAcct?`<div class="card" style="border-color:var(--danger);margin-bottom:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><b style="color:var(--danger)">⚠ 정산 정보 미등록</b><span style="font-size:13px;color:var(--mute)">사업자등록번호·정산 계좌를 등록해야 D+${CLEAR_DAYS} 지급과 세금계산서 발행이 실행됩니다.</span><button class="pri sm" data-act="gotoMy">마이페이지에서 등록</button></div>`:''}
   <div style="margin-bottom:14px"><button class="sm ghost" data-act="settleCSV">⬇ 명세 CSV 다운로드</button></div>
   <div class="tblw"><table>
   <thead><tr><th>판매</th><th>인플루언서</th><th class="num">확정 매출</th><th class="num">인플루언서 수수료</th><th class="num">플랫폼+PG</th><th class="num">브랜드 정산액</th><th>상태</th><th>정산일</th></tr></thead>
@@ -2549,6 +2556,11 @@ const ACT={
   approveProduct(pid){const p=prod(pid);p.status='listed';p.stock=p.stock||500;save();render();toast(`${p.name} 노출 승인`);},
   rejectProduct(pid){const p=prod(pid);D_().products=D_().products.filter(x=>x.id!==pid);save();render();toast('반려 처리');},
   newProduct(){productModal();},
+  toggleListing(pid){
+    const p=prod(pid);if(!p||p.status==='pending')return;
+    p.status=p.status==='listed'?'paused':'listed';
+    save();render();toast(p.status==='listed'?`${p.name} 노출 재개`:`${p.name} 노출 중단 — 새 샘플 요청이 막힙니다`);
+  },
   createProduct(){
     const nm=$('#npName').value.trim();if(!nm){toast('상품명을 입력하세요');return;}
     const exg=$('#npExcl').value;
