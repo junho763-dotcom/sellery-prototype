@@ -39,7 +39,7 @@ body{margin:0;background:var(--bg);color:var(--ink);
   font-family:'IBM Plex Sans KR',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
   font-size:14.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
 button{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12.5px;cursor:pointer;
-  border:2px solid var(--ink);border-radius:4px;padding:9px 16px;
+  border:2px solid var(--line);border-radius:4px;padding:9px 16px;
   background:var(--surface);color:var(--ink);font-weight:700;letter-spacing:.02em;
   box-shadow:var(--hs-sm);transition:transform .12s ease,box-shadow .12s ease}
 button:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
@@ -51,7 +51,7 @@ button.ghost{background:transparent}
 button.danger{background:var(--red);color:#fff;box-shadow:var(--hs-sm)}
 button.sm{padding:6px 12px;font-size:11.5px}
 button[disabled]{cursor:not-allowed;opacity:.45;transform:none!important;box-shadow:var(--hs-sm)!important}
-input,select,textarea{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:13px;background:var(--surface);color:var(--ink);border:2px solid var(--ink);border-radius:4px;padding:9px 12px;width:100%}
+input,select,textarea{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:13px;background:var(--surface);color:var(--ink);border:2px solid var(--line);border-radius:4px;padding:9px 12px;width:100%}
 textarea{resize:vertical;font-family:'IBM Plex Sans KR',sans-serif}
 :focus{outline:none}
 :focus-visible{outline:3px solid var(--red);outline-offset:2px}
@@ -61,7 +61,7 @@ textarea{resize:vertical;font-family:'IBM Plex Sans KR',sans-serif}
 .appbar{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:2px solid var(--ink);
   display:flex;align-items:center;gap:22px;padding:12px 24px;flex-wrap:wrap}
 .wordmark{font-family:'Archivo',sans-serif;font-weight:800;font-size:18px;letter-spacing:.06em;white-space:nowrap;
-  background:var(--surface);border:2px solid var(--ink);box-shadow:var(--hs-red);padding:5px 16px;text-transform:uppercase;
+  background:var(--surface);border:2px solid var(--line);box-shadow:var(--hs-red);padding:5px 16px;text-transform:uppercase;
   display:inline-flex;align-items:center;gap:8px}
 .wordmark svg{flex-shrink:0;transform:rotate(-4deg)}
 .wordmark .dot{color:var(--red);font-style:normal}
@@ -86,7 +86,7 @@ textarea{resize:vertical;font-family:'IBM Plex Sans KR',sans-serif}
 
 /* ===== sub nav ===== */
 .subnav{display:flex;gap:8px;padding:16px 24px 0;max-width:1200px;margin:0 auto;flex-wrap:wrap;align-items:center}
-.subnav button{background:transparent;border:2px solid var(--ink);box-shadow:none;padding:6px 14px;font-size:12px;color:var(--ink)}
+.subnav button{background:transparent;border:2px solid var(--line);box-shadow:none;padding:6px 14px;font-size:12px;color:var(--ink)}
 .subnav button:hover{box-shadow:var(--hs-sm)}
 .subnav button.on{background:var(--ink);color:var(--bg);box-shadow:var(--hs-red)}
 .persona{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute)}
@@ -123,7 +123,7 @@ main > *:nth-child(5){animation-delay:.16s}
 
 /* ===== category chips ===== */
 .cats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.catchip{background:var(--surface);border:2px solid var(--ink);border-radius:4px;padding:6px 14px;font-size:12px;color:var(--ink);font-weight:700;box-shadow:none;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
+.catchip{background:var(--surface);border:2px solid var(--line);border-radius:4px;padding:6px 14px;font-size:12px;color:var(--ink);font-weight:700;box-shadow:none;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
 .catchip:hover{box-shadow:var(--hs-sm)}
 .catchip.on{background:var(--yellow);box-shadow:var(--hs-sm)}
 
@@ -134,7 +134,7 @@ main > *:nth-child(5){animation-delay:.16s}
 .g2{grid-template-columns:repeat(2,1fr)}
 @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
-.card{background:var(--surface);border:2px solid var(--ink);border-radius:6px;padding:18px;box-shadow:var(--hs)}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:6px;padding:18px;box-shadow:var(--hs)}
 .kpi .lbl{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
 .kpi .val{font-family:'Archivo',sans-serif;font-size:29px;font-weight:800;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
 .kpi .sub{font-size:11.5px;color:var(--mute);margin-top:3px}
@@ -158,9 +158,9 @@ main > *:nth-child(5){animation-delay:.16s}
 .st.live{background:var(--red);color:#fff;box-shadow:2px 2px 0 var(--ink)}
 .pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:5px;animation:pu 1.4s infinite}
 @keyframes pu{0%,100%{opacity:1}50%{opacity:.25}}
-.gradebox{display:inline-block;font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-size:11px;font-weight:800;letter-spacing:.04em;padding:3px 10px;background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);white-space:nowrap;flex-shrink:0}
+.gradebox{display:inline-block;font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-size:11px;font-weight:800;letter-spacing:.04em;padding:3px 10px;background:var(--yellow);border:2px solid var(--line);box-shadow:2px 2px 0 var(--ink);white-space:nowrap;flex-shrink:0}
 .gradebox.sm{font-size:9.5px;padding:2px 7px;box-shadow:1.5px 1.5px 0 var(--ink)}
-.meter{height:14px;border:2px solid var(--ink);background:var(--surface);position:relative}
+.meter{height:14px;border:2px solid var(--line);background:var(--surface);position:relative}
 .meter span{display:block;height:100%;background:repeating-linear-gradient(-45deg,var(--yellow),var(--yellow) 8px,var(--ink) 8px,var(--ink) 10px)}
 
 /* ===== customer store (sellery.co.kr 구매 페이지) ===== */
@@ -177,14 +177,14 @@ main > *:nth-child(5){animation-delay:.16s}
 .opt{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 14px;background:var(--surface);border:2px solid var(--soft-line);font-size:13px;cursor:pointer}
 .opt.on{border-color:var(--ink);background:var(--yellow-soft);box-shadow:3px 3px 0 var(--ink)}
 .opt b{font-family:'IBM Plex Mono',monospace;font-size:13px}
-.qty{display:inline-flex;align-items:center;border:2px solid var(--ink);background:var(--surface)}
+.qty{display:inline-flex;align-items:center;border:2px solid var(--line);background:var(--surface)}
 .qty button{width:38px;height:38px;border:none;background:transparent;font-size:18px;box-shadow:none;margin:0}
 .qty span{min-width:40px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700}
 .store .buy{width:100%;padding:15px;font-size:15px}
 .store-ul{margin:0;padding-left:18px;color:var(--ink);line-height:1.9}
 .store-foot{font-size:11px;color:var(--mute);text-align:center;padding:18px 10px 30px;line-height:1.7}
 /* ===== tables ===== */
-.tblw{overflow-x:auto;background:var(--surface);border:2px solid var(--ink);border-radius:6px;box-shadow:var(--hs)}
+.tblw{overflow-x:auto;background:var(--surface);border:2px solid var(--line);border-radius:6px;box-shadow:var(--hs)}
 table{border-collapse:collapse;width:100%;font-size:13px;min-width:600px}
 th{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;text-align:left;color:var(--ink);font-weight:700;background:var(--yellow-soft);padding:10px 16px;border-bottom:2px solid var(--ink);white-space:nowrap}
 td{padding:11px 16px;border-bottom:1px solid var(--soft-line);vertical-align:middle}
@@ -197,7 +197,7 @@ tr.merow td{background:var(--yellow-soft);font-weight:700}
 /* ===== product cards ===== */
 .prod{display:flex;flex-direction:column;gap:9px;transition:transform .14s ease,box-shadow .14s ease}
 .prod:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
-.prod .ph{height:128px;border:2px solid var(--ink);background:var(--surface-2);
+.prod .ph{height:128px;border:2px solid var(--line);background:var(--surface-2);
   background-image:repeating-linear-gradient(-45deg,transparent,transparent 14px,rgba(20,20,20,.045) 14px,rgba(20,20,20,.045) 28px);
   display:flex;align-items:center;justify-content:center;font-size:44px;transform:rotate(-1.2deg);box-shadow:var(--hs-sm)}
 .grid > .prod:nth-child(even) .ph{transform:rotate(1deg)}
@@ -209,13 +209,13 @@ tr.merow td{background:var(--yellow-soft);font-weight:700}
 .prod .rate{font-size:10.5px;font-weight:800;color:var(--ink);background:var(--yellow);border:1.5px solid var(--ink);padding:1px 7px;font-family:'IBM Plex Mono',monospace}
 
 /* ===== campaign detail ===== */
-.det-head{background:var(--surface);border:2px solid var(--ink);border-radius:6px;padding:20px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;box-shadow:var(--hs)}
+.det-head{background:var(--surface);border:2px solid var(--line);border-radius:6px;padding:20px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;box-shadow:var(--hs)}
 .det-head .t{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-size:19px;font-weight:800;text-transform:uppercase}
 .det-body{display:grid;grid-template-columns:1fr 350px;gap:18px;margin-top:18px;align-items:start}
 @media(max-width:900px){.det-body{grid-template-columns:1fr}}
 
 /* ===== thread ===== */
-.thread{background:var(--surface);border:2px solid var(--ink);border-radius:6px;display:flex;flex-direction:column;min-height:440px;box-shadow:var(--hs)}
+.thread{background:var(--surface);border:2px solid var(--line);border-radius:6px;display:flex;flex-direction:column;min-height:440px;box-shadow:var(--hs)}
 .thread .msgs{flex:1;padding:18px;display:flex;flex-direction:column;gap:11px;overflow-y:auto;max-height:540px}
 .msg{max-width:78%;padding:9px 13px;border:1.5px solid var(--ink);border-radius:4px;font-size:13.5px;background:var(--surface-2);box-shadow:2px 2px 0 var(--ink)}
 .msg .who{font-size:10.5px;font-weight:800;margin-bottom:2px;letter-spacing:.04em;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
@@ -256,12 +256,12 @@ tr.merow td{background:var(--yellow-soft);font-weight:700}
 .rowitem .grow{flex:1;min-width:180px}
 .rowitem .nm{font-weight:800;font-size:14px}
 .rowitem .sub{font-size:12px;color:var(--mute)}
-.listcard{background:var(--surface);border:2px solid var(--ink);border-radius:6px;overflow:hidden;box-shadow:var(--hs)}
+.listcard{background:var(--surface);border:2px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:var(--hs)}
 .empty{padding:32px;text-align:center;color:var(--mute);font-size:13px;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
 
 /* ===== modal ===== */
 .modal-bg{position:fixed;inset:0;background:rgba(20,20,20,.5);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
-.modal{background:var(--surface);border:2px solid var(--ink);border-radius:6px;max-width:530px;width:100%;max-height:88vh;overflow-y:auto;padding:26px;box-shadow:8px 8px 0 var(--ink);animation:min .16s ease}
+.modal{background:var(--surface);border:2px solid var(--line);border-radius:6px;max-width:530px;width:100%;max-height:88vh;overflow-y:auto;padding:26px;box-shadow:8px 8px 0 var(--ink);animation:min .16s ease}
 @keyframes min{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .modal h3{margin:0 0 16px;font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase}
 .fld{margin-bottom:13px}
@@ -269,7 +269,7 @@ tr.merow td{background:var(--yellow-soft);font-weight:700}
 .modal .foot{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
 
 /* ===== buyer landing ===== */
-.landing{border:2px solid var(--ink);border-radius:6px;overflow:hidden;box-shadow:var(--hs)}
+.landing{border:2px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:var(--hs)}
 .landing .hero{background:var(--yellow);padding:34px 22px 26px;text-align:center;position:relative;border-bottom:2px solid var(--ink)}
 .landing .hero::after{content:'LIMITED RUN';position:absolute;top:12px;left:50%;transform:translateX(-50%) rotate(-2deg);font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.3em;color:#fff;background:var(--red);border:1.5px solid var(--ink);padding:2px 10px;font-weight:700}
 .landing .hero .em{font-size:52px;display:block;margin-top:14px}
@@ -284,7 +284,7 @@ tr.merow td{background:var(--yellow-soft);font-weight:700}
 
 /* ===== toast ===== */
 #toasts{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center}
-.toast{background:var(--ink);color:var(--bg);font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12.5px;font-weight:700;padding:11px 20px;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--red);animation:tin .2s ease;max-width:88vw}
+.toast{background:var(--ink);color:var(--bg);font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12.5px;font-weight:700;padding:11px 20px;border:2px solid var(--line);box-shadow:3px 3px 0 var(--red);animation:tin .2s ease;max-width:88vw}
 @keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
 /* ===== settlement ===== */
@@ -309,14 +309,14 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 /* ===== trend / exclusive ===== */
 .trendbadge{position:absolute;top:8px;left:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:800;color:#fff;background:var(--danger);border:1.5px solid var(--ink);padding:1px 7px;letter-spacing:.04em}
 .exclbadge{position:absolute;bottom:8px;right:8px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:800;color:var(--ink);background:var(--yellow);border:1.5px solid var(--ink);padding:1px 7px;letter-spacing:.06em;transform:rotate(1.2deg)}
-.exclbox{background:var(--yellow-soft);border:2px solid var(--ink);border-radius:4px;padding:12px 14px;box-shadow:var(--hs-sm)}
+.exclbox{background:var(--yellow-soft);border:2px solid var(--line);border-radius:4px;padding:12px 14px;box-shadow:var(--hs-sm)}
 
 /* ===== grade pyramid & home news ===== */
 .pyr{display:flex;flex-direction:column;align-items:center;gap:7px;margin-top:12px}
 .pyr-row{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface-2);border:1.5px solid var(--soft-line);padding:3px 10px;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10.5px;font-weight:700;max-width:100%;letter-spacing:.02em;white-space:nowrap}
 .pyr-row span{white-space:nowrap}
 .pyr-row .pct{color:var(--mute);font-weight:500}
-.pyr-row.me{background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);font-size:11.5px;padding:5px 13px;position:relative;z-index:1}
+.pyr-row.me{background:var(--yellow);border:2px solid var(--line);box-shadow:2px 2px 0 var(--ink);font-size:11.5px;padding:5px 13px;position:relative;z-index:1}
 .pyr-row.me .pct{color:var(--ink);font-weight:700}
 .news{display:flex;flex-direction:column}
 .news-item{display:flex;gap:12px;align-items:flex-start;padding:11px 18px;border-top:1px solid var(--soft-line);cursor:pointer;font-size:13px;line-height:1.55}
@@ -344,7 +344,7 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 /* ===== seller cards (gallery) ===== */
 .scard{display:flex;flex-direction:column}
 .rec-tag{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:10px;font-weight:800;letter-spacing:.06em;background:var(--yellow);border:1.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 10px;margin:-6px 0 12px;align-self:flex-start;transform:rotate(-.8deg)}
-.sc-av{width:58px;height:58px;flex-shrink:0;border:2px solid var(--ink);box-shadow:2.5px 2.5px 0 var(--ink);background-size:cover;background-position:center;background-color:var(--surface-2)}
+.sc-av{width:58px;height:58px;flex-shrink:0;border:2px solid var(--line);box-shadow:2.5px 2.5px 0 var(--ink);background-size:cover;background-position:center;background-color:var(--surface-2)}
 .sc-av.em{display:flex;align-items:center;justify-content:center;font-size:26px}
 .mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0 12px}
 .mini-stats>div{background:var(--surface-2);border:1.5px solid var(--soft-line);padding:6px 8px;display:flex;flex-direction:column;min-width:0}
@@ -379,7 +379,7 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 .cal-ev.pay{background:var(--money-soft);color:var(--money)}
 .cal-ev.due{background:var(--danger);color:#fff}
 @media(max-width:640px){.cal-cell{min-height:54px;padding:3px}.cal-ev{font-size:7.5px;padding:0 2px}.cal-legend{margin-left:0}}
-.hero-av{position:absolute;top:30px;right:6px;width:88px;height:88px;object-fit:cover;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);transform:rotate(2deg);background:var(--surface)}
+.hero-av{position:absolute;top:30px;right:6px;width:88px;height:88px;object-fit:cover;border:2px solid var(--line);box-shadow:4px 4px 0 var(--ink);transform:rotate(2deg);background:var(--surface)}
 @media(max-width:640px){.hero-av{position:static;display:block;width:64px;height:64px;margin:0 0 12px;transform:rotate(-2deg)}}
 .ph.av{background-size:cover;background-position:center;transform:none!important}
 
@@ -818,6 +818,9 @@ button.danger:hover{box-shadow:0 -2px 0 0 #d98b8b,0 2px 0 0 #d98b8b,-2px 0 0 0 #
 .prod .rate,.rate{border:none!important;box-shadow:var(--pxbl-soft)!important}
 button.sm,button.sm:hover,button[disabled],button[disabled]:hover{box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh)!important}
 .mebadge,.badge{box-shadow:none!important}
+/* v8-f 마지막 잔여: 알림 배지 링·추천 태그 */
+.badge{border:1.5px solid #fff!important;box-shadow:none!important}
+.rec-tag{border:none!important;box-shadow:var(--pxbl-soft)!important;background:var(--surface-2)}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1493,7 +1496,7 @@ function vExplore(){
   <div class="sec">전체 상품</div>`:''}
   <div class="cats">${CATS.map(c=>`<button class="catchip ${c===cur?'on':''}" data-act="setCat" data-k="${c}" title="${CAT_INFO[c]?CAT_INFO[c].desc+' · '+CAT_INFO[c].ex:'건강·웰니스 전 카테고리'}">${c}</button>`).join('')}</div>
   <div class="catguide">${cur==='전체'?`<b>건강·웰니스 전용 갤러리</b> — ${CAT_POLICY}`:`<b>${cur}</b> <span class="en">${CAT_INFO[cur].en}</span> — ${CAT_INFO[cur].desc} · 예: ${CAT_INFO[cur].ex}`}</div>
-  <div class="grid g3">${list.map(prodCard).join('')||'<div class="empty" style="grid-column:1/-1;background:var(--surface);border:2px solid var(--ink);border-radius:6px">해당 카테고리에 노출 중인 상품이 없습니다</div>'}</div>`;
+  <div class="grid g3">${list.map(prodCard).join('')||'<div class="empty" style="grid-column:1/-1;background:var(--surface);border:2px solid var(--line);border-radius:6px">해당 카테고리에 노출 중인 상품이 없습니다</div>'}</div>`;
 }
 function vSellerCamps(){
   const mine=D_().campaigns.filter(c=>c.sellerId===S.actingSeller).sort((a,b)=>b.createdAt<a.createdAt?-1:1);
@@ -1522,7 +1525,7 @@ function vDM(){
   <div class="listcard">${rows.map(r=>{
     const av=isBrand
       ?(r.s.img?`<div class="sc-av" style="width:44px;height:44px;background-image:url('${r.s.img}')"></div>`:`<div class="sc-av em" style="width:44px;height:44px;font-size:20px">${SEMOJI[r.s.id]||'⭐'}</div>`)
-      :(r.b.logo?`<img src="${r.b.logo}" alt="" style="width:44px;height:44px;object-fit:cover;flex-shrink:0;border:2px solid var(--ink)">`:`<div class="sc-av em" style="width:44px;height:44px;font-size:20px">🏷️</div>`);
+      :(r.b.logo?`<img src="${r.b.logo}" alt="" style="width:44px;height:44px;object-fit:cover;flex-shrink:0;border:2px solid var(--line)">`:`<div class="sc-av em" style="width:44px;height:44px;font-size:20px">🏷️</div>`);
     const title=isBrand?`${platIcon(r.s)} ${esc(r.s.name)} <span style="color:var(--mute);font-weight:400;font-size:12px">${r.s.handle}</span>`:`${esc(r.b.name)}`;
     return `<div class="rowitem" data-act="open" data-k="${r.c.id}">
       ${av}
@@ -1655,7 +1658,7 @@ function vMy(){
     <div class="card">
       <div class="lbl-sm">내 추천 코드</div>
       <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap">
-        <span style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;letter-spacing:.1em;background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:3px 14px">${me.refCode}</span>
+        <span style="font-family:'Archivo',sans-serif;font-size:22px;font-weight:800;letter-spacing:.1em;background:var(--yellow);border:2px solid var(--line);box-shadow:2px 2px 0 var(--ink);padding:3px 14px">${me.refCode}</span>
         <button class="sm" data-act="copyRef" data-k="${me.refCode}">복사</button>
         <button class="sm ghost" data-act="screen" data-k="ref">추천 프로그램 →</button>
       </div>
@@ -2113,7 +2116,7 @@ function vGallery(){
   <div class="sec" style="margin-top:0">${esc(b.name)} 맞춤 추천 인플루언서</div>
   <div class="grid g2">${recs.map(r=>sellerCard(r.s,`${r.catFit?`${esc(b.cat)}와 카테고리 적합`:'매출 효율 상위'} · 매출/팔로워 ₩${fmt(r.s.m3Sales/r.s.followers)}`)).join('')}</div>
   <div class="sec">전체 인플루언서 <span style="font-weight:400;letter-spacing:0;text-transform:none;color:var(--mute)">${filtered.length}명</span></div>
-  <div class="grid g2">${filtered.map(s=>sellerCard(s)).join('')||'<div class="empty" style="grid-column:1/-1;background:var(--surface);border:2px solid var(--ink);border-radius:6px">조건에 맞는 인플루언서가 없습니다 — 필터를 넓혀보세요</div>'}</div>
+  <div class="grid g2">${filtered.map(s=>sellerCard(s)).join('')||'<div class="empty" style="grid-column:1/-1;background:var(--surface);border:2px solid var(--line);border-radius:6px">조건에 맞는 인플루언서가 없습니다 — 필터를 넓혀보세요</div>'}</div>
   <div class="sec">익명 인플루언서 스카우트 — 유료 레퍼런스</div>
   <p style="font-size:12.5px;color:var(--mute);margin:-2px 0 14px">프로필 비공개 인플루언서입니다. 레퍼런스 열람권(건당)을 구매하면 상세 지표를 확인하고 제안을 보낼 수 있습니다. <b>제안이 수락되는 순간 DM이 열리고 신원이 공개됩니다.</b></p>
   <div class="grid g2">${scout}</div>
