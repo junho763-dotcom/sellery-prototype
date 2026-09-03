@@ -850,6 +850,10 @@ button.sm,button.sm:hover,button[disabled],button[disabled]:hover{box-shadow:var
 .dmsearch{display:flex;gap:10px;align-items:center;margin:0 4px 12px 2px;flex-wrap:wrap}
 .dmsearch input{flex:1;min-width:220px}
 .subnav button .badge{top:-8px;right:-8px}
+/* 인플루언서 홈: 소식 + 추천 상품 영역 반응형 */
+.homegrid{display:grid;grid-template-columns:1fr 2fr;gap:14px;align-items:start}
+@media(max-width:900px){.homegrid{grid-template-columns:1fr}.homegrid .grid.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.homegrid .grid.g3{grid-template-columns:1fr}.mini-stats{grid-template-columns:1fr 1fr}}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1500,7 +1504,7 @@ function vSellerHome(){
   <div class="sec">성장 · 자산</div>
   <div class="grid g2">${pyr}${assets}</div>
   <div class="sec">지금 셀러리에서 · 추천 상품</div>
-  <div class="grid" style="grid-template-columns:1fr 2fr;gap:14px;align-items:start">
+  <div class="homegrid">
     ${newsHtml}
     <div class="grid g3" style="gap:14px">${recs.map(prodCard).join('')}</div>
   </div>
