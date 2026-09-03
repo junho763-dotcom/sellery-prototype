@@ -364,7 +364,7 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
 .ph.av{background-size:cover;background-position:center;transform:none!important}
 
 /* ======================================================================
-   SKIN: light-pixel-celery v4 — Galmuri 픽셀 폰트(격자 배수 사이즈) + 픽셀 게임 윈도우 UI
+   SKIN: light-pixel-celery v5 — 단색 셀러리 배경 · 본문은 원래 폰트 · 강조 포인트만 픽셀
    원복 방법: 이 블록(=== SKIN ~ /SKIN ===)과 <head>의 galmuri <link>만 삭제하면 네오브루탈로 복귀.
    git 스냅샷: tag skin-neobrutal-v1
    ====================================================================== */
@@ -377,8 +377,8 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
   --plat-c:#2f6a1e; --plat-bg:#dfeccc;
   --seller-c:#b0326a; --seller-bg:#f7e2ec;
   --brand-c:#2f63b8; --brand-bg:#e2ebf9;
-  --pxfont:'Galmuri14','Galmuri11','IBM Plex Sans KR',sans-serif;
-  --pxfont-sm:'Galmuri11','Galmuri14','IBM Plex Sans KR',sans-serif;
+  --px14:'Galmuri14','Galmuri11','IBM Plex Sans KR',sans-serif;
+  --px11:'Galmuri11','Galmuri14','IBM Plex Sans KR',sans-serif;
   --pxb:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink);
   --pxd:3px 6px 0 0 var(--ink),6px 3px 0 0 var(--ink),6px 6px 0 0 var(--ink);
   --pxb2:0 -2px 0 0 var(--ink),0 2px 0 0 var(--ink),-2px 0 0 0 var(--ink),2px 0 0 0 var(--ink);
@@ -387,41 +387,30 @@ code{font-family:'IBM Plex Mono',monospace;font-size:.9em;background:var(--yello
   --bevel2:inset 0 2px 0 rgba(255,255,255,.75),inset 2px 0 0 rgba(255,255,255,.75),inset 0 -2px 0 rgba(28,42,20,.18),inset -2px 0 0 rgba(28,42,20,.18);
   --checker:repeating-linear-gradient(90deg,var(--red) 0 4px,var(--yellow) 4px 8px);
 }
-/* ---- 타이포: Galmuri 한 가족, 격자 배수 사이즈(14/28, 11/22)로 픽셀 선명 ---- */
-body,body *{font-family:var(--pxfont)!important;letter-spacing:0!important;font-weight:400!important;text-transform:none!important;-webkit-font-smoothing:none;font-smooth:never}
-body{font-size:14px;line-height:1.6;background-image:linear-gradient(rgba(28,42,20,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(28,42,20,.08) 1px,transparent 1px);background-size:16px 16px}
-h2.pg{font-size:28px;margin-bottom:20px}
-h2.pg small{font-size:14px}
-.hero-band h1{font-size:28px;line-height:1.5}
-@media(min-width:900px){.hero-band h1{font-size:42px;line-height:1.35}}
-.hero-band .ey{font-size:14px;color:var(--red)}
-.hero-band .ey::before{content:'▶ '}
-.hero-band .sub{font-size:14px}
-.kpi .lbl{font-size:11px;color:var(--mute)}
-.kpi .val{font-size:28px;color:var(--ink);margin-top:6px;line-height:1.3}
-.kpi .sub{font-size:11px}
-.sec{font-size:14px;color:var(--ink)}
-.rowitem .nm{font-size:14px}
-.prod .nm{font-size:22px}
+/* ---- 그라운드: 단색, 앱바·탭도 투명해서 배경이 맨 위까지 ---- */
+body{background:var(--bg);background-image:none}
+.appbar{background:transparent;border-bottom:none;box-shadow:none;padding-top:14px}
+.subnav{background:transparent}
+/* ---- 픽셀 폰트는 강조 포인트에만 (연속 텍스트는 원래 폰트) ---- */
+.wordmark,.st,.badge,.mebadge,.nb,.trendbadge,.exclbadge,.gradebox,.stp,.cal-ev,.chip-master{font-family:var(--px11)!important;letter-spacing:0!important;font-weight:400!important;text-transform:none!important}
+.kpi .val,.prod .gp,.landing .pr .g,.mini-stats .ms-v,.hb-val{font-family:var(--px14)!important;letter-spacing:0!important;font-weight:400!important}
+.st,.gradebox,.nb,.trendbadge,.exclbadge,.badge,.mebadge,.stp,.cal-ev{font-size:11px;line-height:1.7}
+.kpi .val{font-size:28px;line-height:1.3;margin-top:6px;color:var(--ink)}
 .prod .gp{font-size:22px}
-td,table,button,input,select,textarea,.catchip,.subnav button{font-size:14px}
-.det-head .t{font-size:22px}.modal h3{font-size:22px}
+.landing .pr .g{font-size:28px}
 .mini-stats .ms-v{font-size:14px}
-.lbl-sm,.kpi .lbl,.kpi .sub,th,.fld label,.ms-l,.chip,.st,.gradebox,.nb,.stp,.badge,.mebadge,.trendbadge,.exclbadge,.cal-ev,.cal-dow,.cal-cell .dn,.pyr-row,.msg .tm,.sysline,.warnline,.hb-nm,.hb-val,.rowitem .sub,.meta,.sub,.hint,.actions .hint,.prod .cp,.prod .rate,.hero-band .sub,td.num,.composer .as,.sec,code,.toast,.pyr-row .pct,.news-item,.sc-hist,.slot{font-family:var(--pxfont-sm)!important;font-size:11px}
-.news-item,.sc-hist,.rowitem .sub,.meta,.sub,.hint,.actions .hint,.hero-band .sub,.sysline,.toast,.sec{font-size:11px;line-height:1.7}
-.badge{min-width:18px;height:18px;line-height:18px}
-b,strong,.nm,.hb-nm,.det-head .t,h1,h2,h3,h4{color:var(--ink)}
-/* ---- 앱바 & 로고: 픽셀 박스 로고(원복) ---- */
-.appbar{background:var(--surface);border-bottom:3px solid var(--ink);box-shadow:0 3px 0 0 var(--red)}
-.wordmark{background:var(--surface);border:none!important;border-radius:0;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2);padding:8px 14px;margin:3px 6px 6px 3px;font-size:14px;display:inline-flex;gap:8px;align-items:center;color:var(--ink)}
-.wordmark .dot{color:var(--red)}
+.hb-val{font-size:11px}
+.badge{min-width:18px;height:18px;line-height:18px;font-size:11px}
+/* ---- 로고: 흰 박스 + 픽셀 폰트 + 셀러리 그린 ---- */
+.wordmark{background:#ffffff;color:var(--red);border:none!important;border-radius:0;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2);padding:8px 14px;margin:3px 6px 6px 3px;font-size:14px;display:inline-flex;gap:8px;align-items:center}
+.wordmark .dot{color:var(--ink)}
 .wordmark svg{transform:none}
-.iconbtn{background:var(--surface);width:36px;height:36px}
-/* ---- 카드/패널: 파인 모서리 프레임 + 베벨 + 픽셀 드롭섀도(원복) + 체커 타이틀 스트립 ---- */
-.card,.listcard,.tblw,.det-head,.thread,.modal,.landing,.sim,.exclbox,.hero-av,.sc-av,.mini-stats>div,.prod .ph{
+.iconbtn{background:#fff;width:36px;height:36px}
+/* ---- 카드/패널: 파인 모서리 프레임 + 베벨 + 픽셀 드롭섀도 + 체커 타이틀 스트립 ---- */
+.card,.listcard,.tblw,.det-head,.thread,.modal,.landing,.sim,.exclbox,.sc-av,.mini-stats>div,.prod .ph{
   border:none!important;border-radius:0;margin:3px 6px 6px 3px;box-shadow:var(--pxb),var(--pxd),var(--bevel);position:relative}
 .card::before,.listcard::before,.tblw::before,.det-head::before,.thread::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--checker);pointer-events:none}
-.mini-stats>div::before,.prod .ph::before,.hero-av::before,.sc-av::before,.sim::before,.exclbox::before,.landing::before{display:none}
+.mini-stats>div::before,.prod .ph::before,.sc-av::before,.sim::before,.exclbox::before,.landing::before{display:none}
 .card,.det-head,.thread{padding-top:22px}
 .card:hover,.prod:hover{transform:translate(-2px,-2px);box-shadow:var(--pxb),5px 8px 0 0 var(--ink),8px 5px 0 0 var(--ink),8px 8px 0 0 var(--ink),var(--bevel)}
 .grid{gap:20px}
@@ -435,14 +424,16 @@ b,strong,.nm,.hb-nm,.det-head .t,h1,h2,h3,h4{color:var(--ink)}
 .sc-hist,.slot{border:none;box-shadow:var(--pxb2);margin:2px 4px 6px}
 .hb-track{border:none;box-shadow:var(--pxb2);margin:2px 3px}
 .notice{border:none;box-shadow:var(--pxb2);margin:3px}
-/* ---- 히어로: 게임 다이얼로그 윈도우 ---- */
-.hero-band{background:var(--surface);box-shadow:var(--pxb),var(--pxd),var(--bevel);margin:3px 6px 0 3px;padding:44px 28px 60px}
-.hero-band::before{content:'◼ ◼ ◼';position:absolute;top:0;left:0;right:0;height:22px;background:var(--ink);color:var(--yellow);font-size:11px;line-height:22px;padding-left:12px;letter-spacing:4px!important;font-family:var(--pxfont-sm)!important}
-.hero-band::after{content:'SELLERY.EXE';position:absolute;top:0;right:12px;height:22px;color:var(--yellow);font-size:11px;line-height:22px;font-family:var(--pxfont-sm)!important}
-.hero-av{top:40px;right:18px}
-/* ---- 헤드라인 강조: 라임 박스 + 픽셀 테두리(원복) ---- */
-.hero-band h1 em{background:#d8ee9a;box-shadow:var(--pxb2),2px 2px 0 0 var(--ink);padding:0 8px;transform:none;color:var(--ink);border:none}
-/* ---- 버튼: 게임 버튼 (파인 모서리 + 베벨 + 픽셀 드롭) ---- */
+/* ---- 히어로: 게임 다이얼로그 윈도우 (아바타는 우측 상단 고정 — 가림 방지) ---- */
+.hero-band{background:var(--surface);box-shadow:var(--pxb),var(--pxd),var(--bevel);margin:3px 6px 0 3px;padding:44px 28px 60px;position:relative}
+.hero-band::before{content:'◼ ◼ ◼';position:absolute;top:0;left:0;right:0;height:22px;background:var(--ink);color:var(--yellow);font-size:11px;line-height:22px;padding-left:12px;letter-spacing:4px;font-family:var(--px11)}
+.hero-band::after{content:'SELLERY.EXE';position:absolute;top:0;right:12px;height:22px;color:var(--yellow);font-size:11px;line-height:22px;font-family:var(--px11)}
+.hero-av{position:absolute!important;top:40px!important;right:18px!important;left:auto!important;margin:0!important;transform:none;border-radius:0;border:none!important;box-shadow:var(--pxb),var(--pxd)}
+@media(max-width:640px){.hero-av{width:64px!important;height:64px!important;top:34px!important;right:12px!important}}
+.hero-band .ey{color:var(--red)}
+/* ---- 헤드라인 강조: 라임 박스 + 픽셀 테두리 ---- */
+.hero-band h1 em{background:#d8ee9a;box-shadow:var(--pxb2),2px 2px 0 0 var(--ink);padding:0 8px;transform:none;color:var(--ink);border:none;font-style:normal}
+/* ---- 버튼: 게임 버튼 ---- */
 button,button.pri,button.ghost,button.danger,button.sm,.master button{border:none!important;border-radius:0;box-shadow:var(--pxb2),var(--pxd2),var(--bevel2);margin:2px 5px 6px 2px}
 button:hover,button.pri:hover,button.ghost:hover,button.danger:hover,button.sm:hover{transform:translate(-1px,-1px);box-shadow:var(--pxb2),3px 5px 0 0 var(--ink),5px 3px 0 0 var(--ink),5px 5px 0 0 var(--ink),var(--bevel2)}
 button:active,button.pri:active,button.ghost:active,button.danger:active,button.sm:active{transform:translate(2px,2px);box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28,42,20,.2)}
@@ -457,8 +448,8 @@ button[disabled]{box-shadow:var(--pxb2)!important;opacity:.45;transform:none!imp
 .catchip{border:none;box-shadow:var(--pxb2);margin:2px 4px;background:var(--surface)}
 .catchip.on{background:var(--yellow)}
 input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28,42,20,.1);background:#fff;margin:2px}
-/* ---- 태그/칩: LED 상태 태그(점멸) + 플랫 컬러 칩 ---- */
-.st{border:none!important;box-shadow:var(--pxb2),2px 2px 0 0 var(--ink);padding:3px 10px 3px 8px;margin:2px 5px 4px 4px;line-height:1.6}
+/* ---- 태그/칩: LED 상태 태그(픽셀 폰트·점멸) + 플랫 컬러 칩 ---- */
+.st{border:none!important;box-shadow:var(--pxb2),2px 2px 0 0 var(--ink);padding:3px 10px 3px 8px;margin:2px 5px 4px 4px}
 .st::before{content:'';display:inline-block;width:6px;height:6px;margin-right:7px;vertical-align:1px;background:currentColor;box-shadow:inset 1px 1px 0 rgba(255,255,255,.55);animation:led 1.2s steps(1) infinite}
 @keyframes led{50%{opacity:.35}}
 .st.blue{background:#2f63b8;color:#fff}
@@ -482,8 +473,8 @@ input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28
 .sec::after{height:4px;background:repeating-linear-gradient(90deg,var(--ink) 0 4px,transparent 4px 8px)}
 /* ---- 상품 썸네일: 체커보드 ---- */
 .prod .ph,.grid > .prod:nth-child(even) .ph{transform:none;background:conic-gradient(#e2ead0 25%,#f3f6e6 0 50%,#e2ead0 0 75%,#f3f6e6 0) 0 0/16px 16px}
-.prod .rate{background:var(--yellow);border:none;box-shadow:var(--pxb2);margin:2px 4px}
-.hero-av,.sc-av{transform:none;border-radius:0}
+.prod .rate{background:var(--yellow);border:none;box-shadow:var(--pxb2);margin:2px 4px;font-family:var(--px11)!important;font-weight:400!important}
+.sc-av{transform:none;border-radius:0}
 /* ---- 게이지/막대: 픽셀 블록 ---- */
 .meter{border:none;box-shadow:var(--pxb2);height:12px;margin:3px;background:var(--surface)}
 .meter span{background:repeating-linear-gradient(90deg,var(--red) 0 8px,var(--yellow) 8px 12px)}
