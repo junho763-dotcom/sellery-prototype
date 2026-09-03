@@ -677,6 +677,15 @@ td{border-bottom-color:var(--soft-line)}
 .roletabs button:hover{color:var(--ink)}
 .roletabs button.on{background:var(--yellow);border-color:var(--ink);color:var(--ink);box-shadow:3px 3px 0 0 var(--ink)!important}
 .roletabs .badge{border-radius:50%;background:var(--danger);color:#fff;border:1.5px solid var(--ink);font-family:'IBM Plex Mono',monospace!important}
+/* 8) 썸네일 무대: 체커 대신 연한 셀러리 + 중앙 스포트라이트, 이모지는 원본 그대로 크게 */
+.prod .ph,.grid > .prod:nth-child(even) .ph{background:radial-gradient(circle at 50% 42%,#ffffff 0,#f3f7e6 70%);font-size:58px;line-height:1;align-items:center;padding-bottom:0;height:136px}
+.prod .ph::after{display:none}
+.prod .ph img{max-height:84%!important;max-width:76%!important;filter:drop-shadow(0 6px 0 rgba(28,42,20,.12))}
+.store-hero{background:radial-gradient(circle at 50% 42%,#ffffff 0,#f3f7e6 72%)}
+.store-hero .store-em{font-size:112px}
+.store-detail .store-em{font-size:64px}
+.cust-em{font-size:58px}
+.sc-av.em{font-size:24px}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1174,7 +1183,9 @@ function render(){
   decorate();
 }
 /* ---- 레트로 OS 데코: 윈도우 파일명 + 이모지 픽셀화 (스킨 전용, 데이터/기능 무관) ---- */
+const PIXEL_EMOJI=false; // 2026-09-03 사용자: 픽셀화 이모지가 깨져 보임 → 원본 이모지 사용 (true로 되돌리면 픽셀아트)
 function pixelizeEmoji(el){
+  if(!PIXEL_EMOJI)return;
   if(!el||el.querySelector('.pxemoji')||el.querySelector('img'))return;
   const tn=[...el.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
   if(!tn)return;
