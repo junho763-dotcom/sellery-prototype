@@ -720,7 +720,8 @@ function seedData(){
       {id:'c8',sellerId:'s8',productId:'p7',status:'SAMPLE_REQUESTED',createdAt:D(-1)},
       {id:'c9',sellerId:'s2',productId:'p3',status:'SCHEDULE_PROPOSED',propStart:D(12),propEnd:D(16),propQty:600,createdAt:D(-8)},
       {id:'c10',sellerId:'s3',productId:'p2',status:'SAMPLE_APPROVED',createdAt:D(-2)},
-      {id:'c11',sellerId:'s7',productId:'p9',status:'SAMPLE_REQUESTED',createdAt:D(0)}
+      {id:'c11',sellerId:'s7',productId:'p9',status:'SAMPLE_REQUESTED',createdAt:D(0)},
+      {id:'c12',sellerId:'s8',productId:'p2',status:'LIVE',start:D(-3),end:D(3),qty:600,createdAt:D(-16)}
     ],
     orders:[],
     messages:{},
@@ -736,6 +737,7 @@ function seedData(){
     }
   };
   mkOrders('c1',29900,34,1,-2,4);
+  mkOrders('c12',26900,57,2,-3,5);
   mkOrders('c5',24900,412,14,-18,5);
   mkOrders('c6',31900,548,11,-40,5);
   // seed messages
@@ -759,11 +761,15 @@ function seedData(){
   chat('c9','seller','추석 전 타이밍으로 잡아봤어요. 이 기간 승인 부탁드려요!',D(0));
   sys('c10','브랜드가 샘플 요청을 <b>승인</b>했습니다 · 배송지 전달됨',D(-1));
   sys('c11','인플루언서 <b>소민(@somin_beauty)</b>가 샘플을 요청했습니다',D(0));
+  sys('c12','일정 확정 '+md(P(D(-3)))+' – '+md(P(D(3)))+' · 배정 재고 600',D(-9));
+  chat('c12','seller','블로그 리뷰 글 상단에 링크 고정했어요. 검색 유입이 꾸준해서 기간 내 목표 500개 갈 것 같습니다!',D(-2));
+  chat('c12','brand','좋습니다 유나님, 재고 여유 있으니 필요하면 100개 추가 배정 가능해요.',D(-2));
+  sys('c12','판매 링크 활성화 — <b>판매 시작</b>',D(-3));
   return data;
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v12';
+const LS='sellery-proto-v13';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=10000000; // 확정 매출 ₩1,000만당 1🥬
