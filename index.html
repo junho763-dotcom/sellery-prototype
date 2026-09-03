@@ -2304,7 +2304,8 @@ function vAdminHome(){
     <td class="num">${c.start?md(P(c.start))+'–'+md(P(c.end)):'—'}</td><td class="num">${k.paidCnt}${k.refCnt?` <span style="color:var(--danger)">−${k.refCnt}</span>`:''}</td><td class="num">₩${fmt(k.net)}</td><td class="num">₩${fmt(k.pfNet)}</td><td>${stChip(c.status)}</td></tr>`;}).join('')||'<tr><td colspan="8" class="empty">해당 상태의 캠페인이 없습니다</td></tr>'}
   </tbody></table></div>`;
 }
-function pstChip(st){const m=PSTAT[st]||[st,'gray'];return `<span class="st ${m[1]}" style="animation:none">${m[0]}</span>`;}
+function PSTATS(){return {pending:['검수 대기','amber'],listed:['노출 중','green'],paused:['노출 중단','gray']};}
+function pstChip(st){const m=PSTATS()[st]||[st,'gray'];return `<span class="st ${m[1]}" style="animation:none">${m[0]}</span>`;}
 function admChips(list,cur,act){return `<div class="cats" style="margin:0 0 12px">${list.map(([k,l,n])=>`<button class="catchip ${cur===k?'on':''}" data-act="${act}" data-k="${k}">${l}${n!=null?` <span style="color:var(--mute);font-weight:400">${n}</span>`:''}</button>`).join('')}</div>`;}
 function vAdminProducts(){
   const all=D_().products;
