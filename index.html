@@ -946,6 +946,8 @@ button,.catchip,.rowitem,.hb-row,.news-item,.st,.gradebox,.nb,.badge,.subnav,.ro
 .origin span.em{background:var(--bar);color:var(--bar-fg);box-shadow:none}
 .origin i{font-style:normal;color:var(--red)}
 @media(max-width:640px){.hero-band .tagline{font-size:15.5px}}
+.profile-wrap .card{margin:0;box-shadow:var(--pxbl-soft)}
+.profile-wrap .card.prod{box-shadow:var(--pxbl-soft)}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -2157,7 +2159,7 @@ function vBrandHome(){
     <div class="go" data-act="screen" data-k="orders" title="주문·발주"><span class="ms-l">미발송 주문</span><span class="ms-v" ${unshipped?'style="color:var(--danger)"':''}>${unshipped}건</span><span class="ms-s">송장 업로드 → 배송중</span></div>
   </div></div>`;
   /* 5 인플루언서 찾기 */
-  const bsrow=(sl,note)=>`<div class="rowitem" style="cursor:default">
+  const bsrow=(sl,note)=>`<div class="rowitem" data-act="sellerProfile" data-k="${sl.id}" title="프로필 · 데이터 보기">
     ${sl.img?`<div class="sc-av" style="width:40px;height:40px;background-image:url('${sl.img}')"></div>`:`<div class="sc-av em" style="width:40px;height:40px;font-size:18px">${SEMOJI[sl.id]||'⭐'}</div>`}
     <div class="grow" style="min-width:0"><div class="nm"><span class="gradebox sm">${gfull(gname(sl))}</span> ${esc(sl.name)} <span style="color:var(--mute);font-weight:400;font-size:12px">${platIcon(sl)} ${sl.handle}</span></div>
     <div class="sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${note}</div></div>
@@ -3313,6 +3315,13 @@ function sampleBuyModal(pid){
   <p style="font-size:12px;color:var(--mute);margin-top:12px">구매 샘플은 브랜드 승인 없이 바로 발송 단계로 넘어가고, 이달 무상 한도를 쓰지 않습니다. 브랜드는 일반 판매 1건과 동일하게 정산받습니다(플랫폼 수수료 10% 동일).${sp.refund?' <b>이 상품은 판매 확정 시 샘플 구매액을 환급합니다.</b>':''}</p>
   <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="confirmSampleBuy" data-k="${pid}">결제하고 샘플 받기</button></div>`);
 }
+/* 인플루언서 프로필 모달 — 갤러리 카드(데이터 게이트 포함) 그대로 */
+function sellerProfileModal(sid){
+  const sl=seller(sid);if(!sl)return;S.profileOpen=sid;
+  openModal(`<h3 style="display:flex;align-items:center;gap:8px">인플루언서 프로필 <span class="st gray" style="animation:none">${sl.hidden?'비공개':'공개'}</span></h3>
+  <div class="profile-wrap">${sellerCard(sl,'')}</div>
+  <div class="foot"><button data-act="closeModal">닫기</button></div>`);
+}
 function inviteModal(sid){
   const s=seller(sid);
   const disp=s.hidden?'○○○ 인플루언서 (익명)':s.name+' '+s.handle;
@@ -3463,7 +3472,8 @@ const ACT={
   setGalGrade(k){S.galGrade=k;render();},
   setGalPlat(k){S.galPlat=k;render();},
   reset(){if(confirm('시드 데이터로 초기화할까요? 테스트 중 만든 데이터가 사라집니다.')){try{localStorage.removeItem(LS);}catch(e){};S.data=seedData();save();S.view.cid=null;render();toast('초기화 완료');}},
-  closeModal(){closeModal();},
+  closeModal(){S.profileOpen=null;closeModal();},
+  sellerProfile(sid){sellerProfileModal(sid);},
 
   reqSample(pid){
     const p=prod(pid);
@@ -3496,7 +3506,7 @@ const ACT={
     const pr=spendData(b,seller(sid),`데이터 확인 · ${seller(sid).name} ${seller(sid).handle} (${gname(seller(sid))})`);if(pr===false)return;
     const m=D_().brandDataUnlocks=D_().brandDataUnlocks||{};
     (m[b]=m[b]||[]).push(sid);
-    save();render();toast(pr===0?`브랜드 ${bgname(brand(b))} 등급 혜택 — 무료 열람 (이달 ${freeRefLeft(brand(b))}회 남음)`:`🥬 ${pr} 사용 — ${seller(sid).name}님의 성과 데이터가 열렸습니다`);
+    save();render();if(S.profileOpen===sid)sellerProfileModal(sid);toast(pr===0?`브랜드 ${bgname(brand(b))} 등급 혜택 — 무료 열람 (이달 ${freeRefLeft(brand(b))}회 남음)`:`🥬 ${pr} 사용 — ${seller(sid).name}님의 성과 데이터가 열렸습니다`);
   },
   unlockRef(sid){
     const pr=spendData(S.actingBrand,seller(sid),`익명 레퍼런스 열람 · ○○○ 인플루언서 (${gname(seller(sid))})`);if(pr===false)return;
