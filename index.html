@@ -1021,6 +1021,13 @@ body[data-stage="podium"] .prod .ph .p3d{transform:translateY(-6px)}
   .rowitem > .grow ~ *{margin-left:0}
   .rowitem > .grow ~ .st,.rowitem > .grow ~ span.sub,.rowitem > .grow ~ button{align-self:center}
 }
+/* 행 안의 액션 버튼 그룹: 항상 함께 · 오른쪽 정렬 */
+.rowitem .rowacts{display:flex;gap:6px;flex-wrap:nowrap;align-items:center;flex:0 0 auto}
+@media(max-width:640px){
+  .rowitem .rowacts{flex:1 0 100%;justify-content:flex-end}
+  .rowitem .grow .nm{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+  .rowitem .grow .nm .gradebox{flex:0 0 auto}
+}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -2208,9 +2215,9 @@ function vBrandHome(){
       <div class="sub">${l}${c.status==='SCHEDULE_PROPOSED'&&c.propStart?` · ${md(P(c.propStart))}–${md(P(c.propEnd))} · 재고 ${fmt(c.propQty)}`:''} · 팔로워 ${fmt(sl.followers)}</div></div>
       <button class="pri sm">${btn}</button></div>`;}).join('')}
     ${xr.map(r=>{const sl=seller(r.sellerId),p=prod(r.productId);
-      return `<div class="rowitem" style="cursor:default"><span class="gradebox sm">${gfull(gname(sl))}</span>
-      <div class="grow"><div class="nm">${platIcon(sl)} ${esc(sl.name)} <span class="sub" style="font-weight:400">${sl.handle}${sl.hidden?' · 비공개 프로필 (독점권 신청으로 공개)':''}</span> → ${esc(p.name)} 독점권 신청</div><div class="sub">3개월 매출 ₩${fmt(sl.m3Sales)} · 팔로워 ${fmt(sl.followers)} · 조건 ${gfull(exGradeOf(p))} 이상 충족 ✓</div></div>
-      <button class="pri sm" data-act="approveExcl" data-k="${r.id}">승인</button><button class="sm danger" data-act="rejectExcl" data-k="${r.id}">거절</button></div>`;}).join('')}
+      return `<div class="rowitem" style="cursor:default">
+      <div class="grow"><div class="nm"><span class="gradebox sm">${gfull(gname(sl))}</span> ${platIcon(sl)} ${esc(sl.name)} <span class="sub" style="font-weight:400">${sl.handle}</span> → ${esc(p.name)} 독점권 신청</div><div class="sub">3개월 매출 ₩${fmt(sl.m3Sales)} · 팔로워 ${fmt(sl.followers)} · 조건 ${gfull(exGradeOf(p))} 이상 충족 ✓${sl.hidden?' · 비공개 프로필(신청으로 공개)':''}</div></div>
+      <div class="rowacts"><button class="pri sm" data-act="approveExcl" data-k="${r.id}">승인</button><button class="sm danger" data-act="rejectExcl" data-k="${r.id}">거절</button></div></div>`;}).join('')}
     ${pendN?'':'<div class="empty" style="padding:14px">대기 중인 요청이 없습니다 ✓</div>'}</div>`;
   /* 3 진행 중·확정 판매 */
   const liveCard=c=>{const p=prod(c.productId),sl=seller(c.sellerId),k=calc(c);const os=campOrders(c.id).filter(o=>o.status==='PAID');const tod=os.filter(o=>o.at===todayStr);const un=os.filter(o=>!o.tracking).length;const left=(c.qty||0)-soldQty(c.id);const dd=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
@@ -2518,10 +2525,10 @@ function vRequests(){
         <div class="sub">${LBL[c.status]||ST[c.status].l}${c.status==='SCHEDULE_PROPOSED'&&c.propStart?` · ${md(P(c.propStart))}–${md(P(c.propEnd))} · 재고 ${fmt(c.propQty)}`:''} · 팔로워 ${fmt(sl.followers)} · <span class="gradebox sm">${gfull(gname(sl))}</span></div></div>
         <button class="pri sm">${c.status==='SAMPLE_REQUESTED'?'검토':c.status==='SAMPLE_APPROVED'?'발송':'승인'}</button></div>`;}).join('')}
       ${xr.map(r=>{const sl=seller(r.sellerId),p=prod(r.productId);
-        return `<div class="rowitem" style="cursor:default"><span class="gradebox sm">${gfull(gname(sl))}</span>
-        <div class="grow"><div class="nm">${platIcon(sl)} ${esc(sl.name)} <span class="sub" style="font-weight:400">${sl.handle}${sl.hidden?' · 비공개 프로필 (독점권 신청으로 공개)':''}</span> → ${esc(p.name)} 독점권 신청</div>
+        return `<div class="rowitem" style="cursor:default">
+        <div class="grow"><div class="nm"><span class="gradebox sm">${gfull(gname(sl))}</span> ${platIcon(sl)} ${esc(sl.name)} <span class="sub" style="font-weight:400">${sl.handle}${sl.hidden?' · 비공개 프로필 (독점권 신청으로 공개)':''}</span> → ${esc(p.name)} 독점권 신청</div>
         <div class="sub">3개월 매출 ₩${fmt(sl.m3Sales)} · 팔로워 ${fmt(sl.followers)} · 참여율 ${(sl.likesAvg/sl.followers*100).toFixed(1)}% · 조건 ${gfull(exGradeOf(p))} 이상 충족 ✓</div></div>
-        <button class="pri sm" data-act="approveExcl" data-k="${r.id}">승인</button><button class="sm danger" data-act="rejectExcl" data-k="${r.id}">거절</button></div>`;}).join('')}
+        <div class="rowacts"><button class="pri sm" data-act="approveExcl" data-k="${r.id}">승인</button><button class="sm danger" data-act="rejectExcl" data-k="${r.id}">거절</button></div></div>`;}).join('')}
       ${n?'':'<div class="empty" style="padding:14px">대기 중인 요청이 없습니다</div>'}
     </div>`:''}
   </div>`;
