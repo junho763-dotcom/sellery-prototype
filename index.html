@@ -678,10 +678,8 @@ td{border-bottom-color:var(--soft-line)}
 .roletabs button.on{background:var(--yellow);border-color:var(--ink);color:var(--ink);box-shadow:3px 3px 0 0 var(--ink)!important}
 .roletabs .badge{border-radius:50%;background:var(--danger);color:#fff;border:1.5px solid var(--ink);font-family:'IBM Plex Mono',monospace!important}
 /* 8) 썸네일 무대: 체커 대신 연한 셀러리 + 중앙 스포트라이트, 이모지는 원본 그대로 크게 */
-.prod .ph,.grid > .prod:nth-child(even) .ph{background:radial-gradient(circle at 50% 42%,#ffffff 0,#f3f7e6 70%);font-size:58px;line-height:1;align-items:center;padding-bottom:0;height:136px}
-.prod .ph::after{display:none}
+.prod .ph,.grid > .prod:nth-child(even) .ph{font-size:58px;line-height:1;align-items:center;padding-bottom:0;height:136px}
 .prod .ph img{max-height:84%!important;max-width:76%!important;filter:drop-shadow(0 6px 0 rgba(28,42,20,.12))}
-.store-hero{background:radial-gradient(circle at 50% 42%,#ffffff 0,#f3f7e6 72%)}
 .store-hero .store-em{font-size:112px}
 .store-detail .store-em{font-size:64px}
 .cust-em{font-size:58px}
@@ -948,6 +946,25 @@ button,.catchip,.rowitem,.hb-row,.news-item,.st,.gradebox,.nb,.badge,.subnav,.ro
 @media(max-width:640px){.hero-band .tagline{font-size:15.5px}}
 .profile-wrap .card{margin:0;box-shadow:var(--pxbl-soft)}
 .profile-wrap .card.prod{box-shadow:var(--pxbl-soft)}
+/* ===== 상품 무대(누끼 배경) 3종 + 3D 틸트 ===== */
+.p3d{display:inline-flex;align-items:center;justify-content:center;transition:transform .18s ease-out,filter .18s ease-out;transform-style:preserve-3d;will-change:transform;position:relative;z-index:1;filter:drop-shadow(0 10px 8px rgba(28,42,20,.16))}
+.ph,.store-hero{perspective:700px}
+.ph .p3d img,.store-hero .p3d img{display:block}
+/* A 글로우: 흰 무대 + 셀러리 글로우 + 포디움 그림자 */
+body[data-stage="glow"] .prod .ph,body[data-stage="glow"] .grid > .prod:nth-child(even) .ph{background:radial-gradient(ellipse 62% 48% at 50% 58%,#cfe3a6 0,#e6f0cf 42%,#ffffff 75%)}
+body[data-stage="glow"] .store-hero{background:radial-gradient(ellipse 55% 50% at 50% 60%,#cfe3a6 0,#e6f0cf 45%,#ffffff 80%)}
+body[data-stage="glow"] .prod .ph::after,body[data-stage="glow"] .store-hero::after{content:'';display:block;position:absolute;left:50%;bottom:16px;width:44%;height:10px;transform:translateX(-50%);background:rgba(28,42,20,.14);border-radius:50%;filter:blur(4px);pointer-events:none}
+/* B 스튜디오: 중앙 밝고 가장자리 셀러리 비네트 */
+body[data-stage="studio"] .prod .ph,body[data-stage="studio"] .grid > .prod:nth-child(even) .ph{background:radial-gradient(ellipse at 50% 42%,#f7faee 0,#dbe8c1 55%,#a9c48a 100%)}
+body[data-stage="studio"] .store-hero{background:radial-gradient(ellipse at 50% 45%,#f7faee 0,#dbe8c1 55%,#a9c48a 100%)}
+body[data-stage="studio"] .prod .ph::after,body[data-stage="studio"] .store-hero::after{content:'';display:block;position:absolute;left:50%;bottom:14px;width:48%;height:10px;transform:translateX(-50%);background:rgba(28,42,20,.18);border-radius:50%;filter:blur(4px);pointer-events:none}
+/* C 포디움: 플랫 배경 + 그려진 원형 포디움 */
+body[data-stage="podium"] .prod .ph,body[data-stage="podium"] .grid > .prod:nth-child(even) .ph{background:linear-gradient(180deg,#fbfdf5 0,#f1f6e3 100%)}
+body[data-stage="podium"] .store-hero{background:linear-gradient(180deg,#fbfdf5 0,#f1f6e3 100%)}
+body[data-stage="podium"] .prod .ph::after,body[data-stage="podium"] .store-hero::after{content:'';display:block;position:absolute;left:50%;bottom:12px;width:58%;height:22px;transform:translateX(-50%);background:#d6e2bf;border:1.5px solid var(--line-soft);border-radius:50%;box-shadow:0 6px 0 -2px #c3d3a6;pointer-events:none}
+body[data-stage="podium"] .prod .ph .p3d{transform:translateY(-6px)}
+.ph.tilting .p3d,.store-hero.tilting .p3d{transition:transform .06s linear,filter .06s linear}
+.ph{overflow:visible}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1442,6 +1459,7 @@ const SCREENS={
 };
 function render(){
   autoTick();
+  document.body.setAttribute('data-stage',S.stage||localStorage.getItem('slry-stage')||'glow');
   const cnt=counts();
   $('#roletabs').innerHTML=S.lockedRole?'':ROLES.map(([k,l])=>
     `<button data-act="role" data-k="${k}" class="${S.view.role===k?'on':''}">${l}${cnt[k]?`<span class="badge">${cnt[k]}</span>`:''}</button>`).join('');
@@ -1636,7 +1654,7 @@ function prodCard(p){
   const margin=p.gp*p.rate;
   const exclLocked=p.exclusiveSellerId&&p.exclusiveSellerId!==S.actingSeller;
   return `<div class="card prod">
-    <div class="ph" data-act="prodDetail" data-k="${p.id}" style="cursor:pointer;position:relative">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:92%;max-width:78%;object-fit:contain;pointer-events:none">`:p.em}
+    <div class="ph" data-act="prodDetail" data-k="${p.id}" style="cursor:pointer;position:relative"><span class="p3d">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:92%;max-width:78%;object-fit:contain;pointer-events:none">`:p.em}</span>
       ${p.t?`<span class="trendbadge">▲ ${p.t.g}</span>`:passActive(p,'boost',7)?`<span class="trendbadge" style="background:var(--yellow);color:var(--ink)">★ 부스트</span>`:''}
       ${p.exclusive?`<span class="exclbadge">독점권 오퍼</span>`:''}</div>
     <div><span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> <span class="sub" style="font-size:11px;color:var(--mute)">${p.cat}</span></div>
@@ -1697,6 +1715,7 @@ function vExplore(){
   ${cur==='전체'&&trendPicks.length?`<div class="sec">트렌드 픽 — 매출 급등 상품</div>
   <div class="grid g3" style="margin-bottom:26px">${trendPicks.map(prodCard).join('')}</div>
   <div class="sec">전체 상품</div>`:''}
+  ${S.lockedRole?'':`<div class="cats" style="margin-bottom:6px"><span style="font-size:11px;color:var(--mute);align-self:center;margin-right:4px">썸네일 무대(마스터 미리보기)</span>${[['glow','글로우'],['studio','스튜디오'],['podium','포디움']].map(([k,l])=>`<button class="catchip ${(S.stage||localStorage.getItem('slry-stage')||'glow')===k?'on':''}" data-act="setStage" data-k="${k}">${l}</button>`).join('')}</div>`}
   <div class="cats">${CATS.map(c=>`<button class="catchip ${c===cur?'on':''}" data-act="setCat" data-k="${c}" title="${CAT_INFO[c]?CAT_INFO[c].desc+' · '+CAT_INFO[c].ex:'건강·웰니스 전 카테고리'}">${c}</button>`).join('')}</div>
   <div class="catguide">${cur==='전체'?`<b>건강·웰니스 전용 갤러리</b> — ${CAT_POLICY}`:`<b>${cur}</b> <span class="en">${CAT_INFO[cur].en}</span> — ${CAT_INFO[cur].desc} · 예: ${CAT_INFO[cur].ex}`}</div>
   <div class="grid g3">${list.map(prodCard).join('')||'<div class="empty" style="grid-column:1/-1;background:var(--surface);border:2px solid var(--line);border-radius:6px">해당 카테고리에 노출 중인 상품이 없습니다</div>'}</div>`;
@@ -2880,7 +2899,7 @@ function custCard(c){
   const live=c.status==='LIVE';const left=(c.qty||0)-soldQty(c.id);
   const dd=live?Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY)):Math.ceil((P(c.start)-today())/DAY);
   return `<div class="card prod">
-    <div class="ph" data-act="preview" data-k="${c.id}" style="cursor:pointer;position:relative">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:92%;max-width:78%;object-fit:contain;pointer-events:none">`:p.em}
+    <div class="ph" data-act="preview" data-k="${c.id}" style="cursor:pointer;position:relative"><span class="p3d">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:92%;max-width:78%;object-fit:contain;pointer-events:none">`:p.em}</span>
       ${isHomeFeat(c)?'<span class="trendbadge" style="background:var(--yellow);color:var(--ink)">★ 추천</span>':live?`<span class="trendbadge">${dd<=1?'오늘 마감':'D-'+dd+' 마감'}</span>`:`<span class="trendbadge" style="background:var(--ink);color:var(--yellow)">오픈 D-${dd}</span>`}</div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="sc-av ${s.img?'':'em'}" style="width:28px;height:28px;font-size:14px;${s.img?`background-image:url(${s.img})`:''}">${s.img?'':(SEMOJI[s.id]||'👤')}</span><span style="font-size:12.5px"><b>${esc(s.name)}</b> <span style="color:var(--mute)">${platIcon(s)} ${s.handle}</span></span><span class="gradebox sm">${gfull(gname(s))}</span></div>
     <div class="nm" data-act="preview" data-k="${c.id}" style="cursor:pointer">${esc(p.name)}</div>
@@ -3119,7 +3138,7 @@ function vStore(cid){
     </div>
     <div class="store-trust" ${c.preview?'':`data-act="verifyStore" data-k="${cid}"`}>${CEL} <b>셀러리 인증 판매</b> · 결제 보관 · ${CLEAR_DAYS}일 환불 보호 · 인플루언서 채널 인증 ✓ <span style="text-decoration:underline;margin-left:auto">${c.preview?'미리보기':'인증 확인'}</span></div>
     <div class="card" style="padding:0;overflow:hidden">
-      <div class="store-hero"><div class="store-em">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:220px;max-width:80%;object-fit:contain">`:p.em}</div>
+      <div class="store-hero"><div class="store-em p3d">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:220px;max-width:80%;object-fit:contain">`:p.em}</div>
         ${live?`<span class="trendbadge" style="position:absolute;top:30px;left:14px">${dd<=1?'오늘 마감':'D-'+dd+' 마감'}</span>`:soon?`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--ink);color:var(--yellow)">오픈 D-${dd}</span>`:c.preview?`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--mute)">미리보기</span>`:`<span class="trendbadge" style="position:absolute;top:30px;left:14px;background:var(--mute)">판매 종료</span>`}</div>
       <div style="padding:18px 20px 20px">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px"><span class="sc-av ${s.img?'':'em'}" style="width:40px;height:40px;${s.img?`background-image:url(${s.img})`:''}">${s.img?'':(SEMOJI[s.id]||'👤')}</span>
@@ -3468,6 +3487,7 @@ const ACT={
   setSeller(k,el){S.actingSeller=el.value;render();},
   setBrand(k,el){S.actingBrand=el.value;render();},
   setCat(k){S.catFilter=k;render();},
+  setStage(k){S.stage=k;try{localStorage.setItem('slry-stage',k);}catch(e){}render();},
   calNav(k){S.calOff=k==='0'?0:(S.calOff||0)+ +k;render();},
   setGalGrade(k){S.galGrade=k;render();},
   setGalPlat(k){S.galPlat=k;render();},
@@ -4019,6 +4039,26 @@ function simSell(cid,n){
   setTimeout(()=>o.classList.add('out'),1350);setTimeout(()=>o.remove(),1750);
 })();
 /* ============ events ============ */
+/* 3D 틸트: 상품 누끼가 마우스를 따라 살짝 기울어짐 (+ 그림자 반대 방향 이동) */
+(function(){
+  const MAX=11;
+  function reset(t){t.style.transform='';t.style.filter='';}
+  document.addEventListener('mousemove',e=>{
+    const host=e.target.closest&&e.target.closest('.ph, .store-hero');
+    if(!host){return;}
+    const t=host.querySelector('.p3d');if(!t)return;
+    const r=host.getBoundingClientRect();
+    const dx=((e.clientX-r.left)/r.width-0.5)*2, dy=((e.clientY-r.top)/r.height-0.5)*2;
+    t.style.transform=`perspective(700px) rotateX(${(-dy*MAX).toFixed(2)}deg) rotateY(${(dx*MAX).toFixed(2)}deg) translateZ(14px) scale(1.05)`;
+    t.style.filter=`drop-shadow(${(-dx*10).toFixed(1)}px ${(10-dy*6).toFixed(1)}px 8px rgba(28,42,20,.22))`;
+    host.classList.add('tilting');
+  });
+  document.addEventListener('mouseout',e=>{
+    const host=e.target.closest&&e.target.closest('.ph, .store-hero');
+    if(!host||host.contains(e.relatedTarget))return;
+    const t=host.querySelector('.p3d');if(t)reset(t);host.classList.remove('tilting');
+  });
+})();
 document.addEventListener('click',e=>{
   if(e.target.classList&&e.target.classList.contains('modal-bg')){closeModal();return;}
   const el=e.target.closest('[data-act]');if(!el)return;
