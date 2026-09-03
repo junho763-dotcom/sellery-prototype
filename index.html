@@ -994,6 +994,13 @@ body[data-stage="podium"] .prod .ph .p3d{transform:translateY(-6px)}
   .modal{padding-left:16px;padding-right:16px}
   .modal .grid.g2{grid-template-columns:1fr}
 }
+/* 카드형 표(≤900px): 셀 내부 요소도 줄바꿈 허용 — 긴 일정·핸들 때문에 가로로 밀리던 문제 */
+@media(max-width:900px){
+  .tblw table{min-width:0!important;width:100%!important;table-layout:fixed}
+  .tblw td,.tblw td>*{white-space:normal!important;word-break:break-word;min-width:0!important;max-width:100%}
+  .tblw td .st,.tblw td .gradebox,.tblw td button{white-space:nowrap!important}
+  .tblw td.nm{min-width:0!important}
+}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
