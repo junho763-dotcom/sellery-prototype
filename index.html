@@ -679,7 +679,7 @@ function counts(){
 /* ============ render root ============ */
 const ROLES=[['seller','인플루언서 센터'],['brand','브랜드 센터'],['admin','관리자']];
 const SCREENS={
-  seller:[['home','홈'],['explore','상품 탐색'],['camps','내 캠페인'],['sales','실시간 매출'],['rank','랭킹·등급'],['ref','추천 프로그램'],['settle','정산']],
+  seller:[['home','홈'],['explore','상품 갤러리'],['camps','내 캠페인'],['sales','실시간 매출'],['rank','랭킹·등급'],['ref','추천 프로그램'],['settle','정산']],
   brand:[['home','홈'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['requests','요청함'],['sales','실시간 매출'],['orders','주문·발주'],['settle','정산']],
   admin:[['home','대시보드'],['review','상품 검수'],['settle','정산 실행']]
 };
@@ -776,7 +776,7 @@ function vSellerHome(){
   </div>
   ${todo.length?`<div class="sec">지금 할 일</div><div class="listcard">${todo.map(c=>campRow(c)).join('')}</div>`:''}
   <div class="sec">진행 중 · 예정 판매</div>
-  <div class="listcard">${mine.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c)).join('')||'<div class="empty">진행 중인 판매가 없습니다 — 상품 탐색에서 시작해보세요</div>'}</div>
+  <div class="listcard">${mine.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c)).join('')||'<div class="empty">진행 중인 판매가 없습니다 — 상품 갤러리에서 시작해보세요</div>'}</div>
   <div class="sec">추천 상품</div>
   <div class="grid g3">${D_().products.filter(p=>p.status==='listed').slice(0,3).map(prodCard).join('')}</div>`;
 }
@@ -817,7 +817,7 @@ function vExplore(){
   const top=Object.entries(sums).map(([pid,v])=>({p:prod(pid),v})).filter(x=>x.p&&x.p.status==='listed')
     .sort((a,b)=>b.v-a.v).slice(0,5);
   const mx=top.length?top[0].v:1;
-  return `<h2 class="pg">상품 탐색 <small>브랜드가 판매가·수수료율을 공개 책정</small></h2>
+  return `<h2 class="pg">상품 갤러리 <small>브랜드가 판매가·수수료율을 공개 책정</small></h2>
   <div class="grid g2" style="margin-bottom:18px">
     <div class="card">
       <div class="lbl-sm" style="margin-bottom:4px">${gfull(myTier.g)} 등급 이상 인플루언서 베스트셀링 TOP5</div>
