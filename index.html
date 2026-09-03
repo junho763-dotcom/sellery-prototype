@@ -843,6 +843,13 @@ button.sm,button.sm:hover,button[disabled],button[disabled]:hover{box-shadow:var
   .tblw td > *{margin-left:0}
   .tblw td .st,.tblw td .gradebox{margin-left:0}
 }
+/* DM 탭: 요청함 아코디언 + 검색 */
+.acc-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;flex-wrap:wrap}
+.acc-head:hover{background:#f3f7e6}
+.acc-arrow{font-size:11px;color:var(--mute)}
+.dmsearch{display:flex;gap:10px;align-items:center;margin:0 4px 12px 2px;flex-wrap:wrap}
+.dmsearch input{flex:1;min-width:220px}
+.subnav button .badge{top:-8px;right:-8px}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1309,8 +1316,8 @@ function counts(){
 /* ============ render root ============ */
 const ROLES=[['seller','인플루언서 센터'],['brand','브랜드 센터'],['admin','관리자'],['customer','고객 화면']];
 const SCREENS={
-  seller:[['home','홈'],['explore','상품 갤러리'],['camps','내 캠페인'],['dm','DM'],['sales','실시간 매출'],['rank','랭킹·등급'],['ref','추천 프로그램'],['shop','셀러리 샵'],['settle','정산']],
-  brand:[['home','홈'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['requests','요청함'],['dm','DM'],['sales','실시간 매출'],['orders','주문·발주'],['shop','셀러리 샵'],['settle','정산']],
+  seller:[['home','홈'],['camps','내 캠페인'],['dm','DM'],['explore','상품 갤러리'],['sales','실시간 매출'],['settle','정산'],['rank','랭킹·등급'],['shop','셀러리 샵'],['ref','추천 프로그램']],
+  brand:[['home','홈'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['dm','DM'],['sales','실시간 매출'],['orders','주문·발주'],['shop','셀러리 샵'],['settle','정산']],
   admin:[['home','대시보드'],['products','상품'],['influencers','인플루언서'],['brands','브랜드'],['orders','주문·CS'],['match','매칭·자동 제안'],['revenue','매출·순수익'],['settle','정산 실행']],
   customer:[['home','진행 중인 판매'],['influencers','인플루언서']]
 };
@@ -1328,14 +1335,15 @@ function render(){
   } else if(S.view.role==='brand'){
     personaHtml=`<div class="persona">접속 브랜드 <select data-act="setBrand">${D_().brands.map(b=>`<option value="${b.id}" ${b.id===S.actingBrand?'selected':''}>${b.name}</option>`).join('')}</select></div>`;
   }
+  const dmN=(S.view.role==='brand'||S.view.role==='seller')?dmUnreadN()+(S.view.role==='brand'?brandPending().n:0):0;
   $('#subnav').innerHTML=scr.map(([k,l])=>
-    `<button data-act="screen" data-k="${k}" class="${S.view.screen===k&&!S.view.cid?'on':''}">${l}</button>`).join('')+personaHtml;
+    `<button data-act="screen" data-k="${k}" class="${(S.view.screen===k||(k==='dm'&&S.view.screen==='requests'))&&!S.view.cid?'on':''}" style="position:relative">${l}${k==='dm'&&dmN?`<span class="badge">${dmN}</span>`:''}</button>`).join('')+personaHtml;
   const m=$('#main');
   if(S.view.store){ const y=window.scrollY; m.innerHTML=vStore(S.view.store); decorate(); window.scrollTo(0,S.storeTop?0:y); S.storeTop=false; return; }
   if(S.view.cid){ m.innerHTML=vCampDetail(S.view.cid); decorate(); const box=m.querySelector('.msgs'); if(box) box.scrollTop=box.scrollHeight; return; }
   const fn={
     'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.dm':vDM,'brand.dm':vDM,'seller.shop':vShop,'brand.shop':vShop,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
-    'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vRequests,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,'brand.my':vBrandMy,
+    'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vDM,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,'brand.my':vBrandMy,
     'admin.home':vAdminHome,'admin.products':vAdminProducts,'admin.review':vAdminProducts,'admin.influencers':vAdminInfluencers,'admin.brands':vAdminBrands,'admin.orders':vAdminOrders,'admin.match':vAdminMatch,'admin.revenue':vAdminRevenue,'admin.settle':vAdminSettle,
     'customer.home':vCustHome,'customer.influencers':vCustInfluencers
   }[S.view.role+'.'+S.view.screen]||(S.view.role==='customer'?vCustHome:vSellerHome);
@@ -1399,25 +1407,73 @@ function vSellerHome(){
   const me=S.actingSeller;
   const mine=D_().campaigns.filter(c=>c.sellerId===me);
   const live=mine.filter(c=>c.status==='LIVE');
+  const soon=mine.filter(c=>c.status==='SCHEDULE_CONFIRMED');
+  const clearing=mine.filter(c=>c.status==='CLEARING');
   const liveNet=live.reduce((a,c)=>a+calc(c).net,0);
-  const pendPay=mine.filter(c=>['CLEARING'].includes(c.status)).reduce((a,c)=>{const k=calc(c);return a+k.sfTotal*(1-WHT);},0);
-  const todo=mine.filter(c=>['SAMPLE_SHIPPED','TESTING'].includes(c.status));
+  const pendPay=clearing.reduce((a,c)=>{const k=calc(c);return a+k.sfTotal*(1-sellerWht(seller(me)));},0);
+  const monthPay=mine.filter(c=>c.status==='SETTLED'&&(c.settledAt||'').slice(0,7)===ymd(today()).slice(0,7)).reduce((a,c)=>a+calc(c).sfTotal*(1-sellerWht(seller(me))),0);
+  const todo=mine.filter(c=>['SAMPLE_SHIPPED','TESTING','SAMPLE_APPROVED'].includes(c.status));
   const sl=seller(me);
-  const heroLine = live.length ? `지금 판매 <em>${live.length}건</em>이 진행 중이에요.`
-    : todo.length ? `확인할 요청이 <em>${todo.length}건</em> 있어요.`
+  const TODO_L={SAMPLE_SHIPPED:'샘플 수령 확인',TESTING:'테스트 후 일정 제안',SAMPLE_APPROVED:'샘플 배송 대기 (브랜드 발송 중)'};
+  const heroLine = todo.length ? `기다리는 할 일이 <em>${todo.length}건</em> 있어요.`
+    : live.length ? `지금 판매 <em>${live.length}건</em>이 진행 중이에요.`
     : `오늘은 어떤 상품을 골라볼까요?`;
-  // grade pyramid
   const g=gradeOf(sl.m3Sales);
   const next=GRADES[GRADES.indexOf(g)-1];
   const pct=next?Math.min(100,Math.round(sl.m3Sales/next.min*100)):100;
-  const pyr=`<div class="card kpi go" data-act="screen" data-k="rank" title="랭킹·등급 보기">
-    <div class="lbl-sm lbl">내 인플루언서 그레이드 — 상위 ${g.pct}%</div>
-    ${pyrHtml(GRADES,g.g)}
-    ${next?`<div class="meter" style="margin-top:14px"><span style="width:${pct}%"></span></div>
-    <div style="font-size:12px;color:var(--mute);margin-top:7px">최근 3개월 <b>₩${fmt(sl.m3Sales)}</b> — 다음 등급 <b>${next.g}</b>까지 <b style="color:var(--red)">₩${fmt(next.min-sl.m3Sales)}</b> 남음 · 달성 시 ${next.perk.split('·')[0].trim()}</div>`
-    :`<div style="font-size:12px;color:var(--mute);margin-top:10px">최고 등급 달성 · ${g.perk}</div>`}
+  const todayStr=ymd(today());
+  /* 1 할 일 */
+  const todoHtml=todo.length?`<div class="sec">지금 할 일 <span class="badge">${todo.length}</span></div>
+    <div class="listcard">${todo.map(c=>{const p=prod(c.productId),b=brand(p.brandId);
+      return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div>
+        <div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${esc(b.name)}</span></div><div class="sub">${TODO_L[c.status]||ST[c.status].l}${c.testDue?` · 기한 ${md(P(c.testDue))}`:''}</div></div>
+        <button class="pri sm">${c.status==='SAMPLE_SHIPPED'?'수령 확인':c.status==='TESTING'?'일정 제안':'스레드 보기'}</button></div>`;}).join('')}</div>`
+    :`<div class="sec">지금 할 일</div><div class="listcard"><div class="empty" style="padding:14px">지금 응답할 일이 없어요 — 진행 중 판매를 확인하세요 ✓</div></div>`;
+  /* 2 진행 중·예정 판매 (실시간 미니 지표) */
+  const liveCard=c=>{const p=prod(c.productId),k=calc(c);const os=campOrders(c.id).filter(o=>o.status==='PAID');const tod=os.filter(o=>o.at===todayStr);const left=(c.qty||0)-soldQty(c.id);const dd=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
+    return `<div class="card" style="padding:16px 18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><b style="font-size:15px">${p.em} ${esc(p.name)}</b> <span class="sub" style="color:var(--mute);font-size:12px">${brand(p.brandId).name} · 수수료 ${(p.rate*100).toFixed(0)}%</span></div>${stChip('LIVE')}</div>
+      <div class="mini-stats" style="margin:12px 0 10px">
+        <div><span class="ms-l">오늘 매출</span><span class="ms-v">₩${fmt(tod.reduce((a,o)=>a+o.unit*o.qty,0))}</span></div>
+        <div><span class="ms-l">확정 매출</span><span class="ms-v">₩${fmt(k.net)}</span></div>
+        <div><span class="ms-l">주문</span><span class="ms-v">${k.paidCnt}건</span></div>
+        <div><span class="ms-l">마감 · 잔여</span><span class="ms-v">D-${dd} · ${fmt(Math.max(0,left))}개</span></div>
+      </div>
+      <div class="btnrow"><button class="sm ghost" data-act="open" data-k="${c.id}">스레드</button><button class="sm ghost" data-act="preview" data-k="${c.id}">구매 페이지</button><button class="sm ghost" data-act="copyLink" data-k="sellery.co.kr/s/${sl.handle.slice(1)}/${c.id}">링크 복사</button><button class="sm ghost" data-act="screen" data-k="sales">실시간 매출</button></div>
+    </div>`;};
+  const soonRow=c=>{const p=prod(c.productId);const dd=Math.ceil((P(c.start)-today())/DAY);return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div><div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${brand(p.brandId).name} · ${md(P(c.start))}–${md(P(c.end))} · 재고 ${fmt(c.qty||0)}</div></div><span class="st blue" style="animation:none">오픈 D-${dd}</span></div>`;};
+  const salesHtml=`<div class="sec">진행 중 · 예정 판매</div>
+    ${live.length?`<div class="grid ${live.length>1?'g2':''}" style="margin-bottom:${soon.length||clearing.length?'10px':'0'}">${live.map(liveCard).join('')}</div>`:''}
+    ${(soon.length||clearing.length)?`<div class="listcard">${soon.map(soonRow).join('')}${clearing.map(c=>campRow(c)).join('')}</div>`:''}
+    ${(!live.length&&!soon.length&&!clearing.length)?'<div class="listcard"><div class="empty">진행 중인 판매가 없습니다 — 상품 갤러리에서 시작해보세요</div></div>':''}`;
+  /* 3 내 장부 */
+  const ledger=`<div class="sec">내 장부</div>
+  <div class="grid g4">
+    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출"><div class="lbl">진행 중 판매 매출</div><div class="val">₩${fmt(liveNet)}</div><div class="sub">확정 기준 · ${live.length}건 LIVE</div></div>
+    <div class="card kpi go" data-act="screen" data-k="settle" title="정산"><div class="lbl">정산 예정 수수료</div><div class="val" style="color:var(--money)">₩${fmt(pendPay)}</div><div class="sub">환불기간 ${clearing.length}건 · ${sellerWht(sl)?'원천징수 후':'사업자 정산'}</div></div>
+    <div class="card kpi go" data-act="screen" data-k="settle" title="정산"><div class="lbl">이번 달 확정 수익</div><div class="val">₩${fmt(monthPay)}</div><div class="sub">정산 완료 기준</div></div>
+    <div class="card kpi go" data-act="screen" data-k="camps" title="내 캠페인"><div class="lbl">누적 판매</div><div class="val">${mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status)).length}회</div><div class="sub">재판매율 ${(()=>{const d=mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status));const pids=d.map(c=>c.productId);const rep=pids.filter((x,i)=>pids.indexOf(x)!==i).length;return d.length?Math.round(rep/d.length*100):0;})()}%</div></div>
   </div>`;
-  // what's hot on sellery
+  /* 4 성장: 피라미드(컴팩트) + 내 자산 */
+  const pyr=`<div class="card kpi go" data-act="screen" data-k="rank" title="랭킹·등급 보기">
+    <div class="lbl-sm lbl">내 등급 — 상위 ${g.pct}%</div>
+    ${pyrHtml(GRADES,g.g)}
+    ${next?`<div class="meter" style="margin-top:12px"><span style="width:${pct}%"></span></div>
+    <div style="font-size:12px;color:var(--mute);margin-top:7px">3개월 <b>₩${fmt(sl.m3Sales)}</b> · <b>${next.g}</b>까지 <b style="color:var(--red)">₩${fmt(next.min-sl.m3Sales)}</b> · 달성 시 ${next.perk.split('·')[0].trim()}</div>`
+    :`<div style="font-size:12px;color:var(--mute);margin-top:10px">최고 등급 · ${g.perk}</div>`}
+  </div>`;
+  const left=sampleLeft(sl);const toNext=CELERY_PER-(sl.m3Sales%CELERY_PER);
+  const assets=`<div class="card kpi go" data-act="screen" data-k="shop" title="셀러리 샵">
+    <div class="lbl-sm lbl">내 자산</div>
+    <div class="mini-stats" style="margin-top:10px">
+      <div><span class="ms-l">셀러리</span><span class="ms-v" style="display:flex;align-items:center;gap:4px">${CEL} ${celBal(me)}</span></div>
+      <div><span class="ms-l">다음 1🥬까지</span><span class="ms-v">₩${fmt(toNext)}</span></div>
+      <div><span class="ms-l">이달 샘플 요청</span><span class="ms-v">${left===Infinity?'무제한':left+'회 남음'}</span></div>
+      <div><span class="ms-l">등급 보너스</span><span class="ms-v">+${g.bonus}%p</span></div>
+    </div>
+    <div class="btnrow" style="margin-top:12px"><button class="sm ghost" data-act="screen" data-k="shop">셀러리 샵</button><button class="sm ghost" data-act="screen" data-k="ref">친구 초대 · 2% 리워드</button></div>
+  </div>`;
+  /* 5 탐색 */
   const listed=D_().products.filter(p=>p.status==='listed');
   const hot=listed.filter(p=>p.t).sort((a,b)=>parseInt(b.t.g.replace(/\D/g,''))-parseInt(a.t.g.replace(/\D/g,'')))[0];
   const exclOpen=listed.filter(p=>p.exclusive&&!p.exclusiveSellerId).slice(0,1);
@@ -1430,26 +1486,28 @@ function vSellerHome(){
       ${fresh.map(p=>`<div class="news-item" data-act="prodDetail" data-k="${p.id}"><span class="nb new">NEW</span><div><b>${esc(p.name)}</b> 신규 입점 — ${brand(p.brandId).name} · ${p.cat} · 수수료 ${(p.rate*100).toFixed(0)}%</div></div>`).join('')}
     </div>
   </div>`;
+  const recs=listed.filter(p=>!mine.some(c=>c.productId===p.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status))).sort((a,b)=>(b.cat===sl.cat)-(a.cat===sl.cat)).slice(0,3);
   return `<div class="hero-band">
-    ${sl.img?`<img class="hero-av" src="${sl.img}" alt="프로필">`:''}
+    ${sl.img?`<img class="hero-av" src="${sl.img}" alt="프로필" data-act="gotoMy" style="cursor:pointer" title="마이페이지">`:''}
     <div class="ey">Seller Gallery</div>
     <h1>${sl.name}님, 반가워요.<br>${heroLine}</h1>
-    <div class="sub">${platIcon(sl)} ${sl.handle} · 팔로워 <b>${fmt(sl.followers)}</b> · 등급 <b>${gfull(gname(sl))}</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일
-    <button class="sm ghost" data-act="avatarPick" style="margin-left:12px">${PEN}${sl.img?'프로필 사진 변경':'프로필 사진 등록'}</button></div>
+    <div class="sub">${platIcon(sl)} ${sl.handle} · 팔로워 <b>${fmt(sl.followers)}</b> · 등급 <b>${gfull(gname(sl))}</b> · ${new Date().getMonth()+1}월 ${new Date().getDate()}일</div>
   </div>
-  <div class="grid g2 overlap">${pyr}${newsHtml}</div>
-  <div class="sec">내 현황</div>
-  <div class="grid g4">
-    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">진행 중 판매 매출 (확정 기준)</div><div class="val">₩${fmt(liveNet)}</div><div class="sub">판매 ${live.length}건 LIVE</div></div>
-    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">정산 예정 수수료</div><div class="val" style="color:var(--money)">₩${fmt(pendPay)}</div><div class="sub">원천징수 3.3% 공제 후</div></div>
-    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">내 응답 대기</div><div class="val">${todo.length}건</div><div class="sub">샘플 수령·테스트 결정</div></div>
-    <div class="card kpi go" data-act="screen" data-k="sales" title="실시간 매출 보기"><div class="lbl">누적 판매</div><div class="val">${mine.filter(c=>['SETTLED','CLEARING','LIVE'].includes(c.status)).length}회</div><div class="sub">마이 갤러리 아카이브</div></div>
+  <div class="overlap" style="height:0"></div>
+  ${todoHtml}
+  ${salesHtml}
+  ${ledger}
+  <div class="sec">성장 · 자산</div>
+  <div class="grid g2">${pyr}${assets}</div>
+  <div class="sec">지금 셀러리에서 · 추천 상품</div>
+  <div class="grid" style="grid-template-columns:1fr 2fr;gap:14px;align-items:start">
+    ${newsHtml}
+    <div class="grid g3" style="gap:14px">${recs.map(prodCard).join('')}</div>
   </div>
-  ${todo.length?`<div class="sec">지금 할 일</div><div class="listcard">${todo.map(c=>campRow(c)).join('')}</div>`:''}
-  <div class="sec">진행 중 · 예정 판매</div>
-  <div class="listcard">${mine.filter(c=>['LIVE','SCHEDULE_CONFIRMED','CLEARING'].includes(c.status)).map(c=>campRow(c)).join('')||'<div class="empty">진행 중인 판매가 없습니다 — 상품 갤러리에서 시작해보세요</div>'}</div>
-  <div class="sec">추천 상품</div>
-  <div class="grid g3">${D_().products.filter(p=>p.status==='listed').slice(0,3).map(prodCard).join('')}</div>`;
+  <div class="card" style="margin-top:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px">
+    <div><b>친구 초대 · 추천 프로그램</b> <span class="sub" style="color:var(--mute);font-size:12px">— 초대한 인플루언서 첫 5회 판매 확정매출의 2% 리워드 · 친구는 5회간 수수료 +1%p</span></div>
+    <div class="btnrow" style="margin:0"><span class="st gray" style="animation:none;font-family:'Archivo',sans-serif!important;font-weight:800!important">${sl.refCode}</span><button class="sm pri" data-act="copyRef" data-k="${sl.refCode}">코드 복사</button></div>
+  </div>`;
 }
 function prodCard(p){
   const b=brand(p.brandId);
@@ -1546,8 +1604,12 @@ function vDM(){
     return {c,p,b,s,last,unread,who};
   }).sort((a,b)=>a.last.at<b.last.at?1:a.last.at>b.last.at?-1:(a.c.createdAt<b.c.createdAt?1:-1));
   const unreadN=rows.filter(r=>r.unread).length;
+  const q=(S.dmQ||'').trim().toLowerCase();
+  const shown=q?rows.filter(r=>[r.s.name,r.s.handle,r.b.name,r.p.name,strip(r.last.txt),r.c.id,ST[r.c.status].l].join(' ').toLowerCase().includes(q)):rows;
   return `<h2 class="pg">DM <small>${isBrand?'인플루언서와 나눈 대화 — 제안·샘플·일정·정산 이력이 모두 남아요':'브랜드와 나눈 대화 — 샘플 요청·승인·일정·정산 이력이 모두 남아요'}${unreadN?` · <b style="color:var(--danger)">안 읽음 ${unreadN}</b>`:''}</small></h2>
-  <div class="listcard">${rows.map(r=>{
+  ${isBrand?vRequests():''}
+  <div class="dmsearch"><input id="dmQ" value="${esc(S.dmQ||'')}" placeholder="인플루언서·브랜드·상품·메시지 검색" data-enter="dmSearch" oninput="ACT.dmSearchLive(this.value)">${q?`<button class="sm ghost" data-act="dmClear">지우기</button>`:''}<span class="sub" style="color:var(--mute);font-size:12px;white-space:nowrap">${q?`${shown.length}/${rows.length}건`:`대화 ${rows.length}건`}${unreadN?` · <b style="color:var(--danger)">안 읽음 ${unreadN}</b>`:''}</span></div>
+  <div class="listcard">${shown.map(r=>{
     const av=isBrand
       ?(r.s.img?`<div class="sc-av" style="width:44px;height:44px;background-image:url('${r.s.img}')"></div>`:`<div class="sc-av em" style="width:44px;height:44px;font-size:20px">${SEMOJI[r.s.id]||'⭐'}</div>`)
       :(r.b.logo?`<img src="${r.b.logo}" alt="" style="width:44px;height:44px;object-fit:cover;flex-shrink:0;border:2px solid var(--line)">`:`<div class="sc-av em" style="width:44px;height:44px;font-size:20px">🏷️</div>`);
@@ -1560,7 +1622,7 @@ function vDM(){
       </div>
       <span class="sub" style="font-family:'IBM Plex Mono',monospace;white-space:nowrap">${md(P(r.last.at))}</span>
       ${stChip(r.c.status)}
-    </div>`;}).join('')||`<div class="empty">${isBrand?'아직 대화가 없습니다 — 인플루언서 갤러리에서 판매를 제안해보세요':'아직 대화가 없습니다 — 상품 갤러리에서 샘플을 요청해보세요'}</div>`}
+    </div>`;}).join('')||`<div class="empty">${q?`"${esc(S.dmQ)}"에 맞는 대화가 없습니다`:isBrand?'아직 대화가 없습니다 — 인플루언서 갤러리에서 판매를 제안해보세요':'아직 대화가 없습니다 — 상품 갤러리에서 샘플을 요청해보세요'}</div>`}
   </div>
   <p style="font-size:12px;color:var(--mute);margin-top:10px">대화를 열면 채팅과 승인·일정·정산 이벤트가 한 타임라인에 보입니다. 연락처·외부 메신저 공유는 자동 감지되어 안내됩니다.</p>`;
 }
@@ -1947,7 +2009,7 @@ function vBrandHome(){
   const brandNews=`<div class="card" style="padding:0;overflow:hidden">
     <div class="lbl-sm" style="padding:16px 18px 6px">📢 인플루언서 소식</div>
     <div class="news">
-      ${pend.length?`<div class="news-item" data-act="screen" data-k="requests"><span class="nb hot">대기</span><div>승인 대기 요청 <b>${pend.length}건</b> — 응답이 늦으면 인플루언서가 다른 상품으로 떠나요</div></div>`:''}
+      ${pend.length?`<div class="news-item" data-act="screen" data-k="dm"><span class="nb hot">대기</span><div>승인 대기 요청 <b>${pend.length}건</b> — 응답이 늦으면 인플루언서가 다른 상품으로 떠나요</div></div>`:''}
       <div class="news-item" data-act="screen" data-k="gallery"><span class="nb hot">급증</span><div><b>${CAT_TRENDS[0].cat}</b> 카테고리 인플루언서 활동 급증 — ${CAT_TRENDS[0].note}. 제안 경쟁 전에 선점하세요</div></div>
       ${scout1?`<div class="news-item" data-act="screen" data-k="gallery"><span class="nb excl">스카우트</span><div>${gfull(gname(scout1))} <b>○○○ 인플루언서</b> 프로필 공개 — 3개월 매출 ₩${fmt(scout1.m3Sales)} · ${scout1.cat} 주력</div></div>`:''}
       ${fresh1?`<div class="news-item" data-act="screen" data-k="gallery"><span class="nb new">NEW</span><div><b>${esc(fresh1.name)} ${fresh1.handle}</b> 신규 합류 — ${fresh1.cat} · 팔로워 ${fmt(fresh1.followers)}</div></div>`:''}
@@ -2147,18 +2209,44 @@ function vGallery(){
   <div class="grid g2">${scout}</div>
   <p style="font-size:12px;color:var(--mute);margin-top:12px">※ 프로토타입에서는 제안 시 인플루언서가 즉시 수락한 것으로 처리되어 '샘플 발송 대기' 상태의 캠페인이 생성됩니다.</p>`;
 }
-function vRequests(){
+function brandPending(){
   const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
   const cs=D_().campaigns.filter(c=>myP.includes(c.productId)&&['SAMPLE_REQUESTED','SAMPLE_APPROVED','SCHEDULE_PROPOSED'].includes(c.status));
   const xr=(D_().exclusiveReqs||[]).filter(r=>myP.includes(r.productId)&&r.status==='PENDING');
-  return `<h2 class="pg">요청함 <small>샘플 요청 · 일정 제안 · 독점권 신청이 이곳에 모입니다</small></h2>
-  <div class="listcard">${cs.map(c=>campRow(c,{who:'brand'})).join('')||'<div class="empty">대기 중인 요청이 없습니다</div>'}</div>
-  ${xr.length?`<div class="sec">독점권 신청</div><div class="listcard">${xr.map(r=>{const s=seller(r.sellerId),p=prod(r.productId);
-    return `<div class="rowitem" style="cursor:default"><span class="gradebox sm">${gfull(gname(s))}</span>
-    <div class="grow"><div class="nm">○○○ 인플루언서 → ${esc(p.name)} 독점권</div>
-    <div class="sub">3개월 매출 ₩${fmt(s.m3Sales)} · 팔로워 ${fmt(s.followers)} · 참여율 ${(s.likesAvg/s.followers*100).toFixed(1)}% · 조건 ${gfull(exGradeOf(p))} 이상 충족 ✓</div></div>
-    <button class="pri sm" data-act="approveExcl" data-k="${r.id}">승인</button>
-    <button class="sm danger" data-act="rejectExcl" data-k="${r.id}">거절</button></div>`;}).join('')}</div>`:''}`;
+  return {cs,xr,n:cs.length+xr.length};
+}
+function dmUnreadN(){
+  const isBrand=S.view.role==='brand';let cs;
+  if(isBrand){const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);cs=D_().campaigns.filter(c=>myP.includes(c.productId));}
+  else cs=D_().campaigns.filter(c=>c.sellerId===S.actingSeller);
+  const myRole=isBrand?'brand':'seller';
+  return cs.filter(c=>{const m=D_().messages[c.id]||[];const l=m[m.length-1];return l&&l.type==='chat'&&l.role!==myRole;}).length;
+}
+/* 요청함 — 브랜드 DM 탭 상단 아코디언 (샘플 요청·일정 제안·독점권 신청) */
+function vRequests(){
+  const {cs,xr,n}=brandPending();
+  const open=S.reqOpen!==false; // 기본 펼침, 요청이 없으면 접힘
+  const isOpen=n?open:(S.reqOpen===true);
+  const LBL={SAMPLE_REQUESTED:'샘플 요청 검토',SAMPLE_APPROVED:'샘플 발송 처리',SCHEDULE_PROPOSED:'일정 승인'};
+  return `<div class="card acc" style="padding:0;overflow:hidden;margin-bottom:14px">
+    <div class="acc-head" data-act="toggleReq">
+      <div><b>📥 요청함</b> <span class="sub" style="color:var(--mute);font-size:12px">샘플 요청 · 일정 제안 · 독점권 신청</span></div>
+      <div style="display:flex;gap:8px;align-items:center">${n?`<span class="st amber" style="animation:none">대기 ${n}건</span>`:'<span class="st gray" style="animation:none">대기 없음</span>'}<span class="acc-arrow">${isOpen?'▲':'▼'}</span></div>
+    </div>
+    ${isOpen?`<div class="listcard" style="margin:0;box-shadow:none;border-top:1.5px solid var(--line-soft)">
+      ${cs.map(c=>{const p=prod(c.productId),sl=seller(c.sellerId);
+        return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div>
+        <div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${platIcon(sl)} ${esc(sl.name)} ${sl.handle}</span></div>
+        <div class="sub">${LBL[c.status]||ST[c.status].l}${c.status==='SCHEDULE_PROPOSED'&&c.propStart?` · ${md(P(c.propStart))}–${md(P(c.propEnd))} · 재고 ${fmt(c.propQty)}`:''} · 팔로워 ${fmt(sl.followers)} · <span class="gradebox sm">${gfull(gname(sl))}</span></div></div>
+        <button class="pri sm">${c.status==='SAMPLE_REQUESTED'?'검토':c.status==='SAMPLE_APPROVED'?'발송':'승인'}</button></div>`;}).join('')}
+      ${xr.map(r=>{const sl=seller(r.sellerId),p=prod(r.productId);
+        return `<div class="rowitem" style="cursor:default"><span class="gradebox sm">${gfull(gname(sl))}</span>
+        <div class="grow"><div class="nm">○○○ 인플루언서 → ${esc(p.name)} 독점권 신청</div>
+        <div class="sub">3개월 매출 ₩${fmt(sl.m3Sales)} · 팔로워 ${fmt(sl.followers)} · 참여율 ${(sl.likesAvg/sl.followers*100).toFixed(1)}% · 조건 ${gfull(exGradeOf(p))} 이상 충족 ✓</div></div>
+        <button class="pri sm" data-act="approveExcl" data-k="${r.id}">승인</button><button class="sm danger" data-act="rejectExcl" data-k="${r.id}">거절</button></div>`;}).join('')}
+      ${n?'':'<div class="empty" style="padding:14px">대기 중인 요청이 없습니다</div>'}
+    </div>`:''}
+  </div>`;
 }
 function vBrandOrders(){
   const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
@@ -3445,6 +3533,10 @@ const ACT={
   admToggleHidden(sid){const x=seller(sid);x.hidden=!x.hidden;save();render();toast(`${x.name} ${x.hidden?'비공개':'공개'} 전환`);},
   admGrant(who){(D_().celeryLedger=D_().celeryLedger||[]).push({who,at:ymd(today()),delta:3,memo:'관리자 이벤트 지급'});save();render();toast('🥬 3 지급 완료');},
   runSettleAll(){const list=D_().campaigns.filter(c=>c.status==='CLEARING'&&settleDue(c)<=today());list.forEach(c=>ACT.runSettle(c.id));toast(`일괄 정산 ${list.length}건 완료`);},
+  toggleReq(){S.reqOpen=!(S.reqOpen!==false&&brandPending().n?true:S.reqOpen===true);render();},
+  dmSearch(){S.dmQ=($('#dmQ')||{}).value||'';render();},
+  dmSearchLive(v){S.dmQ=v;clearTimeout(S._dmT);S._dmT=setTimeout(()=>{const el=$('#dmQ');const pos=el?el.selectionStart:0;render();const n=$('#dmQ');if(n){n.focus();n.setSelectionRange(pos,pos);}},220);},
+  dmClear(){S.dmQ='';render();},
   toggleAutoPropose(bid){const b=brand(bid);b.autoPropose=!b.autoPropose;save();render();toast(`${b.name} 자동 제안 ${b.autoPropose?'ON':'OFF'}`);},
   runAutoPropose(){
     const list=autoMatches().slice(0,5);let n=0,skip=0;
