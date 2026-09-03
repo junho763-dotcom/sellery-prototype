@@ -1001,6 +1001,16 @@ body[data-stage="podium"] .prod .ph .p3d{transform:translateY(-6px)}
   .tblw td .st,.tblw td .gradebox,.tblw td button{white-space:nowrap!important}
   .tblw td.nm{min-width:0!important}
 }
+/* 상단 역할 탭: 글자 중간 줄바꿈 금지 + 좁으면 가로 스크롤 */
+.roletabs{flex-wrap:nowrap;overflow-x:auto;overflow-y:visible;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:6px 2px 8px}
+.roletabs::-webkit-scrollbar{display:none}
+.roletabs button{white-space:nowrap;flex:0 0 auto;word-break:keep-all}
+.appbar{gap:10px;flex-wrap:wrap}
+@media(max-width:640px){
+  .roletabs button{font-size:11px;padding:5px 9px;letter-spacing:.02em}
+  .roletabs .badge{top:-6px;right:-6px;min-width:15px;height:15px;line-height:15px;font-size:9.5px}
+  .master{gap:6px}
+}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
