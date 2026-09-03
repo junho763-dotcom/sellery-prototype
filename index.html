@@ -822,8 +822,8 @@ button.sm,button.sm:hover,button[disabled],button[disabled]:hover{box-shadow:var
 .badge{border:1.5px solid #fff!important;box-shadow:none!important}
 .rec-tag{border:none!important;box-shadow:var(--pxbl-soft)!important;background:var(--surface-2)}
 /* v8-g 스파크 막대·기타 소형 인라인 잉크 그림자 → 그린 */
-.spark span,.sc-cols span,.bars span{box-shadow:none!important;border:none!important;background:var(--line)!important}
-.spark span.last,.sc-cols span.last{background:var(--red)!important}
+.spark span,.bars .b{box-shadow:none!important;border:none!important;background:var(--line)!important}
+.spark span.last,.bars .b:last-child{background:var(--red)!important}
 .spark{border-bottom:1.5px solid var(--line-soft)!important}
 /* v8-h 캘린더 헤더·범례·시스템 라인·게이트 CTA 잔여 잉크 → 그린 */
 .cal-head{border-bottom:2px solid var(--line-soft)!important}
@@ -872,6 +872,12 @@ button,.catchip,.rowitem,.hb-row,.news-item,.st,.gradebox,.nb,.badge,.subnav,.ro
 @media(max-width:1100px){.homegrid3{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.homegrid3{grid-template-columns:1fr}}
 .modal .pyr-row{max-width:100%}
+/* 인플루언서 카드 2열: 열 최소폭 0으로 눌림 방지, 좁으면 세로 쌓기 */
+.sc-cols{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.sc-cols > *{min-width:0}
+.sc-hist{background:var(--surface-2)}
+.sc-hist span{background:transparent}
+@media(max-width:1100px){.sc-cols{grid-template-columns:1fr}}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
