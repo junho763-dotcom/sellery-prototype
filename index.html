@@ -973,11 +973,11 @@ function vMy(){
   <div class="listcard">
     ${(me.channels||[]).map(ch=>`<div class="rowitem" style="cursor:default">
       <span style="font-size:18px;line-height:1">${platIcon(ch)}</span>
-      <div class="grow"><div class="nm">${esc(ch.handle)} ${ch.primary?'<span class="st green">대표</span>':''}
+      <div class="grow"><div class="nm">${esc(ch.handle)} ${ch.primary?'<span class="st green">메인 SNS</span>':''}
         ${ch.verified?'<span class="st green">✓ 인증됨</span>':ch.vcode?'<span class="st amber">인증 대기</span>':'<span class="st red">미인증</span>'}</div>
       <div class="sub">${PLAT_NAMES[ch.platform]||ch.platform} · ${ch.url?esc(ch.url)+' · ':''}팔로워 ${fmt(ch.followers||0)}</div></div>
       ${!ch.verified?`<button class="pri sm" data-act="openVerify" data-k="${ch.id}">인증하기</button>`:''}
-      ${ch.verified&&!ch.primary?`<button class="sm" data-act="setPrimaryCh" data-k="${ch.id}">대표로 설정</button>`:''}
+      ${ch.verified&&!ch.primary?`<button class="sm" data-act="setPrimaryCh" data-k="${ch.id}">메인 SNS로 설정</button>`:''}
       <button class="sm ghost" data-act="editCh" data-k="${ch.id}">수정</button>
       ${!ch.primary?`<button class="sm danger" data-act="delCh" data-k="${ch.id}">삭제</button>`:''}
     </div>`).join('')||'<div class="empty">등록된 채널이 없습니다</div>'}
@@ -1282,12 +1282,14 @@ function sellerCard(s,reason){
 function vGallery(){
   const unlocked=D_().unlockedRefs||[];
   const b=brand(S.actingBrand);
+  const gf=S.galGrade||'전체', pfilt=S.galPlat||'all';
+  const pass=s=>(pfilt==='all'||s.platform===pfilt)&&(gf==='전체'||(tierIdx(gname(s))>-1&&tierIdx(gname(s))<=tierIdx(gf)));
   const catMap={'건강기능식품':['건기식','다이어트','루테인','비타민'],'이너뷰티':['뷰티','이너뷰티','피부','화장품']};
   const rel=catMap[b.cat]||[];
   const pub=D_().sellers.filter(s=>!s.hidden);
   const recs=pub.map(s=>({s,catFit:rel.includes(s.cat),score:(rel.includes(s.cat)?2:0)+(s.m3Sales/s.followers)/300}))
     .sort((a,b)=>b.score-a.score).slice(0,2);
-  const scout=D_().sellers.filter(s=>s.hidden).map(s=>{
+  const scout=D_().sellers.filter(s=>s.hidden&&pass(s)).map(s=>{
     const un=unlocked.includes(s.id);
     return `<div class="card">
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="gradebox">${gfull(gname(s))}</span>${platIcon(s)}<b>○○○ 인플루언서</b><span style="color:var(--mute);font-size:12px">${s.cat} 주력</span></div>
@@ -1297,11 +1299,22 @@ function vGallery(){
     :`<div style="font-size:12.5px;color:var(--mute)">팔로워 ●●●,●●● · 좋아요 평균 ●,●●● — 상세 지표 잠김</div>
      <div class="btnrow" style="margin-top:12px"><button class="sm" data-act="unlockRef" data-k="${s.id}">🔓 레퍼런스 열람 · ₩29,000 (시뮬)</button></div>`}
     </div>`;}).join('');
+  const filtered=pub.filter(pass);
   return `<h2 class="pg">인플루언서 갤러리 <small>이력·반응 데이터를 보고 판매를 직접 제안하세요</small></h2>
+  <div class="card" style="margin-bottom:20px">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+      <span class="lbl-sm" style="min-width:64px">등급</span>
+      <div class="cats" style="margin:0">${['전체','실버','골드','플래티넘','다이아'].map(g=>`<button class="catchip ${gf===g?'on':''}" data-act="setGalGrade" data-k="${g}">${g==='전체'?'전체':(GICON[g]||'')+' '+g+' 이상'}</button>`).join('')}</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="lbl-sm" style="min-width:64px">메인 SNS</span>
+      <div class="cats" style="margin:0">${[['all','전체'],['instagram','인스타그램'],['youtube','유튜브'],['tiktok','틱톡'],['naver','네이버 블로그']].map(([k,l])=>`<button class="catchip ${pfilt===k?'on':''}" data-act="setGalPlat" data-k="${k}">${k!=='all'?PLAT_ICONS[k]+' ':''}${l}</button>`).join('')}</div>
+    </div>
+  </div>
   <div class="sec" style="margin-top:0">${esc(b.name)} 맞춤 추천 인플루언서</div>
   <div class="grid g2">${recs.map(r=>sellerCard(r.s,`${r.catFit?`${esc(b.cat)}와 카테고리 적합`:'매출 효율 상위'} · 매출/팔로워 ₩${fmt(r.s.m3Sales/r.s.followers)}`)).join('')}</div>
-  <div class="sec">전체 인플루언서</div>
-  <div class="grid g2">${pub.map(s=>sellerCard(s)).join('')}</div>
+  <div class="sec">전체 인플루언서 <span style="font-weight:400;letter-spacing:0;text-transform:none;color:var(--mute)">${filtered.length}명</span></div>
+  <div class="grid g2">${filtered.map(s=>sellerCard(s)).join('')||'<div class="empty" style="grid-column:1/-1;background:var(--surface);border:2px solid var(--ink);border-radius:6px">조건에 맞는 인플루언서가 없습니다 — 필터를 넓혀보세요</div>'}</div>
   <div class="sec">익명 인플루언서 스카우트 — 유료 레퍼런스</div>
   <p style="font-size:12.5px;color:var(--mute);margin:-2px 0 14px">프로필 비공개 인플루언서입니다. 레퍼런스 열람권(건당)을 구매하면 상세 지표를 확인하고 제안을 보낼 수 있습니다. <b>제안이 수락되는 순간 DM이 열리고 신원이 공개됩니다.</b></p>
   <div class="grid g2">${scout}</div>
@@ -1746,6 +1759,8 @@ const ACT={
   setBrand(k,el){S.actingBrand=el.value;render();},
   setCat(k){S.catFilter=k;render();},
   calNav(k){S.calOff=k==='0'?0:(S.calOff||0)+ +k;render();},
+  setGalGrade(k){S.galGrade=k;render();},
+  setGalPlat(k){S.galPlat=k;render();},
   reset(){if(confirm('시드 데이터로 초기화할까요? 테스트 중 만든 데이터가 사라집니다.')){try{localStorage.removeItem(LS);}catch(e){};S.data=seedData();save();S.view.cid=null;render();toast('초기화 완료');}},
   closeModal(){closeModal();},
 
@@ -1799,17 +1814,17 @@ const ACT={
   delCh(chId){
     const me=seller(S.actingSeller);
     const ch=(me.channels||[]).find(c=>c.id===chId);
-    if(ch&&ch.primary){toast('대표 채널은 삭제할 수 없습니다');return;}
+    if(ch&&ch.primary){toast('메인 SNS 채널은 삭제할 수 없습니다 — 먼저 다른 채널을 메인으로 설정하세요');return;}
     me.channels=me.channels.filter(c=>c.id!==chId);
     save();render();toast('채널 삭제됨');
   },
   setPrimaryCh(chId){
     const me=seller(S.actingSeller);
     const ch=(me.channels||[]).find(c=>c.id===chId);
-    if(!ch||!ch.verified){toast('인증된 채널만 대표로 설정할 수 있습니다');return;}
+    if(!ch||!ch.verified){toast('인증된 채널만 메인 SNS로 설정할 수 있습니다');return;}
     me.channels.forEach(c=>c.primary=(c.id===chId));
     me.platform=ch.platform;me.handle=ch.handle;if(ch.followers)me.followers=ch.followers;
-    save();render();toast(`대표 채널 변경 — ${ch.handle}`);
+    save();render();toast(`메인 SNS 변경 — ${ch.handle} (갤러리·필터에 이 채널 기준으로 노출됩니다)`);
   },
   openVerify(chId){verifyModal(chId);},
   copyVcode(code){try{navigator.clipboard.writeText(code);toast('인증 코드 복사됨');}catch(e){toast('복사 실패 — 코드: '+code);}},
