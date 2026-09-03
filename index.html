@@ -812,6 +812,12 @@ button.danger:hover{box-shadow:0 -2px 0 0 #d98b8b,0 2px 0 0 #d98b8b,-2px 0 0 0 #
 .sc-hist:hover{box-shadow:var(--pxbl)}
 .rowitem:hover,.news-item:hover,tr.clickable:hover td{background:#f3f7e6}
 .iconbtn:hover,.celery-bal:hover{background:#f3f7e6}
+/* v8-d 잔여 잉크 그림자 제거: 아이콘 버튼·소형 등급박스·수수료 태그·소형/비활성 버튼 */
+.iconbtn,.iconbtn:hover{box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh)!important}
+.gradebox.sm,.gradebox{box-shadow:var(--pxbl-soft)!important}
+.prod .rate,.rate{border:none!important;box-shadow:var(--pxbl-soft)!important}
+button.sm,button.sm:hover,button[disabled],button[disabled]:hover{box-shadow:var(--pxbl),2px 2px 0 0 var(--line-sh)!important}
+.mebadge,.badge{box-shadow:none!important}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
