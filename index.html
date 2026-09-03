@@ -566,13 +566,22 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
   .appbar{padding:10px 14px}
   .wordmark{font-size:18px;padding:5px 12px}
   .wordmark .ylogo{width:12px;height:17px;vertical-align:-5px}
-  /* 표 → 카드형 (가로 스크롤 없음) */
+}
+/* 표: 데스크톱은 열 압축(상품명 줄바꿈 금지), 900px 이하는 카드형으로 펼침 (가로 스크롤 없음) */
+.tblw.compact th,.tblw.compact td{padding:10px 12px}
+.tblw td.nm{min-width:180px}
+.tblw td.nm b{white-space:nowrap}
+.tblw td.nm b .st{white-space:nowrap}
+@media(max-width:900px){
   .tblw{overflow:visible}
   .tblw table{min-width:0;width:100%}
   .tblw thead{display:none}
   .tblw tbody tr{display:block;padding:10px 12px;border-bottom:2px solid var(--soft-line)}
   .tblw tbody tr:last-child{border-bottom:none}
-  .tblw td{display:flex;justify-content:space-between;align-items:center;gap:12px;border:none;padding:4px 0;text-align:right;white-space:normal}
+  .tblw td{display:flex;justify-content:space-between;align-items:center;gap:12px;border:none;padding:4px 0;text-align:right;white-space:normal!important;min-width:0}
+  .tblw td.nm{text-align:left;flex-direction:column;align-items:flex-start;gap:2px}
+  .tblw td.nm::before{content:none}
+  .tblw td.nm b{white-space:normal}
   .tblw td::before{content:attr(data-l);color:var(--mute);font-size:11px;text-align:left;flex-shrink:0;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
   .tblw td[data-l=""]::before{content:none}
   .tblw td:empty{display:none}
@@ -794,6 +803,9 @@ const LS='sellery-proto-v15';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
+/* 인플루언서 데이터 열람 가격 — 등급이 높을수록 비쌈 */
+const DATA_PRICE={'스타터':1,'브론즈':1,'실버':2,'골드':2,'플래티넘':3,'다이아':4,'블랙':5};
+function dataPrice(s){return DATA_PRICE[gname(s)]||2;}
 const CELOGO=`<svg class="celic" viewBox="0 0 12 14" width="11" height="15" shape-rendering="crispEdges" aria-label="셀러리"><rect x="4" y="0" width="1" height="1" fill="#6da33a"/><rect x="8" y="0" width="1" height="1" fill="#6da33a"/><rect x="3" y="1" width="3" height="1" fill="#8fc74a"/><rect x="7" y="1" width="3" height="1" fill="#8fc74a"/><rect x="2" y="2" width="4" height="1" fill="#8fc74a"/><rect x="7" y="2" width="4" height="1" fill="#8fc74a"/><rect x="4" y="2" width="1" height="1" fill="#3f7a24"/><rect x="9" y="2" width="1" height="1" fill="#3f7a24"/><rect x="3" y="3" width="7" height="1" fill="#6da33a"/><rect x="4" y="4" width="1" height="1" fill="#3f7a24"/><rect x="5" y="4" width="3" height="1" fill="#8fc74a"/><rect x="8" y="4" width="1" height="1" fill="#3f7a24"/><rect x="3" y="5" width="1" height="8" fill="#2f5a1a"/><rect x="4" y="5" width="1" height="8" fill="#d8ecb0"/><rect x="5" y="5" width="1" height="8" fill="#aed378"/><rect x="6" y="5" width="1" height="8" fill="#d8ecb0"/><rect x="7" y="5" width="1" height="8" fill="#aed378"/><rect x="8" y="5" width="1" height="8" fill="#d8ecb0"/><rect x="9" y="5" width="1" height="8" fill="#2f5a1a"/><rect x="3" y="13" width="7" height="1" fill="#2f5a1a"/></svg>`;
 const CEL=CELOGO.replace('width="11" height="15"','width="13" height="15"');
 const SHOP={
@@ -805,8 +817,8 @@ const SHOP={
   ],
   brand:[
     {id:'diamond',name:'다이아↑ 인플루언서 제안권',price:10,desc:'다이아·블랙 등급 인플루언서에게 판매 제안 1회 — 제안 시 자동 차감',auto:true},
-    {id:'ref',name:'익명 레퍼런스 열람권',price:2,desc:'비공개 인플루언서의 상세 지표 열람 — 스카우트에서 자동 사용',auto:true},
-    {id:'sdata',name:'인플루언서 데이터 확인',price:2,desc:'갤러리에서 인플루언서 1명의 매출·참여율·이력·게시물 반응 열람 — 카드에서 자동 사용',auto:true},
+    {id:'ref',name:'익명 레퍼런스 열람권',price:'1–5',desc:'비공개 인플루언서의 상세 지표 열람 후 바로 제안 — 등급별 가격 (스타터·브론즈 1 / 실버·골드 2 / 플래티넘 3 / 다이아 4 / 블랙 5), 스카우트·홈 TOP5에서 자동 사용',auto:true},
+    {id:'sdata',name:'인플루언서 데이터 확인',price:'1–5',desc:'갤러리에서 인플루언서 1명의 매출·판매당 평균·참여율·이력·외부 판매 예상 열람 — 등급별 가격 (스타터·브론즈 1 / 실버·골드 2 / 플래티넘 3 / 다이아 4 / 블랙 5), 카드에서 자동 사용. 함께 판매한 인플루언서는 무료',auto:true},
     {id:'datapass',name:'인플루언서 데이터 패스 (30일)',price:30,desc:'30일간 갤러리 전체 인플루언서 데이터 무제한 열람 — 만료 후 재구매',days:30},
     {id:'boost',name:'상품 상단 부스트 (24h)',price:3,desc:'내 대표 상품을 상품 갤러리 최상단에 고정 + 부스트 뱃지'},
     {id:'fastreview',name:'우선 검수권',price:1,desc:'검수 대기 상품을 즉시 노출 승인'}
@@ -1602,8 +1614,8 @@ function vBrandHome(){
   const mxS=tops.length?tops[0].m3Sales:1;
   const topChart=`<div class="card">
     <div class="lbl-sm" style="margin-bottom:4px">지금 잘 파는 인플루언서 TOP5</div>
-    <div style="font-size:11px;color:var(--mute);margin-bottom:12px">최근 3개월 확정 매출 기준 · 비공개 인플루언서는 익명</div>
-    ${tops.map((x,i)=>`<div class="hb-row" data-act="screen" data-k="gallery">
+    <div style="font-size:11px;color:var(--mute);margin-bottom:12px">최근 3개월 확정 매출 기준 · 행을 누르면 바로 판매 제안 · 비공개(○○○)는 ${CEL} 2로 열람 후 제안</div>
+    ${tops.map((x,i)=>`<div class="hb-row" data-act="topSeller" data-k="${x.id}">
       <span class="hb-nm">${i+1}. ${platIcon(x)} ${x.hidden?'○○○ 인플루언서':esc(x.name)+' '+x.handle}</span>
       <div class="hb-track"><div class="hb-bar ${i===0?'top':''}" style="width:${Math.max(6,x.m3Sales/mxS*100)}%"></div></div>
       <span class="hb-val">₩${fmt(x.m3Sales)}</span>
@@ -1708,18 +1720,19 @@ function vBrandProducts(){
   const mine=D_().products.filter(p=>p.brandId===S.actingBrand);
   return `<h2 class="pg">상품 관리 <small>판매가·수수료율은 등록 시 책정, 판매 진행 중 변경 불가</small></h2>
   <div style="margin-bottom:14px"><button class="pri" data-act="newProduct">+ 새 상품 등록</button></div>
-  <div class="tblw"><table>
-  <thead><tr><th>상품</th><th class="num">소비자가</th><th class="num">판매가</th><th class="num">수수료율</th><th>샘플 정책</th><th class="num">재고</th><th>독점권</th><th>상태</th><th>판매 일정</th><th></th></tr></thead>
+  <div class="tblw compact"><table>
+  <thead><tr><th>상품</th><th class="num">판매가</th><th class="num">수수료율</th><th>샘플 · 재고</th><th>독점권</th><th>상태</th><th>판매 일정</th></tr></thead>
   <tbody>${mine.map(p=>{
     const slots=D_().campaigns.filter(c=>c.productId===p.id&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status));
     const stTag=p.status==='listed'?'<span class="st green">노출 중</span>':p.status==='paused'?'<span class="st gray">노출 중단</span>':'<span class="st amber">검수 대기</span>';
-    return `<tr><td><b>${p.thumb?`<img src="${p.thumb}" alt="" style="height:22px;vertical-align:middle">`:p.em} ${esc(p.name)}</b>${p.boosted?' <span class="st blue" style="animation:none">부스트</span>':''}<div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)}</div></td>
-    <td class="num">₩${fmt(p.cp)}</td><td class="num">₩${fmt(p.gp)}</td><td class="num">${(p.rate*100).toFixed(0)}% <span style="color:var(--mute);font-size:11px">(+플랫폼 ${(PLAT_RATE*100).toFixed(0)})</span></td>
-    <td>${p.sample}</td><td class="num">${fmt(p.stock)}</td>
-    <td>${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))}</span> 이상${p.exclusiveSellerId?` · <span class="st green">확정</span>`:''}`:'<span style="color:var(--mute);font-size:12px">—</span>'}</td>
-    <td>${stTag}</td>
-    <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||'<span style="color:var(--mute);font-size:12px">—</span>'}</td>
-    <td>${p.status==='pending'?'':`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}</td></tr>`;}).join('')}
+    const dash='<span style="color:var(--mute);font-size:12px">—</span>';
+    return `<tr><td class="nm"><b>${p.thumb?`<img src="${p.thumb}" alt="" style="height:22px;vertical-align:middle">`:p.em} ${esc(p.name)}</b>${p.boosted?' <span class="st blue" style="animation:none">부스트</span>':''}<div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)}</div></td>
+    <td class="num"><b>₩${fmt(p.gp)}</b><div style="font-size:11px;color:var(--mute);text-decoration:line-through">₩${fmt(p.cp)}</div></td>
+    <td class="num">${(p.rate*100).toFixed(0)}%<div style="color:var(--mute);font-size:11px">+플랫폼 ${(PLAT_RATE*100).toFixed(0)}</div></td>
+    <td style="white-space:nowrap">${p.sample}<div style="font-size:11px;color:var(--mute)">재고 ${fmt(p.stock)}</div></td>
+    <td style="white-space:nowrap">${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))}</span> 이상${p.exclusiveSellerId?`<div><span class="st green">확정</span></div>`:''}`:dash}</td>
+    <td style="white-space:nowrap">${stTag}${p.status==='pending'?'':`<div style="margin-top:6px"><button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button></div>`}</td>
+    <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;white-space:nowrap">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||dash}</td></tr>`;}).join('')}
   </tbody></table></div>
   <p style="font-size:12px;color:var(--mute);margin-top:10px">판매가·수수료율은 진행 중인 판매가 있으면 변경할 수 없습니다(신뢰 보호). 노출 중단 시 새 샘플 요청만 막히고 진행 중 판매는 유지됩니다.</p>`;
 }
@@ -1768,7 +1781,7 @@ function sellerCard(s,reason){
         <div style="font-size:10.5px;color:var(--mute);margin-top:4px">최근 ${rl.length}개 게시물 좋아요</div>
       </div>
     </div>
-    ${unlocked?'':`<div class="gate-cta"><button class="pri sm" data-act="unlockSellerData" data-k="${s.id}">${CEL} 2 · 데이터 확인하기</button><span>3개월 매출 · 좋아요 · 참여율 · 판매 이력 · 게시물 반응</span></div>`}
+    ${unlocked?'':`<div class="gate-cta"><button class="pri sm" data-act="unlockSellerData" data-k="${s.id}">${CEL} ${dataPrice(s)} · 데이터 확인하기</button><span>${gfull(gname(s))} 등급 · 3개월 매출 · 판매당 평균 · 참여율 · 이력 · 외부 판매 예상</span></div>`}
     </div>
     <button class="pri" data-act="invite" data-k="${s.id}" style="margin-top:12px;width:100%">판매 직접 제안</button>
   </div>`;
@@ -1791,7 +1804,7 @@ function vGallery(){
     ${un?`<div style="font-size:12.5px;color:var(--mute)">팔로워 ${fmt(s.followers)} · 좋아요 평균 ${fmt(s.likesAvg)} · 참여율 ${(s.likesAvg/s.followers*100).toFixed(1)}% · 매출/팔로워 ₩${fmt(s.m3Sales/s.followers)}</div>
      <div class="btnrow" style="margin-top:12px"><button class="pri sm" data-act="invite" data-k="${s.id}">판매 제안 보내기</button></div>`
     :`<div style="font-size:12.5px;color:var(--mute)">팔로워 ●●●,●●● · 좋아요 평균 ●,●●● — 상세 지표 잠김</div>
-     <div class="btnrow" style="margin-top:12px"><button class="sm" data-act="unlockRef" data-k="${s.id}">🔓 레퍼런스 열람 · ${CEL} 2</button></div>`}
+     <div class="btnrow" style="margin-top:12px"><button class="sm" data-act="unlockRef" data-k="${s.id}">🔓 레퍼런스 열람 · ${CEL} ${dataPrice(s)}</button></div>`}
     </div>`;}).join('');
   const filtered=pub.filter(pass);
   return `<h2 class="pg">인플루언서 갤러리 <small>이력·반응 데이터를 보고 판매를 직접 제안하세요</small></h2>
@@ -2275,16 +2288,35 @@ const ACT={
   },
   invite(sid){inviteModal(sid);},
   unlockSellerData(sid){
-    const b=S.actingBrand;
-    if(!celSpend(b,2,`데이터 확인 · ${seller(sid).name} ${seller(sid).handle}`))return;
+    const b=S.actingBrand, pr=dataPrice(seller(sid));
+    if(!celSpend(b,pr,`데이터 확인 · ${seller(sid).name} ${seller(sid).handle} (${gfull(gname(seller(sid)))})`))return;
     const m=D_().brandDataUnlocks=D_().brandDataUnlocks||{};
     (m[b]=m[b]||[]).push(sid);
-    save();render();toast(`🥬 2 사용 — ${seller(sid).name}님의 성과 데이터가 열렸습니다`);
+    save();render();toast(`🥬 ${pr} 사용 — ${seller(sid).name}님의 성과 데이터가 열렸습니다`);
   },
   unlockRef(sid){
-    if(!celSpend(S.actingBrand,2,'익명 레퍼런스 열람 · ○○○ 인플루언서'))return;
+    const pr=dataPrice(seller(sid));
+    if(!celSpend(S.actingBrand,pr,`익명 레퍼런스 열람 · ○○○ 인플루언서 (${gfull(gname(seller(sid)))})`))return;
     (D_().unlockedRefs=D_().unlockedRefs||[]).push(sid);
-    save();render();toast('🥬 2 사용 — 레퍼런스 상세 지표가 공개되었습니다');
+    save();render();toast(`🥬 ${pr} 사용 — 레퍼런스 상세 지표가 공개되었습니다`);
+  },
+  shopGo(){closeModal();S.view.screen='shop';render();},
+  // 홈 TOP5 행 클릭: 공개 인플루언서 → 갤러리로 이동 + 바로 제안 / 비공개 → 🥬 2 구매 확인 후 제안
+  topSeller(sid){
+    const s=seller(sid); const un=(D_().unlockedRefs||[]).includes(sid); const pr=dataPrice(s);
+    if(!s.hidden||un){S.view={role:'brand',screen:'gallery'};render();inviteModal(sid);return;}
+    openModal(`<h3><span class="gradebox sm">${gfull(gname(s))}</span> ○○○ 인플루언서 <span class="st gray" style="animation:none">비공개</span></h3>
+    <div style="font-family:'Archivo',sans-serif;font-size:23px;font-weight:800;margin:6px 0 2px">₩${fmt(s.m3Sales)} <span style="font-size:11px;color:var(--mute);font-weight:500">최근 3개월 매출</span></div>
+    <div style="font-size:12.5px;color:var(--mute)">${platIcon(s)} ${s.cat} 주력 · 팔로워 ●●●,●●● · 좋아요 평균 ●,●●● — 상세 지표 잠김</div>
+    <p style="font-size:13px;margin:14px 0 4px">비공개 인플루언서는 레퍼런스를 열람한 뒤 판매 제안을 보낼 수 있습니다. 열람 시 팔로워·참여율·매출/팔로워 지표가 공개되고 제안 화면으로 바로 이동합니다.</p>
+    <div style="font-size:12px;color:var(--mute)">열람 가격은 등급별 ${CEL} 1–5 (${gfull(gname(s))} = ${CEL} ${pr}) · 보유 <b>${CEL} ${celBal(S.actingBrand)}</b> · 사용 후 ${CEL} ${celBal(S.actingBrand)-pr}</div>
+    <div class="foot"><button data-act="closeModal">닫기</button><button data-act="shopGo">${CEL} 충전</button><button class="pri" data-act="unlockRefGo" data-k="${sid}">${CEL} ${pr} · 구매해서 보기</button></div>`);
+  },
+  unlockRefGo(sid){
+    closeModal(); const pr=dataPrice(seller(sid));
+    if(!celSpend(S.actingBrand,pr,`익명 레퍼런스 열람 · ○○○ 인플루언서 (${gfull(gname(seller(sid)))})`))return;
+    (D_().unlockedRefs=D_().unlockedRefs||[]).push(sid);
+    save();S.view={role:'brand',screen:'gallery'};render();toast(`🥬 ${pr} 사용 — 레퍼런스가 공개되었습니다. 바로 제안해보세요`);inviteModal(sid);
   },
   prodDetail(pid){productDetailModal(pid);},
   reqSampleM(pid){closeModal();ACT.reqSample(pid);},
