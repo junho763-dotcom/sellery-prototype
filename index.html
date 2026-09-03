@@ -492,8 +492,9 @@ input,select,textarea{border:none;box-shadow:var(--pxb2),inset 2px 2px 0 rgba(28
 /* 상단바 고정 해제 */
 .appbar{position:static}
 /* 로고: 굵은 픽셀 SELLERY (2px 쉬프트 볼드) */
-.wordmark{font-family:var(--px11)!important;font-size:22px;line-height:1.1;letter-spacing:2px!important;text-transform:uppercase!important;text-shadow:2px 0 0 currentColor,0 2px 0 currentColor,2px 2px 0 currentColor;color:var(--red);padding:6px 16px 6px 14px;gap:10px}
-.wordmark svg{width:22px;height:22px}
+.wordmark{font-family:var(--px11)!important;font-size:22px;line-height:1.1;letter-spacing:2px!important;text-transform:uppercase!important;text-shadow:2px 0 0 currentColor,0 2px 0 currentColor,2px 2px 0 currentColor;color:var(--red);padding:6px 16px 6px 14px;gap:0}
+.wordmark .ylogo{width:26px;height:26px;margin:0 -1px 0 1px;vertical-align:-5px;display:inline-block;transform:none}
+.wordmark .dot{margin-left:1px}
 .wordmark .dot{color:var(--ink)}
 .wordmark svg{width:24px;height:24px;shape-rendering:crispEdges;image-rendering:pixelated}
 /* 카드 = 레트로 윈도우: 다크 타이틀바 + ◼ ◼ ◼ + 우측 파일명 */
@@ -553,7 +554,7 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 </head>
 <body>
 <div class="appbar">
-  <span class="wordmark" data-act="goHome" role="button" tabindex="0" style="cursor:pointer"><svg viewBox="0 0 12 12" width="24" height="24" aria-hidden="true" shape-rendering="crispEdges"><rect x="3" y="0" width="1" height="1" fill="#4f8a2c"/><rect x="7" y="0" width="1" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="3" height="1" fill="#6da33a"/><rect x="6" y="1" width="3" height="1" fill="#6da33a"/><rect x="3" y="2" width="5" height="1" fill="#8fc74a"/><rect x="3" y="3" width="1" height="8" fill="#cfe3a4"/><rect x="4" y="3" width="1" height="8" fill="#aed378"/><rect x="5" y="3" width="1" height="8" fill="#cfe3a4"/><rect x="6" y="3" width="1" height="8" fill="#aed378"/><rect x="7" y="3" width="1" height="8" fill="#cfe3a4"/><rect x="3" y="11" width="5" height="1" fill="#4f8a2c"/><rect x="2" y="3" width="1" height="8" fill="#1c2a14"/><rect x="8" y="3" width="1" height="8" fill="#1c2a14"/></svg>Sellery<span class="dot">.</span></span>
+  <span class="wordmark" data-act="goHome" role="button" tabindex="0" style="cursor:pointer" aria-label="Sellery 홈">SELLER<svg class="ylogo" viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges"><rect x="1" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="9" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="2" height="1" fill="#6da33a"/><rect x="8" y="1" width="2" height="1" fill="#6da33a"/><rect x="3" y="2" width="2" height="1" fill="#8fc74a"/><rect x="7" y="2" width="2" height="1" fill="#8fc74a"/><rect x="4" y="3" width="1" height="1" fill="#8fc74a"/><rect x="7" y="3" width="1" height="1" fill="#8fc74a"/><rect x="5" y="3" width="2" height="1" fill="#aed378"/><rect x="5" y="4" width="1" height="8" fill="#cfe3a4"/><rect x="6" y="4" width="1" height="8" fill="#aed378"/><rect x="4" y="4" width="1" height="8" fill="#4f8a2c"/><rect x="7" y="4" width="1" height="8" fill="#4f8a2c"/></svg><span class="dot">.</span></span>
   <nav class="roletabs" id="roletabs"></nav>
   <div class="master">
     <button class="iconbtn" data-act="gotoMy" aria-label="마이페이지" title="마이페이지"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.6 4.1-5.5 7.5-5.5s6.3 1.9 7.5 5.5"/></svg></button>
@@ -2340,7 +2341,7 @@ function simSell(cid,n){
   try{if(sessionStorage.getItem('slry-boot'))return;sessionStorage.setItem('slry-boot','1');}catch(e){}
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   const o=document.createElement('div');o.className='boot';
-  o.innerHTML=`<div class="boot-win"><div class="boot-bar">◼ ◼ ◼<span>SELLERY.EXE</span></div><div class="boot-logo">SELLERY<span>.</span></div><div class="boot-txt">LOADING INFLUENCER COMMERCE OS…</div><div class="boot-prog"><i></i></div></div>`;
+  o.innerHTML=`<div class="boot-win"><div class="boot-bar">◼ ◼ ◼<span>SELLERY.EXE</span></div><div class="boot-logo">SELLER<svg class="ylogo" viewBox="0 0 12 12" aria-hidden="true" shape-rendering="crispEdges" style="width:50px;height:50px;vertical-align:-9px;margin:0 -2px 0 2px"><rect x="1" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="9" y="0" width="2" height="1" fill="#4f8a2c"/><rect x="2" y="1" width="2" height="1" fill="#6da33a"/><rect x="8" y="1" width="2" height="1" fill="#6da33a"/><rect x="3" y="2" width="2" height="1" fill="#8fc74a"/><rect x="7" y="2" width="2" height="1" fill="#8fc74a"/><rect x="4" y="3" width="1" height="1" fill="#8fc74a"/><rect x="7" y="3" width="1" height="1" fill="#8fc74a"/><rect x="5" y="3" width="2" height="1" fill="#aed378"/><rect x="5" y="4" width="1" height="8" fill="#cfe3a4"/><rect x="6" y="4" width="1" height="8" fill="#aed378"/><rect x="4" y="4" width="1" height="8" fill="#4f8a2c"/><rect x="7" y="4" width="1" height="8" fill="#4f8a2c"/></svg><span>.</span></div><div class="boot-txt">LOADING INFLUENCER COMMERCE OS…</div><div class="boot-prog"><i></i></div></div>`;
   document.body.appendChild(o);
   setTimeout(()=>o.classList.add('out'),1350);setTimeout(()=>o.remove(),1750);
 })();
