@@ -965,6 +965,12 @@ body[data-stage="podium"] .prod .ph::after,body[data-stage="podium"] .store-hero
 body[data-stage="podium"] .prod .ph .p3d{transform:translateY(-6px)}
 .ph.tilting .p3d,.store-hero.tilting .p3d{transition:transform .06s linear,filter .06s linear}
 .ph{overflow:visible}
+/* p3d 컨테이너가 높이를 가져야 img의 % 높이가 동작 · 포디움/그림자는 뱃지 아래로 */
+.ph .p3d{width:100%;height:100%}
+.store-hero .p3d{height:100%;width:100%}
+.ph::after,.store-hero::after{z-index:0}
+.ph .p3d,.store-hero .p3d{z-index:1}
+.ph .trendbadge,.ph .exclbadge,.store-hero .trendbadge{z-index:2}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
