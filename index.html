@@ -547,6 +547,21 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 .boot-prog i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--red) 0 10px,var(--yellow) 10px 12px,var(--ink) 12px 14px);animation:bootfill 1.15s steps(14) forwards}
 @keyframes bootfill{to{width:100%}}
 @media(prefers-reduced-motion:reduce){.boot{display:none}.disc,.hero-band h1::after,.st::before{animation:none}}
+/* 모바일 최적화: 히어로 — 아바타를 위로, 제목 축소, 여백 축소 */
+@media(max-width:640px){
+  .hero-band{padding:38px 16px 18px;margin:3px 4px 20px 3px}
+  .hero-band h1{font-size:24px;line-height:1.4}
+  .hero-band h1::after{height:.8em}
+  .hero-av{position:static!important;display:block;width:60px!important;height:60px!important;margin:0 0 12px!important;top:auto!important;right:auto!important}
+  .hero-band .sub{line-height:2}
+  .hero-band .sub button{margin-top:6px}
+  .card,.listcard,.tblw,.det-head,.thread{margin:3px 4px 6px 3px}
+  .kpi .val{font-size:24px}
+  main{padding:18px 14px 80px}
+  .appbar{padding:10px 14px}
+  .wordmark{font-size:18px;padding:5px 12px}
+  .wordmark .ylogo{width:12px;height:17px}
+}
 /* DM 안 읽음 점 */
 .dmdot{display:inline-block;width:8px;height:8px;background:var(--danger);margin-left:8px;vertical-align:1px;box-shadow:var(--pxb2);animation:led 1.2s steps(1) infinite}
 /* 인라인 padding:0 카드(주문 피드·뉴스)도 타이틀바 아래로 내용 밀기 */
@@ -608,8 +623,11 @@ function seedData(){
   const D = n => ymd(addD(t,n));
   const data = {
     brands:[
-      {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인',email:'partner@vyneherb.co',gmvBase:52000000,logo:BLOGO1},
-      {id:'b2',name:'글로헬스',cat:'이너뷰티',manager:'박글로',email:'official@weglow.biz',gmvBase:382000000,logo:BLOGO2}
+      {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인',email:'partner@vyneherb.co',gmvBase:52000000,logo:BLOGO1,refCode:'VYNE-01'},
+      {id:'b2',name:'글로헬스',cat:'이너뷰티',manager:'박글로',email:'official@weglow.biz',gmvBase:382000000,logo:BLOGO2,refCode:'GLO-002',referredBy:'b1'}
+    ],
+    brandRefEarnings:[
+      {at:D(-20),referrerId:'b1',fromBrandId:'b2',campaignId:'(지난 판매)',amt:318000}
     ],
     sellers:[
       {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:typeof AV1!=='undefined'?AV1:null,followers:84300,cat:'뷰티',likesAvg:3100,recentLikes:[2900,3400,2800,3600,3100,3500],m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 판매 전환율 상위 10%.',
@@ -713,7 +731,8 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v10';
+const LS='sellery-proto-v11';
+const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 const SEMOJI={'s1':'💄','s2':'🛋️','s3':'🏃‍♀️','s6':'💪','s7':'🌸','s8':'🥗'};
 const PLAT_NAMES={instagram:'인스타그램',youtube:'유튜브',naver:'네이버 블로그',tiktok:'틱톡'};
 const GRADES=[
@@ -825,18 +844,28 @@ function isRefBoost(c){
   const idx=list.findIndex(x=>x.id===c.id);
   return idx>-1&&idx<REF_TIMES;
 }
+function isBrandRefBoost(c){
+  const p=prod(c.productId);const b=p&&brand(p.brandId);
+  if(!b||!b.referredBy)return false;
+  const myP=D_().products.filter(x=>x.brandId===b.id).map(x=>x.id);
+  const list=D_().campaigns.filter(x=>myP.includes(x.productId)&&['LIVE','CLEARING','SETTLED'].includes(x.status))
+    .sort((a,b)=>a.createdAt<b.createdAt?-1:1);
+  const idx=list.findIndex(x=>x.id===c.id);
+  return idx>-1&&idx<BREF_TIMES;
+}
 function calc(c){
   const os=campOrders(c.id);
   const gross=os.filter(o=>o.status!=='CANCELED').reduce((a,o)=>a+o.unit*o.qty,0);
   const refund=os.filter(o=>o.status==='REFUNDED').reduce((a,o)=>a+o.unit*o.qty,0);
   const net=gross-refund;
   const p=prod(c.productId);
-  const rb=isRefBoost(c);
+  const rb=isRefBoost(c), bb=isBrandRefBoost(c);
   const pg=net*PG_RATE, sf=net*p.rate;
   const boost=rb?net*REF_BOOST:0, refReward=rb?net*REF_RATE:0;
-  const pf=net*PLAT_RATE-boost-refReward;
-  return {gross,refund,net,pg,sf,sfTotal:sf+boost,boost,refReward,rb,pf,
-    brandPay:net-pg-sf-net*PLAT_RATE,
+  const bBoost=bb?net*BREF_DISC:0, bReward=bb?net*BREF_RATE:0;
+  const pf=net*PLAT_RATE-boost-refReward-bBoost-bReward;
+  return {gross,refund,net,pg,sf,sfTotal:sf+boost,boost,refReward,rb,bb,bBoost,bReward,pf,
+    brandPay:net-pg-sf-net*PLAT_RATE+bBoost,
     paidCnt:os.filter(o=>o.status==='PAID').length,refCnt:os.filter(o=>o.status==='REFUNDED').length};
 }
 function settleDue(c){ return addD(P(c.end),CLEAR_DAYS); }
@@ -1476,7 +1505,57 @@ function vBrandHome(){
     return bsrow(s,`${p.em} <b>${esc(p.name)}</b> 조회 · ${v.ago} · 팔로워 ${fmt(s.followers)} · 참여율 ${(s.likesAvg/s.followers*100).toFixed(1)}%`);}).join('')
     ||'<div class="empty">최근 조회 기록이 없습니다</div>'}</div>
   <div class="sec">✦ ${esc(brand(me).name)} 추천 인플루언서</div>
-  <div class="listcard">${recs3.map(r=>bsrow(r.s,`${r.fit?'카테고리 적합':'매출 효율 상위'} · ${r.s.cat} · 3개월 ₩${fmt(r.s.m3Sales)} · 매출/팔로워 ₩${fmt(r.s.m3Sales/r.s.followers)}`)).join('')}</div>`;
+  <div class="listcard">${recs3.map(r=>bsrow(r.s,`${r.fit?'카테고리 적합':'매출 효율 상위'} · ${r.s.cat} · 3개월 ₩${fmt(r.s.m3Sales)} · 매출/팔로워 ₩${fmt(r.s.m3Sales/r.s.followers)}`)).join('')}</div>
+  ${brandGradeHtml(brand(me))}
+  ${brandRefHtml(brand(me))}`;
+}
+/* ---- brand grade (pyramid + perks) & brand referral program blocks ---- */
+function brandGradeHtml(b){
+  const gv=bGmv(b),bg=bgradeOf(gv),bnext=BGRADES[BGRADES.indexOf(bg)-1];
+  const bpct=bnext?Math.min(100,Math.round(gv/bnext.min*100)):100;
+  return `<div class="sec">브랜드 등급 — 상위 ${bg.pct}%</div>
+  <div class="grid g2">
+    <div class="card"><div class="lbl-sm">내 브랜드 등급</div>
+      <div style="display:flex;align-items:center;gap:12px;margin:8px 0;flex-wrap:wrap"><span class="gradebox">${gfull(bg.g)}</span>
+        <span style="font-family:'Archivo',sans-serif;font-size:25px;font-weight:800">₩${fmt(gv)}</span><span style="font-size:12px;color:var(--mute)">누적 확정 매출</span></div>
+      ${pyrHtml(BGRADES,bg.g)}
+      ${bnext?`<div class="meter" style="margin-top:12px"><span style="width:${bpct}%"></span></div>
+      <div style="font-size:12px;color:var(--mute);margin-top:7px">다음 등급 <b>${bnext.g}</b>까지 <b style="color:var(--red)">₩${fmt(bnext.min-gv)}</b> · 달성 시 ${bnext.perk.split('·')[0].trim()}</div>`
+      :`<div style="font-size:12px;color:var(--mute);margin-top:8px">최고 등급 · ${bg.perk}</div>`}
+    </div>
+    <div class="card"><div class="lbl-sm">등급별 혜택 — 브랜드</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:7px">${BGRADES.map(t=>`<div style="display:flex;gap:10px;align-items:baseline;font-size:12.5px;flex-wrap:wrap;${t.g===bg.g?'font-weight:800':''}">
+        <span class="gradebox sm" style="min-width:86px;text-align:center">${gfull(t.g)}</span><span style="color:var(--mute);white-space:nowrap">₩${fmt(t.min)}+</span><span style="flex:1;min-width:140px">${t.perk}</span></div>`).join('')}</div>
+      <p style="font-size:11.5px;color:var(--mute);margin:12px 0 0">수수료 할인은 플랫폼 중개 수수료(${(PLAT_RATE*100).toFixed(0)}%)에서 차감 · 누적 확정 매출(GMV) 기준</p>
+    </div>
+  </div>`;
+}
+function brandRefHtml(b){
+  const refs=D_().brands.filter(x=>x.referredBy===b.id);
+  const earns=(D_().brandRefEarnings||[]).filter(e=>e.referrerId===b.id);
+  const total=earns.reduce((a,e)=>a+e.amt,0);
+  const usedOf=bid=>{const ps=D_().products.filter(p=>p.brandId===bid).map(p=>p.id);return D_().campaigns.filter(c=>ps.includes(c.productId)&&['LIVE','CLEARING','SETTLED'].includes(c.status)).length;};
+  const mine=b.referredBy?`<div class="card" style="border-color:var(--red);margin-bottom:14px"><b>🌱 추천 혜택 적용 중</b> — ${brand(b.referredBy).name} 추천으로 입점. 첫 ${BREF_TIMES}회 판매 플랫폼 수수료 <b>−1%p</b> (남은 횟수 ${Math.max(0,BREF_TIMES-usedOf(b.id))}회).</div>`:'';
+  return `<div class="sec">브랜드 추천 프로그램</div>
+  ${mine}
+  <div class="grid g2">
+    <div class="card"><div class="lbl-sm">내 브랜드 추천 코드</div>
+      <div style="display:flex;align-items:center;gap:14px;margin:12px 0;flex-wrap:wrap">
+        <span style="font-family:'Archivo',sans-serif;font-size:26px;font-weight:800;letter-spacing:.1em;background:var(--yellow);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:4px 16px">${b.refCode||'—'}</span>
+        <button class="sm" data-act="copyBrandRef" data-k="${b.refCode||''}">코드 복사</button></div>
+      <ul style="font-size:13px;margin:0;padding-left:18px;line-height:2">
+        <li><b>나 (추천 브랜드)</b> — 새 브랜드의 첫 ${BREF_TIMES}회 판매, <b>확정 매출의 1%</b> 리워드</li>
+        <li><b>새 브랜드</b> — 코드 입력 시 첫 ${BREF_TIMES}회 판매 <b>플랫폼 수수료 −1%p</b></li>
+        <li>둘 다 <b>플랫폼 수수료에서 부담</b> — 인플루언서 수수료엔 영향 없음</li>
+      </ul></div>
+    <div class="card"><div class="lbl-sm">추천 현황</div>
+      <div class="grid g2" style="margin:10px 0 12px">
+        <div class="card kpi" style="margin:0"><div class="lbl">누적 추천 리워드</div><div class="val" style="color:var(--money)">₩${fmt(total)}</div></div>
+        <div class="card kpi" style="margin:0"><div class="lbl">추천한 브랜드</div><div class="val">${refs.length}개</div></div>
+      </div>
+      ${refs.map(x=>`<div class="sc-hist" style="cursor:default"><span>${x.logo?`<img src="${x.logo}" alt="" style="width:18px;height:18px;vertical-align:-4px;border:1.5px solid var(--ink);margin-right:6px">`:''}<b>${esc(x.name)}</b> · ${esc(x.cat)}</span><span style="font-family:'IBM Plex Mono',monospace">${Math.min(usedOf(x.id),BREF_TIMES)}/${BREF_TIMES}회 · ₩${fmt(earns.filter(e=>e.fromBrandId===x.id).reduce((a,e)=>a+e.amt,0))}</span></div>`).join('')||'<div style="font-size:12.5px;color:var(--mute)">아직 추천한 브랜드가 없습니다 — 코드를 공유해보세요</div>'}
+    </div>
+  </div>`;
 }
 function vBrandProducts(){
   const mine=D_().products.filter(p=>p.brandId===S.actingBrand);
@@ -1784,7 +1863,8 @@ function vCampDetail(cid){
           <tr><td>PG ${(PG_RATE*100).toFixed(1)}%</td><td class="num">−₩${fmt(k.pg)}</td></tr>
           <tr><td>인플루언서 ${(p.rate*100).toFixed(0)}%${k.rb?' <b style="color:var(--red)">+1%p 추천</b>':''}</td><td class="num">−₩${fmt(k.sfTotal)}</td></tr>
           ${k.rb?`<tr><td>추천인 보상 2%</td><td class="num">−₩${fmt(k.refReward)}</td></tr>`:''}
-          <tr><td>플랫폼 ${(PLAT_RATE*100).toFixed(0)}%${k.rb?' (보상 차감 후)':''}</td><td class="num">−₩${fmt(k.pf)}</td></tr>
+          ${k.bb?`<tr><td>브랜드 추천인 보상 1%</td><td class="num">−₩${fmt(k.bReward)}</td></tr><tr><td>신규 브랜드 수수료 할인 −1%p</td><td class="num" style="color:var(--red)">+₩${fmt(k.bBoost)}</td></tr>`:''}
+          <tr><td>플랫폼 ${(PLAT_RATE*100).toFixed(0)}%${(k.rb||k.bb)?' (보상·할인 차감 후)':''}</td><td class="num">−₩${fmt(k.pf)}</td></tr>
           <tr class="tot"><td>브랜드 정산액</td><td class="num">₩${fmt(k.brandPay)}</td></tr>
         </table>
         ${c.end?`<div style="font-size:11.5px;color:var(--mute);margin-top:8px">정산 기준일(D+${CLEAR_DAYS}): <b>${md(settleDue(c))}</b></div>`:''}
@@ -2132,6 +2212,10 @@ const ACT={
     }
     inp.click();
   },
+  copyBrandRef(code){
+    try{navigator.clipboard.writeText(`셀러리에 브랜드 입점하세요! 가입 시 추천 코드 ${code} 입력하면 첫 ${BREF_TIMES}회 판매 플랫폼 수수료 −1%p → sellery.co.kr/brand`);toast('브랜드 추천 메시지 복사됨');}
+    catch(e){toast('복사 실패 — 코드: '+code);}
+  },
   copyRef(code){
     try{navigator.clipboard.writeText(`셀러리에서 같이 판매해요! 가입할 때 추천 코드 ${code} 입력하면 첫 5회 판매 수수료 +1% → sellery.co.kr`);toast('추천 메시지 복사됨 — DM으로 공유하세요');}
     catch(e){toast('복사 실패 — 코드: '+code);}
@@ -2310,7 +2394,12 @@ const ACT={
       (D_().refEarnings=D_().refEarnings||[]).push({at:ymd(today()),referrerId:refId,fromSellerId:c.sellerId,campaignId:cid,amt:k.refReward});
       pushSys(cid,`추천 보상 지급 — 추천인 ${seller(refId).name}에게 확정 매출의 2% ₩${fmt(k.refReward)} (플랫폼 부담)`);
     }
-    pushSys(cid,`<b>정산 완료</b> · 브랜드 ₩${fmt(k.brandPay)} · 인플루언서 ₩${fmt(k.sfTotal)}${k.rb?' (추천 부스트 +1%p 포함)':''} → 원천징수 3.3% 공제 후 ₩${fmt(k.sfTotal*(1-WHT))} · 명세 발행`);
+    if(k.bReward>0){
+      const rb=brand(p.brandId).referredBy;
+      (D_().brandRefEarnings=D_().brandRefEarnings||[]).push({at:ymd(today()),referrerId:rb,fromBrandId:p.brandId,campaignId:cid,amt:k.bReward});
+      pushSys(cid,`브랜드 추천 보상 — 추천 브랜드 ${brand(rb).name}에게 확정 매출의 1% ₩${fmt(k.bReward)} · 신규 브랜드 수수료 −1%p 적용 (플랫폼 부담)`);
+    }
+    pushSys(cid,`<b>정산 완료</b> · 브랜드 ₩${fmt(k.brandPay)}${k.bb?' (추천 할인 −1%p 포함)':''} · 인플루언서 ₩${fmt(k.sfTotal)}${k.rb?' (추천 부스트 +1%p 포함)':''} → 원천징수 3.3% 공제 후 ₩${fmt(k.sfTotal*(1-WHT))} · 명세 발행`);
     save();render();toast('정산 실행 완료 — 양측 지급 및 명세 발행');
   },
   approveProduct(pid){const p=prod(pid);p.status='listed';p.stock=p.stock||500;save();render();toast(`${p.name} 노출 승인`);},
