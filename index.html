@@ -1165,10 +1165,11 @@ function vRank(){
   const rows=D_().sellers.slice().sort((a,b)=>b.m3Sales-a.m3Sales);
   return `<h2 class="pg">인플루언서 랭킹 <small>최근 3개월 매출 기준 · 등급 보너스는 플랫폼 수수료에서 지급</small></h2>
   <div class="grid g2">
-    <div class="card"><div class="lbl-sm">내 등급</div>
+    <div class="card"><div class="lbl-sm">내 등급 — 상위 ${g.pct}%</div>
       <div style="display:flex;align-items:center;gap:12px;margin:8px 0;flex-wrap:wrap"><span class="gradebox">${gfull(g.g)}</span>
       <span style="font-family:'Archivo',sans-serif;font-size:25px;font-weight:800">₩${fmt(me.m3Sales)}</span>
       <span style="font-size:12px;color:var(--mute)">최근 3개월</span></div>
+      ${pyrHtml(GRADES,g.g)}
       ${next?`<div class="meter"><span style="width:${pct}%"></span></div>
       <div style="font-size:12px;color:var(--mute);margin-top:7px">다음 등급 <b>${next.g}</b>까지 <b>₩${fmt(next.min-me.m3Sales)}</b> 남음 — 달성 시 ${next.perk}</div>`
       :`<div style="font-size:12px;color:var(--mute)">최고 등급입니다 · ${g.perk}</div>`}
