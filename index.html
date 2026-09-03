@@ -821,6 +821,9 @@ button.sm,button.sm:hover,button[disabled],button[disabled]:hover{box-shadow:var
 /* v8-f 마지막 잔여: 알림 배지 링·추천 태그 */
 .badge{border:1.5px solid #fff!important;box-shadow:none!important}
 .rec-tag{border:none!important;box-shadow:var(--pxbl-soft)!important;background:var(--surface-2)}
+/* v8-g 스파크 막대·기타 소형 인라인 잉크 그림자 → 그린 */
+.spark span,.sc-cols span,.bars span{box-shadow:none!important;border:none!important;background:var(--line)!important}
+.spark span.last,.sc-cols span.last{background:var(--red)!important}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -2008,7 +2011,7 @@ function brandRefHtml(b){
         <div class="card kpi" style="margin:0"><div class="lbl">누적 추천 리워드</div><div class="val" style="color:var(--money)">₩${fmt(total)}</div></div>
         <div class="card kpi" style="margin:0"><div class="lbl">추천한 브랜드</div><div class="val">${refs.length}개</div></div>
       </div>
-      ${refs.map(x=>`<div class="sc-hist" style="cursor:default"><span>${x.logo?`<img src="${x.logo}" alt="" style="width:18px;height:18px;vertical-align:-4px;border:1.5px solid var(--ink);margin-right:6px">`:''}<b>${esc(x.name)}</b> · ${esc(x.cat)}</span><span style="font-family:'IBM Plex Mono',monospace">${Math.min(usedOf(x.id),BREF_TIMES)}/${BREF_TIMES}회 · ₩${fmt(earns.filter(e=>e.fromBrandId===x.id).reduce((a,e)=>a+e.amt,0))}</span></div>`).join('')||'<div style="font-size:12.5px;color:var(--mute)">아직 추천한 브랜드가 없습니다 — 코드를 공유해보세요</div>'}
+      ${refs.map(x=>`<div class="sc-hist" style="cursor:default"><span>${x.logo?`<img src="${x.logo}" alt="" style="width:18px;height:18px;vertical-align:-4px;border:1.5px solid var(--line-soft);margin-right:6px">`:''}<b>${esc(x.name)}</b> · ${esc(x.cat)}</span><span style="font-family:'IBM Plex Mono',monospace">${Math.min(usedOf(x.id),BREF_TIMES)}/${BREF_TIMES}회 · ₩${fmt(earns.filter(e=>e.fromBrandId===x.id).reduce((a,e)=>a+e.amt,0))}</span></div>`).join('')||'<div style="font-size:12.5px;color:var(--mute)">아직 추천한 브랜드가 없습니다 — 코드를 공유해보세요</div>'}
     </div>
   </div>`;
 }
