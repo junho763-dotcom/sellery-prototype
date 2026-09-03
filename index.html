@@ -777,7 +777,7 @@ const SHOP={
     {id:'regongu',name:'재판매 우선권',price:2,desc:'같은 상품 재판매 일정 제안 시 우선 승인 큐 배정'}
   ],
   brand:[
-    {id:'diamond',name:'다이아↑ 인플루언서 제안권',price:5,desc:'다이아·블랙 등급 인플루언서에게 판매 제안 1회 — 제안 시 자동 차감',auto:true},
+    {id:'diamond',name:'다이아↑ 인플루언서 제안권',price:10,desc:'다이아·블랙 등급 인플루언서에게 판매 제안 1회 — 제안 시 자동 차감',auto:true},
     {id:'ref',name:'익명 레퍼런스 열람권',price:2,desc:'비공개 인플루언서의 상세 지표 열람 — 스카우트에서 자동 사용',auto:true},
     {id:'boost',name:'상품 상단 부스트 (24h)',price:3,desc:'내 대표 상품을 상품 갤러리 최상단에 고정 + 부스트 뱃지'},
     {id:'fastreview',name:'우선 검수권',price:1,desc:'검수 대기 상품을 즉시 노출 승인'}
@@ -1493,7 +1493,7 @@ function vShop(){
       <div class="btnrow" style="margin-top:10px">${TOPUP.map(t=>`<button class="sm" data-act="topup" data-k="${t.n}">${CEL} ${t.n} · ₩${fmt(t.won)}</button>`).join('')}</div>
       <p style="font-size:11.5px;color:var(--mute);margin:10px 0 0">충전 셀러리는 환불 불가 · 획득 셀러리와 합산 사용</p></div>
   </div>
-  <div class="sec">${isBrand?'브랜드 아이템':'인플루언서 아이템'}</div>
+  <div class="sec">${isBrand?'브랜드 전용 아이템':'인플루언서 전용 아이템'} <span style="font-weight:400;letter-spacing:0;text-transform:none;color:var(--mute)">— ${isBrand?'브랜드 센터':'인플루언서 센터'}에서만 구매·사용</span></div>
   <div class="grid g2">${items.map(it=>`<div class="card shop-item">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
         <div><div style="font-weight:800;font-size:15px">${it.name}</div><div style="font-size:12.5px;color:var(--mute);margin-top:4px">${it.desc}</div></div>
@@ -2365,7 +2365,7 @@ const ACT={
   confirmInvite(sid){
     const pid=$('#invProd').value;const msg=$('#invMsg').value.trim();
     const tg=gname(seller(sid));
-    if((tg==='다이아'||tg==='블랙')&&!celSpend(S.actingBrand,5,`${tg} 인플루언서 제안 · ${prod(pid).name}`))return;
+    if((tg==='다이아'||tg==='블랙')&&!celSpend(S.actingBrand,10,`${tg} 인플루언서 제안 · ${prod(pid).name}`))return;
     const id='c'+(D_().seq++);
     D_().campaigns.push({id,sellerId:sid,productId:pid,status:'SAMPLE_APPROVED',createdAt:ymd(today()),invited:true});
     pushSys(id,`브랜드 <b>${brand(S.actingBrand).name}</b>가 <b>${prod(pid).name}</b> 판매를 직접 제안했고, 인플루언서가 수락했습니다 (프로토타입 자동 수락)`);
