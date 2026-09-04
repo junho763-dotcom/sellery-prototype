@@ -1120,6 +1120,10 @@ button:active{transform:translate(1px,1px)!important;box-shadow:var(--pxbl)!impo
   .tblw tbody td{row-gap:4px}
   .tblw tbody td.nm>*{grid-column:auto}
 }
+/* 리스트 상품 아이콘 (누끼 미니 무대) */
+.picon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:radial-gradient(ellipse at 50% 45%,#f7faee 0,#e3eed0 60%,#c9dcae 100%);box-shadow:var(--pxbl-soft),var(--pxd-s1);overflow:hidden}
+.picon img{max-width:80%;max-height:80%;object-fit:contain;display:block;filter:drop-shadow(0 3px 3px rgba(28,42,20,.18))}
+.picon.em{line-height:1}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1694,7 +1698,7 @@ function campRow(c,{who='seller'}={}){
   const sub = who==='seller' ? `${b.name} · 수수료 ${(p.rate*100).toFixed(0)}%` : `${platIcon(s)} ${s.name} ${s.handle} · 팔로워 ${fmt(s.followers)}`;
   const when=c.start?`<span class="sub" style="font-family:'IBM Plex Mono',monospace">${md(P(c.start))}–${md(P(c.end))}</span>`:'';
   return `<div class="rowitem" data-act="open" data-k="${c.id}">
-    <div style="font-size:24px">${p.em}</div>
+    ${pIcon(p,38)}
     <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${sub}</div></div>
     ${when} ${stChip(c.status)}</div>`;
 }
@@ -1722,7 +1726,7 @@ function vSellerHome(){
   /* 1 할 일 */
   const todoHtml=todo.length?`<div class="sec">지금 할 일 <span class="badge">${todo.length}</span></div>
     <div class="listcard">${todo.map(c=>{const p=prod(c.productId),b=brand(p.brandId);
-      return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div>
+      return `<div class="rowitem" data-act="open" data-k="${c.id}">${pIcon(p,38)}
         <div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${esc(b.name)}</span></div><div class="sub">${TODO_L[c.status]||ST[c.status].l}${c.testDue?` · 기한 ${md(P(c.testDue))}`:''}</div></div>
         <button class="pri sm">${c.status==='SAMPLE_SHIPPED'?'수령 확인':c.status==='TESTING'?'일정 제안':'스레드 보기'}</button></div>`;}).join('')}</div>`
     :`<div class="sec">지금 할 일</div><div class="listcard"><div class="empty" style="padding:14px">지금 응답할 일이 없어요 — 진행 중 판매를 확인하세요 ✓</div></div>`;
@@ -1738,7 +1742,7 @@ function vSellerHome(){
       </div>
       <div class="btnrow one"><button class="sm ghost" data-act="open" data-k="${c.id}">스레드</button><button class="sm ghost" data-act="preview" data-k="${c.id}">구매 페이지</button><button class="sm ghost" data-act="copyLink" data-k="sellery.co.kr/s/${sl.handle.slice(1)}/${c.id}">링크 복사</button><button class="sm ghost" data-act="screen" data-k="sales">실시간 매출</button></div>
     </div>`;};
-  const soonRow=c=>{const p=prod(c.productId);const dd=Math.ceil((P(c.start)-today())/DAY);return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div><div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${brand(p.brandId).name} · ${md(P(c.start))}–${md(P(c.end))} · 재고 ${fmt(c.qty||0)}</div></div><span class="st blue" style="animation:none">오픈 D-${dd}</span></div>`;};
+  const soonRow=c=>{const p=prod(c.productId);const dd=Math.ceil((P(c.start)-today())/DAY);return `<div class="rowitem" data-act="open" data-k="${c.id}">${pIcon(p,38)}<div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${brand(p.brandId).name} · ${md(P(c.start))}–${md(P(c.end))} · 재고 ${fmt(c.qty||0)}</div></div><span class="st blue" style="animation:none">오픈 D-${dd}</span></div>`;};
   const salesHtml=`<div class="sec">진행 중 · 예정 판매</div>
     ${live.length?`<div class="grid ${live.length>1?'g2':''}" style="margin-bottom:${soon.length||clearing.length?'10px':'0'}">${live.map(liveCard).join('')}</div>`:''}
     ${(soon.length||clearing.length)?`<div class="listcard">${soon.map(soonRow).join('')}${clearing.map(c=>campRow(c)).join('')}</div>`:''}
@@ -2302,7 +2306,7 @@ function vBrandHome(){
   const LBL={SAMPLE_REQUESTED:['샘플 요청 검토','검토'],SAMPLE_APPROVED:['샘플 발송 처리','발송'],SAMPLE_PURCHASED:['샘플 발송 처리 (구매 완료)','발송'],SCHEDULE_PROPOSED:['일정 승인','승인']};
   const pendHtml=`<div class="sec">승인·처리 대기 ${pendN?`<span class="badge">${pendN}</span>`:''}</div>
     <div class="listcard">${pendCs.map(c=>{const p=prod(c.productId),sl=seller(c.sellerId);const [l,btn]=LBL[c.status];
-      return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div>
+      return `<div class="rowitem" data-act="open" data-k="${c.id}">${pIcon(p,38)}
       <div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${platIcon(sl)} ${esc(sl.name)} ${sl.handle} <span class="gradebox sm">${gfull(gname(sl))}</span></span></div>
       <div class="sub">${l}${c.status==='SCHEDULE_PROPOSED'&&c.propStart?` · ${md(P(c.propStart))}–${md(P(c.propEnd))} · 재고 ${fmt(c.propQty)}`:''} · 팔로워 ${fmt(sl.followers)}</div></div>
       <button class="pri sm">${btn}</button></div>`;}).join('')}
@@ -2323,7 +2327,7 @@ function vBrandHome(){
       </div>
       <div class="btnrow one"><button class="sm ghost" data-act="open" data-k="${c.id}">스레드</button><button class="sm ghost" data-act="preview" data-k="${c.id}">구매 페이지</button><button class="sm ghost" data-act="poCSV">발주서 CSV</button><button class="sm ghost" data-act="screen" data-k="sales">실시간 매출</button></div>
     </div>`;};
-  const soonRow=c=>{const p=prod(c.productId),sl=seller(c.sellerId);const dd=Math.ceil((P(c.start)-today())/DAY);return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div><div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${platIcon(sl)} ${esc(sl.name)}</span></div><div class="sub">${md(P(c.start))}–${md(P(c.end))} · 배정 재고 ${fmt(c.qty||0)}</div></div><span class="st blue" style="animation:none">오픈 D-${dd}</span></div>`;};
+  const soonRow=c=>{const p=prod(c.productId),sl=seller(c.sellerId);const dd=Math.ceil((P(c.start)-today())/DAY);return `<div class="rowitem" data-act="open" data-k="${c.id}">${pIcon(p,38)}<div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${platIcon(sl)} ${esc(sl.name)}</span></div><div class="sub">${md(P(c.start))}–${md(P(c.end))} · 배정 재고 ${fmt(c.qty||0)}</div></div><span class="st blue" style="animation:none">오픈 D-${dd}</span></div>`;};
   const salesHtml=`<div class="sec">진행 중 · 확정 판매</div>
     ${live.length?`<div class="grid ${live.length>1?'g2':''}" style="margin-bottom:${soon.length||clearing.length?'10px':'0'}">${live.map(liveCard).join('')}</div>`:''}
     ${(soon.length||clearing.length)?`<div class="listcard">${soon.map(soonRow).join('')}${clearing.map(c=>campRow(c,{who:'brand'})).join('')}</div>`:''}
@@ -2585,7 +2589,7 @@ function sellerRequests(){
     </div>
     ${isOpen?`<div class="listcard" style="margin:0;box-shadow:none;border-top:1.5px solid var(--line-soft)">
       ${cs.sort((a,b)=>(/APPROVED|PURCHASED/.test(a.status))-(/APPROVED|PURCHASED/.test(b.status))).map(c=>{const p=prod(c.productId),b=brand(p.brandId);const [l,btn]=LBL[c.status];
-        return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div>
+        return `<div class="rowitem" data-act="open" data-k="${c.id}">${pIcon(p,38)}
         <div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${esc(b.name)}${c.invited?' · 브랜드 직접 제안':''}</span></div>
         <div class="sub">${l}${c.testDue&&c.status==='TESTING'?` · 기한 ${md(P(c.testDue))}`:''}${c.tracking&&c.status==='SAMPLE_SHIPPED'?` · 운송장 ${esc(c.tracking)}`:''} · 수수료 ${(p.rate*100).toFixed(0)}%</div></div>
         <button class="${c.status==='SAMPLE_APPROVED'?'sm ghost':'pri sm'}">${btn}</button></div>`;}).join('')||'<div class="empty" style="padding:14px">브랜드 요청이 없습니다</div>'}
@@ -2612,7 +2616,7 @@ function vRequests(){
     </div>
     ${isOpen?`<div class="listcard" style="margin:0;box-shadow:none;border-top:1.5px solid var(--line-soft)">
       ${cs.map(c=>{const p=prod(c.productId),sl=seller(c.sellerId);
-        return `<div class="rowitem" data-act="open" data-k="${c.id}"><div style="font-size:24px">${p.em}</div>
+        return `<div class="rowitem" data-act="open" data-k="${c.id}">${pIcon(p,38)}
         <div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${platIcon(sl)} ${esc(sl.name)} ${sl.handle}</span></div>
         <div class="sub">${LBL[c.status]||ST[c.status].l}${c.status==='SCHEDULE_PROPOSED'&&c.propStart?` · ${md(P(c.propStart))}–${md(P(c.propEnd))} · 재고 ${fmt(c.propQty)}`:''} · 팔로워 ${fmt(sl.followers)} · <span class="gradebox sm">${gfull(gname(sl))}</span></div></div>
         <button class="pri sm">${c.status==='SAMPLE_REQUESTED'?'검토':c.status==='SAMPLE_APPROVED'?'발송':'승인'}</button></div>`;}).join('')}
@@ -2783,6 +2787,8 @@ function vAdminHome(){
   </tbody></table></div>`;
 }
 function PSTATS(){return {pending:['검수 대기','amber'],listed:['노출 중','green'],paused:['노출 중단','gray']};}
+/* 리스트용 상품 아이콘: 누끼가 있으면 썸네일, 없으면 이모지 */
+function pIcon(pd,sz){sz=sz||38;return pd&&pd.thumb?`<span class="picon" style="width:${sz}px;height:${sz}px"><img src="${pd.thumb}" alt=""></span>`:`<div class="picon em" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*0.62)}px">${pd?pd.em:'📦'}</div>`;}
 function pstChip(st){const m=PSTATS()[st]||[st,'gray'];return `<span class="st ${m[1]}" style="animation:none">${m[0]}</span>`;}
 function admSearch(id,val,ph,shown,total){return `<div class="dmsearch"><input id="${id}" value="${esc(val||'')}" placeholder="${ph}" oninput="ACT.${id}Live(this.value)"><span class="sub" style="color:var(--mute);font-size:12px;white-space:nowrap">${val?`${shown}/${total}건`:`전체 ${total}건`}</span>${val?`<button class="sm ghost" data-act="${id}Clear">지우기</button>`:''}</div>`;}
 function admChips(list,cur,act){return `<div class="cats" style="margin:0 0 12px">${list.map(([k,l,n])=>`<button class="catchip ${cur===k?'on':''}" data-act="${act}" data-k="${k}">${l}${n!=null?` <span style="color:var(--mute);font-weight:400">${n}</span>`:''}</button>`).join('')}</div>`;}
@@ -2884,7 +2890,7 @@ function vAdminReview(){
   return `<h2 class="pg">상품 검수 <small>금지 표현·필수 표시사항 체크 후 노출 승인</small></h2>
   <div class="notice"><b>카테고리 정책</b> — ${CAT_POLICY}<br>건강기능식품은 표시광고 사전 심의 대상입니다. 검수 체크리스트: 질병 치료·예방 표현 금지, 기능성 문구는 식약처 인정 범위 내, 이벤트 문구의 소비자 오인 여부.</div>
   <div class="listcard">${pend.map(p=>`<div class="rowitem">
-    <div style="font-size:24px">${p.em}</div>
+    ${pIcon(p,38)}
     <div class="grow"><div class="nm">${esc(p.name)}</div><div class="sub">${brand(p.brandId).name} · 판매가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%</div></div>
     <button class="sm pri" data-act="approveProduct" data-k="${p.id}">승인 · 노출</button>
     <button class="sm danger" data-act="rejectProduct" data-k="${p.id}">반려</button>
@@ -2897,7 +2903,7 @@ function vAdminSettle(){
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><span class="st ${dueList.length?'amber':'gray'}" style="animation:none">실행 가능 ${dueList.length}건</span><span class="st gray" style="animation:none">대기 ${ready.length-dueList.length}건</span><button class="pri sm" data-act="runSettleAll" ${dueList.length?'':'disabled style="opacity:.5"'}>실행 가능 건 일괄 정산 (${dueList.length})</button></div>
   <div class="listcard">${ready.map(c=>{const k=calc(c),p=prod(c.productId);const due=settleDue(c);const isDue=due<=today();
     return `<div class="rowitem">
-    <div style="font-size:24px">${p.em}</div>
+    ${pIcon(p,38)}
     <div class="grow"><div class="nm">${esc(p.name)} · ${seller(c.sellerId).handle}</div>
       <div class="sub">확정 ₩${fmt(k.net)} → 브랜드 ₩${fmt(k.brandPay)} + 인플루언서 ₩${fmt(k.sf*(1-WHT))} · 정산 기준일 ${md(due)}</div></div>
     ${isDue?`<button class="sm pri" data-act="runSettle" data-k="${c.id}">정산 실행</button>`
@@ -3346,7 +3352,7 @@ function vCampDetail(cid){
   const linkUrl=`sellery.co.kr/s/${s.handle.slice(1)}/${cid}`;
   return `<button class="ghost sm" data-act="back">← 목록으로</button>
   <div class="det-head" style="margin-top:12px">
-    <div style="font-size:32px">${p.em}</div>
+    ${pIcon(p,52)}
     <div style="flex:1;min-width:220px">
       <div class="t">${esc(p.name)} <span style="color:var(--mute);font-weight:400;font-size:13px">· ${cid.toUpperCase()}</span></div>
       <div style="font-size:12.5px;color:var(--mute)"><span class="chip brand">${b.name}</span> × <span class="chip seller">${platIcon(s)} ${s.name} ${s.handle}</span>
