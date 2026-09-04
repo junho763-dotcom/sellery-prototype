@@ -1113,6 +1113,13 @@ button:active{transform:translate(1px,1px)!important;box-shadow:var(--pxbl)!impo
   .tblw tbody tr{padding:12px 14px}
   .tblw tbody td button{margin:0}
 }
+/* 카드형 표: 값이 여러 조각이어도 항상 오른쪽 열에 쌓이게 */
+@media(max-width:900px){
+  .tblw tbody td::before{grid-column:1;grid-row:1;align-self:start}
+  .tblw tbody td>*{grid-column:2}
+  .tblw tbody td{row-gap:4px}
+  .tblw tbody td.nm>*{grid-column:auto}
+}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
