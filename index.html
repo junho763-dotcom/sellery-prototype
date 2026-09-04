@@ -1094,6 +1094,25 @@ button:hover,button.pri:hover,button.ghost:hover,button.sm:hover,button.danger:h
 button:active{transform:translate(1px,1px)!important;box-shadow:var(--pxbl)!important}
 .subnav button:hover,.catchip:hover{transform:translate(-1px,-1px)!important;box-shadow:var(--pxbl),var(--pxd-s2)!important}
 .subnav button.on:hover{box-shadow:0 -2px 0 0 var(--bar),0 2px 0 0 var(--bar),-2px 0 0 0 var(--bar),2px 0 0 0 var(--bar),var(--pxd-2)!important}
+/* 1) 모달 스크롤 복구 (노치 패치의 overflow:visible이 내부 스크롤을 막던 문제) */
+.modal{overflow-y:auto!important;overflow-x:hidden!important;max-height:88vh;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.modal-bg{overflow-y:auto;padding:16px 0}
+@media(max-width:640px){
+  .modal{max-height:92vh;margin:8px}
+  .modal .foot{position:sticky;bottom:-1px;background:var(--surface);padding-top:10px;margin-top:6px;box-shadow:0 -8px 12px -8px rgba(28,42,20,.25)}
+}
+/* 2) 카드형 표 정리: 라벨 | 값 2열 그리드로 (셀 안 여러 요소가 깨져 보이던 문제) */
+@media(max-width:900px){
+  .tblw table{table-layout:auto!important}
+  .tblw tbody td{display:grid!important;grid-template-columns:86px minmax(0,1fr);gap:10px;align-items:start;padding:7px 0!important;word-break:keep-all}
+  .tblw tbody td::before{min-width:0!important;flex:none!important;padding-top:2px;line-height:1.5}
+  .tblw tbody td.nm,.tblw tbody td[data-l=""]{display:block!important}
+  .tblw tbody td>div{margin:0}
+  .tblw tbody td>div[style*="display:flex"],.tblw tbody td .btnrow{flex-wrap:wrap;gap:6px}
+  .tblw tbody td>b+div,.tblw tbody td>div+div{margin-top:3px}
+  .tblw tbody tr{padding:12px 14px}
+  .tblw tbody td button{margin:0}
+}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
