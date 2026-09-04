@@ -1141,6 +1141,11 @@ button:active{transform:translate(1px,1px)!important;box-shadow:var(--pxbl)!impo
   .btnrow.one button{flex:1 1 calc(50% - 6px);min-width:92px;font-size:11px}
   .mini-stats{grid-template-columns:1fr 1fr}
 }
+/* 인라인 상품 아이콘 정렬 */
+.picon{vertical-align:-28%}
+.hb-nm .picon,.sc-hist .picon,.rowitem .sub .picon,td .picon,h3 .picon{margin-right:4px}
+.hb-nm{display:inline-flex;align-items:center;gap:2px}
+h3 .picon{vertical-align:-22%}
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -1883,7 +1888,7 @@ function vExplore(){
       <div class="lbl-sm" style="margin-bottom:4px">${gfull(myTier.g)} 등급 이상 인플루언서 베스트셀링 TOP5</div>
       <div style="font-size:11px;color:var(--mute);margin-bottom:12px">최근 30일 확정 매출 · 데모 지표 포함</div>
       ${top.map((x,i)=>`<div class="hb-row" data-act="prodDetail" data-k="${x.p.id}">
-        <span class="hb-nm">${i+1}. ${x.p.em} ${esc(x.p.name)}</span>
+        <span class="hb-nm">${i+1}. ${pIcon(x.p,20)} ${esc(x.p.name)}</span>
         <div class="hb-track"><div class="hb-bar ${i===0?'top':''}" style="width:${Math.max(6,x.v/mx*100)}%"></div></div>
         <span class="hb-val">₩${fmt(x.v)}</span>
       </div>`).join('')}
@@ -2205,7 +2210,7 @@ function productDetailModal(pid){
          :`<button class="sm" disabled style="opacity:.6">등급 미달 — 내 등급 ${gfull(gname(me))} / 필요 ${gfull(exg)} 이상</button>`):''}
     </div>`;
   }
-  openModal(`<h3>${p.em} ${esc(p.name)}</h3>
+  openModal(`<h3>${pIcon(p,30)} ${esc(p.name)}</h3>
   <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px">${b.logo?`<img src="${b.logo}" alt="" style="width:20px;height:20px;vertical-align:-6px;border:1.5px solid var(--line-soft);margin-right:2px">`:''}<span class="chip brand">${b.name}</span> <span class="gradebox sm">${gfull(bgname(b))}</span> ${p.cat} · 판매가 ₩${fmt(p.gp)} <s style="opacity:.6">₩${fmt(p.cp)}</s> ${p.cp>p.gp?`<span class="disc">-${Math.round((1-p.gp/p.cp)*100)}%</span>`:''} · 수수료 ${(p.rate*100).toFixed(0)}~${(p.rate*100+GRADES[0].bonus).toFixed(0)}% (등급 보너스 포함) · 샘플 ${p.sample}${p.t?` · <b style="color:var(--danger)">▲${p.t.g} ${p.t.note}</b>`:''}</div>
   <div class="notice" style="margin:0 0 10px;font-size:12.5px">🎁 <b>샘플 정책</b> — ${sampleLine(p)}${isSeller?` · 내 등급 <span class="gradebox sm">${gfull(gname(me))}</span> · 이달 무상 한도 ${sampleLeft(me)===Infinity?'무제한':sampleLeft(me)+'회 남음'}`:''}</div>
   ${excl}
@@ -2372,7 +2377,7 @@ function vBrandHome(){
       <div class="listcard" style="margin:0;box-shadow:none">${recs3.map(r=>bsrow(r.s,`${r.fit?'카테고리 적합':'매출 효율 상위'} · 성장세 ▲${growthOf(r.s).toFixed(1)}% · ${r.s.cat} · 3개월 ₩${fmt(r.s.m3Sales)}`)).join('')||'<div class="empty">추천할 인플루언서가 없습니다</div>'}</div>
       <div style="padding:10px 18px"><button class="sm ghost" data-act="screen" data-k="gallery">갤러리에서 더 보기 →</button></div></div>
     <div class="card" style="padding:0;overflow:hidden"><div class="lbl-sm" style="padding:16px 18px 6px">👀 내 상품을 조회한 인플루언서</div>
-      <div class="listcard" style="margin:0;box-shadow:none">${views.map(v=>{const sl=seller(v.sellerId),p=prod(v.productId);return bsrow(sl,`${p.em} ${esc(p.name)} 조회 · ${v.ago} · 팔로워 ${fmt(sl.followers)} · 참여율 ${(sl.likesAvg/sl.followers*100).toFixed(1)}%`);}).join('')||'<div class="empty">최근 조회 기록이 없습니다</div>'}</div></div>
+      <div class="listcard" style="margin:0;box-shadow:none">${views.map(v=>{const sl=seller(v.sellerId),p=prod(v.productId);return bsrow(sl,`${pIcon(p,18)} ${esc(p.name)} 조회 · ${v.ago} · 팔로워 ${fmt(sl.followers)} · 참여율 ${(sl.likesAvg/sl.followers*100).toFixed(1)}%`);}).join('')||'<div class="empty">최근 조회 기록이 없습니다</div>'}</div></div>
   </div>`;
   /* 6 소식 + 상품 현황 + TOP5(축소) */
   const scout1=D_().sellers.find(x=>x.hidden);
@@ -2526,7 +2531,7 @@ function sellerCard(s,reason){
       <div>
         <div class="lbl-sm" style="margin-bottom:6px">최근 진행 이력</div>
         ${hist.length?hist.map(c=>{const p=prod(c.productId),k=calc(c);
-          return `<div class="sc-hist" data-act="open" data-k="${c.id}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.em} ${esc(p.name)} <span style="color:var(--mute)">${c.start?md(P(c.start))+'–'+md(P(c.end)):''}</span></span><span style="font-family:'IBM Plex Mono',monospace;white-space:nowrap">₩${fmt(k.net)}</span>${stChip(c.status)}</div>`;}).join('')
+          return `<div class="sc-hist" data-act="open" data-k="${c.id}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${pIcon(p,18)} ${esc(p.name)} <span style="color:var(--mute)">${c.start?md(P(c.start))+'–'+md(P(c.end)):''}</span></span><span style="font-family:'IBM Plex Mono',monospace;white-space:nowrap">₩${fmt(k.net)}</span>${stChip(c.status)}</div>`;}).join('')
         :'<div style="font-size:12px;color:var(--mute)">셀러리 첫 판매 대기 — 지금 제안해 선점하세요</div>'}
         <div class="lbl-sm" style="margin:12px 0 6px">📡 외부 판매 감지 · 예상 매출 <span style="font-weight:400;letter-spacing:0;text-transform:none" title="크롤링 기반 가계산 — 실데이터 확보 후 계산식 확정 예정">(가계산)</span></div>
         ${((D_().external||{})[s.id]||[]).slice(0,2).map(x=>{const e=estExternal(s,x);
@@ -2799,7 +2804,7 @@ function vAdminHome(){
   <div class="tblw compact"><table>
   <thead><tr><th>캠페인</th><th>인플루언서</th><th>브랜드</th><th class="num">기간</th><th class="num">주문</th><th class="num">확정 매출</th><th class="num">플랫폼 순수익</th><th>상태</th></tr></thead>
   <tbody>${flist.map(c=>{const p=prod(c.productId);const k=calc(c);
-    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td class="nm"><b>${p.em} ${esc(p.name)}</b> <span style="color:var(--mute);font-size:11px">${c.id.toUpperCase()}${c.auto?' · 🤖 자동':''}${c.invited&&!c.auto?' · 브랜드 제안':''}</span></td><td>${platIcon(seller(c.sellerId))} ${seller(c.sellerId).handle}</td><td>${brand(p.brandId).name}</td>
+    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td class="nm"><b>${pIcon(p,22)} ${esc(p.name)}</b> <span style="color:var(--mute);font-size:11px">${c.id.toUpperCase()}${c.auto?' · 🤖 자동':''}${c.invited&&!c.auto?' · 브랜드 제안':''}</span></td><td>${platIcon(seller(c.sellerId))} ${seller(c.sellerId).handle}</td><td>${brand(p.brandId).name}</td>
     <td class="num">${c.start?md(P(c.start))+'–'+md(P(c.end)):'—'}</td><td class="num">${k.paidCnt}${k.refCnt?` <span style="color:var(--danger)">−${k.refCnt}</span>`:''}</td><td class="num">₩${fmt(k.net)}</td><td class="num">₩${fmt(k.pfNet)}</td><td>${stChip(c.status)}</td></tr>`;}).join('')||'<tr><td colspan="8" class="empty">해당 상태의 캠페인이 없습니다</td></tr>'}
   </tbody></table></div>`;
 }
@@ -2894,7 +2899,7 @@ function vAdminOrders(){
   <thead><tr><th>주문</th><th>상품 · 옵션</th><th>판매</th><th class="num">금액</th><th>배송</th><th>상태</th><th>관리</th></tr></thead>
   <tbody>${list.map(o=>{const cp=camp(o.campaignId),p=prod(cp.productId),sl=seller(cp.sellerId),b=brand(p.brandId);
     return `<tr><td class="nm"><b>${o.id.toUpperCase()}</b><div style="font-size:11.5px;color:var(--mute)">${md(P(o.at))} · ${esc(o.buyer)}</div></td>
-    <td>${p.em} ${esc(p.name)}<div style="font-size:11.5px;color:var(--mute)">${o.opt?esc(o.opt)+' · ':''}${o.qty}개</div></td>
+    <td>${pIcon(p,22)} ${esc(p.name)}<div style="font-size:11.5px;color:var(--mute)">${o.opt?esc(o.opt)+' · ':''}${o.qty}개</div></td>
     <td style="white-space:nowrap">${platIcon(sl)} ${esc(sl.name)}<div style="font-size:11.5px;color:var(--mute)">${esc(b.name)} · ${cp.id.toUpperCase()}</div></td>
     <td class="num"><b>₩${fmt(o.unit*o.qty)}</b></td>
     <td>${o.tracking?`<span class="st blue" style="animation:none">배송중</span><div style="font-size:11px;color:var(--mute)">${esc(o.courier||'')} ${esc(o.tracking)}</div>`:o.status==='PAID'?'<span class="st amber" style="animation:none">미발송</span>':'—'}</td>
@@ -3143,7 +3148,7 @@ function vCustHome(){
       <div class="sec" style="margin-top:8px">실시간 판매 순위</div>
       <div class="card">
         <div style="font-size:11px;color:var(--mute);margin-bottom:10px">판매 수량 기준 · 실시간 집계</div>
-        ${rank.map(({c,q},i)=>{const p=prod(c.productId),sl=seller(c.sellerId);return `<div class="hb-row" data-act="preview" data-k="${c.id}"><span class="hb-nm">${i+1}. ${p.em} ${esc(p.name)} <span style="color:var(--mute);font-weight:400">· ${esc(sl.name)}</span></span><div class="hb-track"><div class="hb-bar ${i===0?'top':''}" style="width:${Math.max(6,q/mxq*100)}%"></div></div><span class="hb-val">${fmt(q)}개</span></div>`;}).join('')||'<div class="empty">순위 집계 중</div>'}
+        ${rank.map(({c,q},i)=>{const p=prod(c.productId),sl=seller(c.sellerId);return `<div class="hb-row" data-act="preview" data-k="${c.id}"><span class="hb-nm">${i+1}. ${pIcon(p,20)} ${esc(p.name)} <span style="color:var(--mute);font-weight:400">· ${esc(sl.name)}</span></span><div class="hb-track"><div class="hb-bar ${i===0?'top':''}" style="width:${Math.max(6,q/mxq*100)}%"></div></div><span class="hb-val">${fmt(q)}개</span></div>`;}).join('')||'<div class="empty">순위 집계 중</div>'}
       </div>
       <div class="sec" style="margin-top:22px">인플루언서</div>
       <div class="card"><div style="display:flex;gap:8px;flex-wrap:wrap">${pubSellers.map(x=>`<button class="catchip" data-act="custSeller" data-k="${x.id}">${platIcon(x)} ${esc(x.name)} <span class="gradebox sm">${gfull(gname(x))}</span></button>`).join('')}</div>
@@ -3510,7 +3515,7 @@ function scheduleModal(cid){
 function sampleBuyModal(pid){
   const p=prod(pid),me=seller(S.actingSeller),b=brand(p.brandId),sp=spOf(p),pr=samplePrice(p),sl=sampleSplit(pr),bal=celBal(S.actingSeller);
   const canCel=sl.cel>0&&bal>=sl.cel;
-  openModal(`<h3>샘플 구매 — ${p.em} ${esc(p.name)}</h3>
+  openModal(`<h3>샘플 구매 — ${pIcon(p,26)} ${esc(p.name)}</h3>
   <div style="font-size:12.5px;color:var(--mute);margin:-8px 0 12px">${esc(b.name)} · 무상 기준 <span class="gradebox sm">${gfull(sp.freeGrade)}</span> 이상 · 내 등급 <span class="gradebox sm">${gfull(gname(me))}</span></div>
   <table class="stmt" style="min-width:0;font-size:13px">
     ${sp.buyMode==='fixed'?`<tr><td>브랜드 지정 샘플가 (1회 한정)</td><td class="num"><b>₩${fmt(pr)}</b></td></tr>`
@@ -3604,7 +3609,7 @@ function previewModal(cid){
   const left=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
   openModal(`<h3 style="text-align:center">판매 페이지 미리보기 — 구매자 화면</h3>
   <div class="landing">
-    <div class="hero"><div class="em">${p.em}</div>
+    <div class="hero"><div class="em">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:96px;max-width:70%;object-fit:contain">`:p.em}</div>
       <h3>${esc(p.name)}</h3><div class="by">${b.name} × ${s.name} ${s.handle} 단독 판매</div></div>
     <div class="body">
       <div class="pr"><span class="g">₩${fmt(p.gp)}</span><span class="c">₩${fmt(p.cp)}</span></div>
