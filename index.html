@@ -2002,7 +2002,7 @@ function vSellerSettle(){
   <div class="tblw"><table>
   <thead><tr><th>판매</th><th>기간</th><th class="num">확정 매출</th><th class="num">수수료율</th><th class="num">수수료(세전)</th><th class="num">실수령(예정)</th><th>상태</th><th>지급 예정일</th></tr></thead>
   <tbody>${mine.map(c=>{const k=calc(c),p=prod(c.productId);
-    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td><b>${esc(p.name)}</b></td>
+    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td><b>${pIcon(p,20)} ${esc(p.name)}</b></td>
     <td class="num">${md(P(c.start))}–${md(P(c.end))}</td>
     <td class="num">₩${fmt(k.net)}</td><td class="num">${(p.rate*100).toFixed(0)}%${k.rb?' <b style="color:var(--red)">+1%p</b>':''}</td>
     <td class="num">₩${fmt(k.sfTotal)}</td><td class="num" style="color:var(--money);font-weight:700">₩${fmt(k.sfTotal*(1-WHT))}</td>
@@ -2489,7 +2489,7 @@ function vBrandProducts(){
     const slots=D_().campaigns.filter(c=>c.productId===p.id&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status));
     const stTag=p.status==='listed'?'<span class="st green">노출 중</span>':p.status==='paused'?'<span class="st gray">노출 중단</span>':'<span class="st amber">검수 대기</span>';
     const dash='<span style="color:var(--mute);font-size:12px">—</span>';
-    return `<tr><td class="nm"><b>${p.thumb?`<img src="${p.thumb}" alt="" style="height:22px;vertical-align:middle">`:p.em} ${esc(p.name)}</b>${p.boosted?' <span class="st blue" style="animation:none">부스트</span>':''}<div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)}</div></td>
+    return `<tr><td class="nm"><b>${pIcon(p,24)} ${esc(p.name)}</b>${p.boosted?' <span class="st blue" style="animation:none">부스트</span>':''}<div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)}</div></td>
     <td class="num"><b>₩${fmt(p.gp)}</b><div style="font-size:11px;color:var(--mute);text-decoration:line-through">₩${fmt(p.cp)}</div></td>
     <td class="num">${(p.rate*100).toFixed(0)}%<div style="color:var(--mute);font-size:11px">+플랫폼 ${(PLAT_RATE*100).toFixed(0)}</div></td>
     <td style="white-space:nowrap">${p.sample}<div style="font-size:11px;color:var(--mute)">${spOf(p).freeGrade}↑ 무상 · 구매 ₩${fmt(samplePrice(p))}${spOf(p).refund?' · 환급':''}</div><div style="font-size:11px;color:var(--mute)">재고 ${fmt(p.stock)}</div></td>
@@ -2835,7 +2835,7 @@ function vAdminProducts(){
   <div class="tblw compact"><table>
   <thead><tr><th>상품</th><th>브랜드</th><th>카테고리</th><th class="num">판매가</th><th class="num">총 수수료</th><th class="num">재고</th><th class="num">판매·매출</th><th>독점</th><th>상태</th><th>관리</th></tr></thead>
   <tbody>${list.map(p=>{const b=brand(p.brandId);const cs=campsOf(p);const live=cs.filter(c=>c.status==='LIVE').length;
-    return `<tr><td class="nm"><b>${p.thumb?`<img src="${p.thumb}" alt="" style="height:22px;vertical-align:middle">`:p.em} ${esc(p.name)}</b><div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)} · ${p.id.toUpperCase()}</div></td>
+    return `<tr><td class="nm"><b>${pIcon(p,24)} ${esc(p.name)}</b><div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)} · ${p.id.toUpperCase()}</div></td>
     <td style="white-space:nowrap">${esc(b.name)} <span class="gradebox sm">${gfull(bgname(b))}</span></td>
     <td style="white-space:nowrap">${p.cat}</td>
     <td class="num"><b>₩${fmt(p.gp)}</b><div style="font-size:11px;color:var(--mute);text-decoration:line-through">₩${fmt(p.cp)}</div></td>
