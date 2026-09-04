@@ -1639,7 +1639,7 @@ function counts(){
 const ROLES=[['seller','인플루언서 센터'],['brand','브랜드 센터'],['admin','관리자'],['customer','고객 화면']];
 const SCREENS={
   seller:[['home','홈'],['camps','내 캠페인'],['dm','DM'],['explore','상품 갤러리'],['sales','실시간 매출'],['settle','정산'],['rank','랭킹·등급'],['shop','셀러리 샵'],['ref','추천 프로그램']],
-  brand:[['home','홈'],['dm','DM'],['orders','주문·발주'],['sales','실시간 매출'],['settle','정산'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['shop','셀러리 샵']],
+  brand:[['home','홈'],['dm','DM'],['camps','내 캠페인'],['orders','주문·발주'],['sales','실시간 매출'],['settle','정산'],['products','상품 관리'],['gallery','인플루언서 갤러리'],['shop','셀러리 샵']],
   admin:[['home','대시보드'],['products','상품'],['influencers','인플루언서'],['brands','브랜드'],['orders','주문·CS'],['match','매칭·자동 제안'],['revenue','매출·순수익'],['settle','정산 실행']],
   customer:[['home','진행 중인 판매'],['influencers','인플루언서'],['about','셀러리 소개']]
 };
@@ -1666,7 +1666,7 @@ function render(){
   if(S.view.cid){ m.innerHTML=vCampDetail(S.view.cid); decorate(); const box=m.querySelector('.msgs'); if(box) box.scrollTop=box.scrollHeight; return; }
   const fn={
     'seller.home':vSellerHome,'seller.explore':vExplore,'seller.camps':vSellerCamps,'seller.dm':vDM,'brand.dm':vDM,'seller.shop':vShop,'brand.shop':vShop,'seller.sales':vSales,'seller.rank':vRank,'seller.ref':vRef,'seller.settle':vSellerSettle,'seller.my':vMy,
-    'brand.home':vBrandHome,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vDM,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,'brand.my':vBrandMy,
+    'brand.home':vBrandHome,'brand.camps':vBrandCamps,'brand.products':vBrandProducts,'brand.gallery':vGallery,'brand.requests':vDM,'brand.sales':vSales,'brand.orders':vBrandOrders,'brand.settle':vBrandSettle,'brand.my':vBrandMy,
     'admin.home':vAdminHome,'admin.products':vAdminProducts,'admin.review':vAdminProducts,'admin.influencers':vAdminInfluencers,'admin.brands':vAdminBrands,'admin.orders':vAdminOrders,'admin.match':vAdminMatch,'admin.revenue':vAdminRevenue,'admin.settle':vAdminSettle,
     'customer.home':vCustHome,'customer.influencers':vCustInfluencers,'customer.about':vCustAbout
   }[S.view.role+'.'+S.view.screen]||(S.view.role==='customer'?vCustHome:vSellerHome);
@@ -1951,21 +1951,23 @@ function vDM(){
   <p style="font-size:12px;color:var(--mute);margin-top:10px">대화를 열면 채팅과 승인·일정·정산 이벤트가 한 타임라인에 보입니다. 연락처·외부 메신저 공유는 자동 감지되어 안내됩니다.</p>`;
 }
 /* ---- my gongu calendar ---- */
-function calHtml(){
+function calHtml(opt){
+  opt=opt||{};
   const off=S.calOff||0;
   const base=new Date(today().getFullYear(),today().getMonth()+off,1);
   const y=base.getFullYear(),m=base.getMonth();
   const startDow=new Date(y,m,1).getDay();
   const dim=new Date(y,m+1,0).getDate();
-  const mine=D_().campaigns.filter(c=>c.sellerId===S.actingSeller);
+  const mine=opt.list||D_().campaigns.filter(c=>c.sellerId===S.actingSeller);
+  const label=c=>opt.brandView?`${prod(c.productId).name} · ${seller(c.sellerId).name}`:prod(c.productId).name;
   const evFor=date=>{
     const t=date.getTime(),ds=ymd(date);
     const out=[];
     mine.forEach(c=>{
       if(c.start&&['SCHEDULE_CONFIRMED','LIVE','CLEARING','SETTLED'].includes(c.status)){
         const s=P(c.start).getTime(),e=P(c.end).getTime();
-        if(t>=s&&t<=e)out.push({type:c.status==='LIVE'?'live':c.status==='SCHEDULE_CONFIRMED'?'plan':'done',name:prod(c.productId).name,first:t===s,cid:c.id});
-        if(c.status==='CLEARING'&&ymd(settleDue(c))===ds)out.push({type:'pay',name:'₩ 정산 예정',first:true,cid:c.id});
+        if(t>=s&&t<=e)out.push({type:c.status==='LIVE'?'live':c.status==='SCHEDULE_CONFIRMED'?'plan':'done',name:label(c),first:t===s,cid:c.id});
+        if(c.status==='CLEARING'&&ymd(settleDue(c))===ds)out.push({type:'pay',name:'₩ 정산 예정',first:true,cid:c.id,go:'settle'});
       }
       if(c.status==='TESTING'&&c.testDue===ds)out.push({type:'due',name:'테스트 마감',first:true,cid:c.id});
     });
@@ -1977,16 +1979,16 @@ function calHtml(){
     const date=new Date(y,m,d);
     const evs=evFor(date);
     cells+=`<div class="cal-cell ${ymd(date)===ymd(today())?'today':''}"><span class="dn">${d}</span>
-      ${evs.map(ev=>`<div class="cal-ev ${ev.type}" data-act="open" data-k="${ev.cid}" title="${esc(ev.name)}">${ev.first?esc(ev.name):'&nbsp;'}</div>`).join('')}</div>`;
+      ${evs.map(ev=>`<div class="cal-ev ${ev.type}" data-act="${ev.go?'screen':'open'}" data-k="${ev.go||ev.cid}" title="${esc(ev.name)}${ev.go?' — 정산 탭으로':''}">${ev.first?esc(ev.name):'&nbsp;'}</div>`).join('')}</div>`;
   }
-  return `<div class="sec">판매 캘린더 — 내 스케줄 한눈에</div>
+  return `<div class="sec">${opt.title||'판매 캘린더 — 내 스케줄 한눈에'}</div>
   <div class="card" style="padding:0;overflow:hidden">
     <div class="cal-head">
       <button class="sm ghost" data-act="calNav" data-k="-1">‹</button>
       <b style="font-family:'Archivo',sans-serif;font-size:16px;letter-spacing:.02em">${y}.${String(m+1).padStart(2,'0')}</b>
       <button class="sm ghost" data-act="calNav" data-k="1">›</button>
       ${off!==0?`<button class="sm ghost" data-act="calNav" data-k="0">오늘</button>`:''}
-      <span class="cal-legend"><span><i class="lg plan"></i>확정</span><span><i class="lg live"></i>LIVE</span><span><i class="lg done"></i>종료·정산중</span><span><i class="lg pay"></i>정산일</span><span><i class="lg due"></i>테스트 마감</span></span>
+      <span class="cal-legend"><span><i class="lg plan"></i>확정</span><span><i class="lg live"></i>LIVE</span><span><i class="lg done"></i>종료·정산중</span><span data-act="screen" data-k="settle" style="cursor:pointer;text-decoration:underline"><i class="lg pay"></i>정산일</span><span><i class="lg due"></i>테스트 마감</span></span>
     </div>
     <div class="cal-dow">${['일','월','화','수','목','금','토'].map(x=>`<span>${x}</span>`).join('')}</div>
     <div class="cal-grid">${cells}</div>
@@ -2478,6 +2480,41 @@ function brandRefHtml(b){
       ${refs.map(x=>`<div class="sc-hist" style="cursor:default"><span>${x.logo?`<img src="${x.logo}" alt="" style="width:18px;height:18px;vertical-align:-4px;border:1.5px solid var(--line-soft);margin-right:6px">`:''}<b>${esc(x.name)}</b> · ${esc(x.cat)}</span><span style="font-family:'IBM Plex Mono',monospace">${Math.min(usedOf(x.id),BREF_TIMES)}/${BREF_TIMES}회 · ₩${fmt(earns.filter(e=>e.fromBrandId===x.id).reduce((a,e)=>a+e.amt,0))}</span></div>`).join('')||'<div style="font-size:12.5px;color:var(--mute)">아직 추천한 브랜드가 없습니다 — 코드를 공유해보세요</div>'}
     </div>
   </div>`;
+}
+function vBrandCamps(){
+  const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
+  const cs=D_().campaigns.filter(c=>myP.includes(c.productId));
+  const f=S.bcF||'all';
+  const G={live:cs.filter(c=>c.status==='LIVE'),soon:cs.filter(c=>c.status==='SCHEDULE_CONFIRMED'),
+    prep:cs.filter(c=>['SAMPLE_REQUESTED','SAMPLE_APPROVED','SAMPLE_PURCHASED','SAMPLE_SHIPPED','TESTING','SCHEDULE_PROPOSED'].includes(c.status)),
+    done:cs.filter(c=>['CLEARING','SETTLED','REJECTED','PASSED'].includes(c.status))};
+  const todayStr=ymd(today());
+  const liveCard=c=>{const p=prod(c.productId),sl=seller(c.sellerId),k=calc(c);const os=campOrders(c.id).filter(o=>o.status==='PAID');const tod=os.filter(o=>o.at===todayStr);const un=os.filter(o=>!o.tracking).length;const left=(c.qty||0)-soldQty(c.id);const dd=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
+    return `<div class="card" style="padding:16px 18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:9px;min-width:0">${pIcon(p,30)}<span style="min-width:0"><b style="font-size:15px">${esc(p.name)}</b> <span class="sub" style="color:var(--mute);font-size:12px">${platIcon(sl)} ${esc(sl.name)} ${sl.handle}</span></span></div><div style="display:flex;gap:6px;align-items:center">${un?`<span class="st amber" style="animation:none">미발송 ${un}건</span>`:''}${stChip('LIVE')}</div></div>
+      <div class="mini-stats" style="margin:12px 0 10px">
+        <div><span class="ms-l">오늘 매출</span><span class="ms-v">₩${fmt(tod.reduce((a,o)=>a+o.unit*o.qty,0))}</span></div>
+        <div><span class="ms-l">확정 매출</span><span class="ms-v">₩${fmt(k.net)}</span></div>
+        <div><span class="ms-l">주문</span><span class="ms-v">${k.paidCnt}건</span></div>
+        <div><span class="ms-l">마감 · 잔여</span><span class="ms-v">D-${dd} · ${fmt(Math.max(0,left))}개</span></div>
+      </div>
+      <div class="btnrow one"><button class="sm ghost" data-act="open" data-k="${c.id}">스레드</button><button class="sm ghost" data-act="preview" data-k="${c.id}">구매 페이지</button><button class="sm ghost" data-act="poCSV">발주서 CSV</button><button class="sm ghost" data-act="screen" data-k="sales">실시간 매출</button></div>
+    </div>`;};
+  const row=c=>{const p=prod(c.productId),sl=seller(c.sellerId);const dd=c.start?Math.ceil((P(c.start)-today())/DAY):null;
+    return `<div class="rowitem" data-act="open" data-k="${c.id}">${pIcon(p,38)}
+      <div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${platIcon(sl)} ${esc(sl.name)} ${sl.handle}</span></div>
+      <div class="sub">${c.start?`${md(P(c.start))}–${md(P(c.end))} · 배정 재고 ${fmt(c.qty||0)}`:`${ST[c.status].l}${c.testDue?` · 테스트 기한 ${md(P(c.testDue))}`:''} · 수수료 ${(prod(c.productId).rate*100).toFixed(0)}%`}</div></div>
+      ${c.status==='SCHEDULE_CONFIRMED'&&dd!=null?`<span class="st blue" style="animation:none">오픈 D-${Math.max(0,dd)}</span>`:''}${stChip(c.status)}</div>`;};
+  const sec=(t,list,empty)=>`<div class="sec">${t} <span class="badge">${list.length}</span></div>${list.length?`<div class="listcard">${list.map(row).join('')}</div>`:`<div class="listcard"><div class="empty">${empty}</div></div>`}`;
+  const chips=[['all','전체',cs.length],['live','진행 중',G.live.length],['soon','진행 예정',G.soon.length],['prep','준비 중',G.prep.length],['done','종료·정산',G.done.length]];
+  return `<h2 class="pg">내 캠페인 <small>브랜드가 진행 중인 판매 · 클릭하면 캠페인 스레드로 이동</small></h2>
+  ${admChips(chips,f,'bcF')}
+  ${(f==='all'||f==='live')?`<div class="sec">진행 중 <span class="badge">${G.live.length}</span></div>
+    ${G.live.length?`<div class="grid ${G.live.length>1?'g2':''}">${G.live.map(liveCard).join('')}</div>`:'<div class="listcard"><div class="empty">진행 중인 판매가 없습니다</div></div>'}`:''}
+  ${(f==='all'||f==='soon')?sec('진행 예정',G.soon,'예정된 판매가 없습니다 — 일정 승인을 기다리는 요청은 DM 요청함에서 확인하세요'):''}
+  ${(f==='all'||f==='prep')?sec('준비 중 (샘플·테스트·일정)',G.prep,'준비 중인 캠페인이 없습니다'):''}
+  ${(f==='all'||f==='done')?sec('종료 · 정산',G.done,'종료된 캠페인이 없습니다'):''}
+  ${calHtml({list:cs,brandView:true,title:'판매 캘린더 — 브랜드 스케줄 한눈에'})}`;
 }
 function vBrandProducts(){
   const mine=D_().products.filter(p=>p.brandId===S.actingBrand);
@@ -4211,6 +4248,7 @@ const ACT={
   admPQClear(){S.admPQ='';render();},
   admIQLive(v){S.admIQ=v;clearTimeout(S._iq);S._iq=setTimeout(()=>{const el=$('#admIQ');const pos=el?el.selectionStart:0;render();const n=$('#admIQ');if(n){n.focus();n.setSelectionRange(pos,pos);}},200);},
   admIQClear(){S.admIQ='';render();},
+  bcF(k){S.bcF=k;render();},
   admPS(k){S.admPS=k;render();}, admPB(k){S.admPB=k;render();}, admPC(k){S.admPC=k;render();},
   admIG(k){S.admIG=k;render();}, admOF(k){S.admOF=k;render();}, admCF(k){S.admCF=k;S.view.screen='home';render();},
   admGo(k){const [scr,f]=k.split('|');if(scr==='products'&&f)S.admPS=f;if(scr==='orders'&&f)S.admOF=f;S.view={role:'admin',screen:scr,cid:null,store:null};render();},
