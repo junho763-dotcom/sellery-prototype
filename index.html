@@ -1750,7 +1750,7 @@ function vSellerHome(){
   /* 2 진행 중·예정 판매 (실시간 미니 지표) */
   const liveCard=c=>{const p=prod(c.productId),k=calc(c);const os=campOrders(c.id).filter(o=>o.status==='PAID');const tod=os.filter(o=>o.at===todayStr);const left=(c.qty||0)-soldQty(c.id);const dd=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
     return `<div class="card" style="padding:16px 18px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><b style="font-size:15px">${p.em} ${esc(p.name)}</b> <span class="sub" style="color:var(--mute);font-size:12px">${brand(p.brandId).name} · 수수료 ${(p.rate*100).toFixed(0)}%</span></div>${stChip('LIVE')}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:9px;min-width:0">${pIcon(p,30)}<span style="min-width:0"><b style="font-size:15px">${esc(p.name)}</b> <span class="sub" style="color:var(--mute);font-size:12px">${brand(p.brandId).name} · 수수료 ${(p.rate*100).toFixed(0)}%</span></span></div>${stChip('LIVE')}</div>
       <div class="mini-stats" style="margin:12px 0 10px">
         <div><span class="ms-l">오늘 매출</span><span class="ms-v">₩${fmt(tod.reduce((a,o)=>a+o.unit*o.qty,0))}</span></div>
         <div><span class="ms-l">확정 매출</span><span class="ms-v">₩${fmt(k.net)}</span></div>
@@ -1936,7 +1936,7 @@ function vDM(){
     return `<div class="rowitem" data-act="open" data-k="${r.c.id}">
       ${av}
       <div class="grow" style="min-width:0">
-        <div class="nm">${title} <span style="color:var(--mute);font-weight:400;font-size:12px">· ${r.p.em} ${esc(r.p.name)}</span>${r.unread?'<span class="dmdot"></span>':''}</div>
+        <div class="nm">${title} <span style="color:var(--mute);font-weight:400;font-size:12px">· ${esc(r.p.name)}</span>${r.unread?'<span class="dmdot"></span>':''}</div>
         <div class="sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:640px;${r.unread?'color:var(--ink);font-weight:700':''}">${esc(r.who)}${esc(strip(r.last.txt))}</div>
       </div>
       <span class="sub" style="font-family:'IBM Plex Mono',monospace;white-space:nowrap">${md(P(r.last.at))}</span>
@@ -2335,7 +2335,7 @@ function vBrandHome(){
   /* 3 진행 중·확정 판매 */
   const liveCard=c=>{const p=prod(c.productId),sl=seller(c.sellerId),k=calc(c);const os=campOrders(c.id).filter(o=>o.status==='PAID');const tod=os.filter(o=>o.at===todayStr);const un=os.filter(o=>!o.tracking).length;const left=(c.qty||0)-soldQty(c.id);const dd=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
     return `<div class="card" style="padding:16px 18px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><b style="font-size:15px">${p.em} ${esc(p.name)}</b> <span class="sub" style="color:var(--mute);font-size:12px">${platIcon(sl)} ${esc(sl.name)} ${sl.handle} · 수수료 ${(p.rate*100).toFixed(0)}%</span></div><div style="display:flex;gap:6px;align-items:center">${un?`<span class="st amber" style="animation:none">미발송 ${un}건</span>`:''}${stChip('LIVE')}</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:9px;min-width:0">${pIcon(p,30)}<span style="min-width:0"><b style="font-size:15px">${esc(p.name)}</b> <span class="sub" style="color:var(--mute);font-size:12px">${platIcon(sl)} ${esc(sl.name)} ${sl.handle} · 수수료 ${(p.rate*100).toFixed(0)}%</span></span></div><div style="display:flex;gap:6px;align-items:center">${un?`<span class="st amber" style="animation:none">미발송 ${un}건</span>`:''}${stChip('LIVE')}</div></div>
       <div class="mini-stats" style="margin:12px 0 10px">
         <div><span class="ms-l">오늘 매출</span><span class="ms-v">₩${fmt(tod.reduce((a,o)=>a+o.unit*o.qty,0))}</span></div>
         <div><span class="ms-l">확정 매출</span><span class="ms-v">₩${fmt(k.net)}</span></div>
