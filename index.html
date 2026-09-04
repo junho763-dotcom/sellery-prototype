@@ -2467,7 +2467,7 @@ function vBrandProducts(){
     <td class="num"><b>₩${fmt(p.gp)}</b><div style="font-size:11px;color:var(--mute);text-decoration:line-through">₩${fmt(p.cp)}</div></td>
     <td class="num">${(p.rate*100).toFixed(0)}%<div style="color:var(--mute);font-size:11px">+플랫폼 ${(PLAT_RATE*100).toFixed(0)}</div></td>
     <td style="white-space:nowrap">${p.sample}<div style="font-size:11px;color:var(--mute)">${spOf(p).freeGrade}↑ 무상 · 구매 ₩${fmt(samplePrice(p))}${spOf(p).refund?' · 환급':''}</div><div style="font-size:11px;color:var(--mute)">재고 ${fmt(p.stock)}</div></td>
-    <td style="white-space:nowrap">${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))}</span> 이상${p.exclusiveSellerId?`<div><span class="st green">확정</span></div>`:''}`:dash}</td>
+    <td style="white-space:nowrap">${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))} 이상</span>${p.exclusiveSellerId?`<div><span class="st green">확정</span></div>`:''}`:dash}</td>
     <td style="white-space:nowrap">${stTag}<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap"><button class="sm pri" data-act="editProduct" data-k="${p.id}">수정</button>${p.status==='pending'?'':`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}<button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td>
     <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;white-space:nowrap">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||dash}</td></tr>`;}).join('')}
   </tbody></table></div>
