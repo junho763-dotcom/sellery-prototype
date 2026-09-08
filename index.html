@@ -221,6 +221,7 @@ tr.merow td{background:var(--yellow-soft);font-weight:700}
 .msg .who{font-size:10.5px;font-weight:800;margin-bottom:2px;letter-spacing:.04em;font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace}
 .msg.seller{align-self:flex-start;background:var(--seller-bg)}
 .msg.brand{align-self:flex-end;background:var(--brand-bg)}
+.msg.admin{align-self:center;background:var(--lift2,#e6f0d2);border-style:dashed;max-width:88%}
 .msg .tm{font-size:10.5px;color:var(--mute);margin-top:3px;font-family:'IBM Plex Mono',monospace}
 .sysline{align-self:center;font-size:11.5px;color:var(--mute);background:var(--bg);border:1.5px dashed var(--mute);border-radius:3px;padding:4px 14px;text-align:center}
 .sysline b{color:var(--ink)}
@@ -1178,6 +1179,8 @@ const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 /* ============ status machine ============ */
 const ST = {
   SAMPLE_REQUESTED:{l:'샘플 요청',c:'blue',turn:'brand'},
+  INVITED:{l:'브랜드 제안 · 수락 대기',c:'blue',turn:'seller'},
+  DECLINED:{l:'제안 거절',c:'gray'},
   REJECTED:{l:'거절됨',c:'red'},
   SAMPLE_APPROVED:{l:'샘플 발송 대기',c:'blue',turn:'brand'},
   SAMPLE_PURCHASED:{l:'샘플 구매 · 발송 대기',c:'blue',turn:'brand'},
@@ -1204,8 +1207,8 @@ function seedData(){
   const D = n => ymd(addD(t,n));
   const data = {
     brands:[
-      {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인',email:'partner@vyneherb.co',gmvBase:52000000,logo:BLOGO1,refCode:'VYNE-01',autoPropose:true},
-      {id:'b2',name:'글로헬스',cat:'이너뷰티·피부',manager:'박글로',email:'official@weglow.biz',gmvBase:382000000,logo:BLOGO2,refCode:'GLO-002',referredBy:'b1'}
+      {id:'b1',name:'바인허브',cat:'건강기능식품',manager:'김바인',email:'partner@vyneherb.co',settleInfo:{bank:'기업',account:'12345678901234',holder:'(주)바인허브',bizNo:'214-88-01234',mailOrder:'제2024-서울강남-01234호'},gmvBase:52000000,logo:BLOGO1,refCode:'VYNE-01',autoPropose:true},
+      {id:'b2',name:'글로헬스',cat:'이너뷰티·피부',manager:'박글로',email:'official@weglow.biz',settleInfo:{bank:'신한',account:'11022233344455',holder:'(주)위글로우',bizNo:'331-87-02211'},gmvBase:382000000,logo:BLOGO2,refCode:'GLO-002',referredBy:'b1'}
     ],
     brandRefEarnings:[
       {at:D(-20),referrerId:'b1',fromBrandId:'b2',campaignId:'(지난 판매)',amt:318000}
@@ -1221,14 +1224,14 @@ function seedData(){
       {who:'b2',at:D(-40),delta:5,memo:'입점 이벤트 지급'}
     ],
     sellers:[
-      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',img:(typeof AV1!=='undefined'&&AV1)?AV1:'assets/av-s1.svg',followers:84300,cat:'이너뷰티·피부',likesAvg:3100,recentLikes:[2900,3400,2800,3600,3100,3500],m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 판매 전환율 상위 10%.',
+      {id:'s1',name:'지유',handle:'@jiyu_beauty',platform:'instagram',settleInfo:{type:'personal',bank:'카카오뱅크',account:'3333012345678',holder:'김지유'},img:(typeof AV1!=='undefined'&&AV1)?AV1:'assets/av-s1.svg',followers:84300,cat:'이너뷰티·피부',likesAvg:3100,recentLikes:[2900,3400,2800,3600,3100,3500],m3Sales:15600000,refCode:'JIYU10',intro:'스킨케어·이너뷰티 리뷰 전문. 평균 판매 전환율 상위 10%.',
         channels:[
           {id:'ch1',platform:'instagram',handle:'@jiyu_beauty',url:'instagram.com/jiyu_beauty',followers:84300,verified:true,primary:true},
           {id:'ch2',platform:'youtube',handle:'지유의 뷰티랩',url:'youtube.com/@jiyulab',followers:12400,verified:false}
         ]},
-      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',img:'assets/av-s2.svg',followers:126000,cat:'웰니스 푸드',likesAvg:4200,recentLikes:[3900,4600,4100,4400,4000,4700],m3Sales:22840000,refCode:'HYERIN',intro:'웰니스 라이프 큐레이션(건강식·홈트). 재판매율 78%.',
+      {id:'s2',name:'혜린',handle:'@hyerin_pick',platform:'instagram',settleInfo:{type:'biz',bank:'국민',account:'94820111222333',holder:'혜린스튜디오',bizNo:'512-21-00987'},img:'assets/av-s2.svg',followers:126000,cat:'웰니스 푸드',likesAvg:4200,recentLikes:[3900,4600,4100,4400,4000,4700],m3Sales:22840000,refCode:'HYERIN',intro:'웰니스 라이프 큐레이션(건강식·홈트). 재판매율 78%.',
         channels:[{id:'ch3',platform:'instagram',handle:'@hyerin_pick',url:'instagram.com/hyerin_pick',followers:126000,verified:true,primary:true}]},
-      {id:'s3',name:'민지',handle:'@minji_diet',platform:'naver',img:'assets/av-s3.svg',followers:45200,cat:'다이어트·체형',likesAvg:1900,recentLikes:[1700,2100,1800,2000,1900,2200],m3Sales:13221900,refCode:'MINJI5',referredBy:'s1',intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.',
+      {id:'s3',name:'민지',handle:'@minji_diet',platform:'naver',settleInfo:{type:'personal',bank:'토스뱅크',account:'100012345678',holder:'박민지'},img:'assets/av-s3.svg',followers:45200,cat:'다이어트·체형',likesAvg:1900,recentLikes:[1700,2100,1800,2000,1900,2200],m3Sales:13221900,refCode:'MINJI5',referredBy:'s1',intro:'다이어트 여정 기록 4년차. 팔로워 충성도 높음.',
         channels:[{id:'ch4',platform:'naver',handle:'@minji_diet',url:'blog.naver.com/minji_diet',followers:45200,verified:true,primary:true}]},
       {id:'s4',name:'서아',handle:'@seoa_health',platform:'youtube',img:'assets/av-s4.svg',followers:118000,cat:'비타민·영양',likesAvg:5400,recentLikes:[5100,5800,5200,5600,5400],m3Sales:52000000,refCode:'SEOA88',hidden:true,intro:'건기식 전문. 비공개 프로필.',
         channels:[{id:'ch5',platform:'youtube',handle:'@seoa_health',url:'youtube.com/@seoa_health',followers:118000,verified:true,primary:true}]},
@@ -1294,7 +1297,8 @@ function seedData(){
       {id:'c9',sellerId:'s2',productId:'p3',status:'SCHEDULE_PROPOSED',propStart:D(12),propEnd:D(16),propQty:600,createdAt:D(-8)},
       {id:'c10',sellerId:'s3',productId:'p2',status:'SAMPLE_APPROVED',createdAt:D(-2)},
       {id:'c11',sellerId:'s7',productId:'p9',status:'SAMPLE_REQUESTED',createdAt:D(0)},
-      {id:'c12',sellerId:'s8',productId:'p2',status:'LIVE',start:D(-3),end:D(3),qty:600,createdAt:D(-16)}
+      {id:'c12',sellerId:'s8',productId:'p2',status:'LIVE',start:D(-3),end:D(3),qty:600,createdAt:D(-16)},
+      {id:'c13',sellerId:'s1',productId:'p10',status:'INVITED',createdAt:D(0),invited:true,celUsed:0}
     ],
     orders:[],
     messages:{},
@@ -1342,11 +1346,13 @@ function seedData(){
   chat('c12','seller','블로그 리뷰 글 상단에 링크 고정했어요. 검색 유입이 꾸준해서 기간 내 목표 500개 갈 것 같습니다!',D(-2));
   chat('c12','brand','좋습니다 유나님, 재고 여유 있으니 필요하면 100개 추가 배정 가능해요.',D(-2));
   sys('c12','판매 링크 활성화 — <b>판매 시작</b>',D(-3));
+  sys('c13','브랜드 <b>글로헬스</b>가 <b>수분광 앰플 마스크</b> 판매를 직접 제안했습니다 · 인플루언서 수락 대기',D(0));
+  chat('c13','brand','지유님 안녕하세요, 글로헬스입니다. GL-01 리뷰 결이 좋아서 앰플 마스크도 함께 제안드려요. 수락해주시면 바로 샘플 보내드릴게요!',D(0));
   return data;
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v25';
+const LS='sellery-proto-v26';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
@@ -1386,7 +1392,7 @@ function autoMatches(){
   const out=[];
   D_().brands.filter(b=>b.autoPropose).forEach(b=>{
     D_().products.filter(p=>p.brandId===b.id&&p.status==='listed'&&!p.exclusiveSellerId).forEach(p=>{
-      const cands=D_().sellers.filter(s=>catFit(p,s)&&!D_().campaigns.some(c=>c.productId===p.id&&c.sellerId===s.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status)))
+      const cands=D_().sellers.filter(s=>catFit(p,s)&&!D_().campaigns.some(c=>c.productId===p.id&&c.sellerId===s.id&&!['REJECTED','PASSED','DECLINED','SETTLED'].includes(c.status)))
         .map(s=>({b,p,s,growth:growthOf(s),score:Math.round(growthOf(s)*0.6+(s.m3Sales/s.followers)/10+(s.hidden?0:5))}))
         .sort((a,b)=>b.score-a.score).slice(0,2);
       out.push(...cands);
@@ -1440,13 +1446,13 @@ function spOf(p){if(p.samplePolicy)return p.samplePolicy;const g=p.gp<30000?'브
 function samplePrice(p){const sp=spOf(p);return sp.buyMode==='fixed'&&sp.fixedPrice?sp.fixedPrice:Math.round(p.gp*(1-p.rate)/10)*10;}
 function sampleSplit(price){const cel=Math.floor(price/SAMPLE_CEL_WON);return {cel,cash:price-cel*SAMPLE_CEL_WON};}
 function freeEligible(p,s){const i=tierIdx(gname(s));return i>-1&&i<=tierIdx(spOf(p).freeGrade);}
-function hadFreeSample(p,s){return D_().campaigns.some(c=>c.productId===p.id&&c.sellerId===s.id&&!c.purchased&&!c.invited&&c.status!=='REJECTED');}
+function hadFreeSample(p,s){return D_().campaigns.some(c=>c.productId===p.id&&c.sellerId===s.id&&!c.purchased&&!c.invited&&!['REJECTED','DECLINED'].includes(c.status));}
 function sampleLine(p){const sp=spOf(p),pr=samplePrice(p),sl=sampleSplit(pr);return `${gfull(sp.freeGrade)} 이상 무상 1회 · 미달 시 ₩${fmt(pr)} 구매${sl.cel?` (${CEL} ${sl.cel}${sl.cash?' + ₩'+fmt(sl.cash):''})`:''}${sp.buyMode==='fixed'?' · 브랜드 지정가':''}${sp.refund?' · 판매 확정 시 환급':''}`;}
 /* 인플루언서용 샘플 버튼 분기 */
 function sampleBtnHtml(p,fromModal){
   const me=seller(S.actingSeller);if(!me)return '';
   if(p.exclusiveSellerId&&p.exclusiveSellerId!==S.actingSeller)return `<button class="sm" disabled style="opacity:.5">독점 잠김</button>`;
-  const already=D_().campaigns.some(c=>c.sellerId===S.actingSeller&&c.productId===p.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status));
+  const already=D_().campaigns.some(c=>c.sellerId===S.actingSeller&&c.productId===p.id&&!['REJECTED','PASSED','DECLINED','SETTLED'].includes(c.status));
   if(already)return `<button class="sm" disabled style="opacity:.5">진행 중</button>`;
   const canFree=freeEligible(p,me)&&!hadFreeSample(p,me)&&sampleLeft(me)>0;
   if(canFree)return `<button class="pri ${fromModal?'':'sm'}" data-act="${fromModal?'reqSampleM':'reqSample'}" data-k="${p.id}">무상 샘플 요청</button>`;
@@ -1624,11 +1630,14 @@ function overlaps(pid,s,e,exceptCid){
   return D_().campaigns.some(c=>c.productId===pid&&c.id!==exceptCid&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status)
     &&!(P(e)<P(c.start)||P(s)>P(c.end)));
 }
+/* 상품 재고 배정: 확정·진행 중 캠페인에 배정된 수량 합 (제안 시 잔여 재고 초과 불가) */
+function allocated(pid,exceptCid){return D_().campaigns.filter(c=>c.productId===pid&&c.id!==exceptCid&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status)).reduce((a,c)=>a+(c.qty||0),0);}
+function stockLeft(p,exceptCid){return Math.max(0,(p.stock||0)-allocated(p.id,exceptCid));}
 /* pending counts for badges */
 function counts(){
   const cs=D_().campaigns;
   return {
-    seller: cs.filter(c=>['SAMPLE_SHIPPED','TESTING'].includes(c.status)).length,
+    seller: cs.filter(c=>['INVITED','SAMPLE_SHIPPED','TESTING'].includes(c.status)).length,
     brand: cs.filter(c=>['SAMPLE_REQUESTED','SCHEDULE_PROPOSED','SAMPLE_APPROVED'].includes(c.status)).length
       + (D_().exclusiveReqs||[]).filter(r=>r.status==='PENDING').length,
     admin: D_().products.filter(p=>p.status==='pending').length + cs.filter(c=>c.status==='CLEARING'&&settleDue(c)<=today()).length
@@ -1712,7 +1721,7 @@ function decorate(){
 /* ============ shared components ============ */
 function stChip(st){const m=ST[st];return `<span class="st ${m.c}">${st==='LIVE'?'<span class="pulse"></span>':''}${m.l}</span>`;}
 function stepper(status){
-  const idx=FLOW.indexOf(status==='SAMPLE_PURCHASED'?'SAMPLE_APPROVED':status);
+  const idx=FLOW.indexOf(status==='SAMPLE_PURCHASED'?'SAMPLE_APPROVED':status==='INVITED'?'SAMPLE_REQUESTED':status);
   return `<div class="stepper">${FLOW_L.map((l,i)=>`<span class="stp ${i<idx?'done':i===idx?'now':''}">${l}</span>`).join('')}</div>`;
 }
 function campRow(c,{who='seller'}={}){
@@ -1735,9 +1744,9 @@ function vSellerHome(){
   const liveNet=live.reduce((a,c)=>a+calc(c).net,0);
   const pendPay=clearing.reduce((a,c)=>{const k=calc(c);return a+k.sfTotal*(1-sellerWht(seller(me)));},0);
   const monthPay=mine.filter(c=>c.status==='SETTLED'&&(c.settledAt||'').slice(0,7)===ymd(today()).slice(0,7)).reduce((a,c)=>a+calc(c).sfTotal*(1-sellerWht(seller(me))),0);
-  const todo=mine.filter(c=>['SAMPLE_SHIPPED','TESTING','SAMPLE_APPROVED','SAMPLE_PURCHASED'].includes(c.status));
+  const todo=mine.filter(c=>['INVITED','SAMPLE_SHIPPED','TESTING','SAMPLE_APPROVED','SAMPLE_PURCHASED'].includes(c.status));
   const sl=seller(me);
-  const TODO_L={SAMPLE_SHIPPED:'샘플 수령 확인',TESTING:'테스트 후 일정 제안',SAMPLE_APPROVED:'샘플 배송 대기 (브랜드 발송 중)',SAMPLE_PURCHASED:'샘플 구매 완료 · 브랜드 발송 대기'};
+  const TODO_L={INVITED:'브랜드 직접 제안 — 수락/거절',SAMPLE_SHIPPED:'샘플 수령 확인',TESTING:'테스트 후 일정 제안',SAMPLE_APPROVED:'샘플 배송 대기 (브랜드 발송 중)',SAMPLE_PURCHASED:'샘플 구매 완료 · 브랜드 발송 대기'};
   const heroLine = todo.length ? `기다리는 할 일이 <em>${todo.length}건</em> 있어요.`
     : live.length ? `지금 판매 <em>${live.length}건</em>이 진행 중이에요.`
     : `오늘은 어떤 상품을 골라볼까요?`;
@@ -1750,7 +1759,7 @@ function vSellerHome(){
     <div class="listcard">${todo.map(c=>{const p=prod(c.productId),b=brand(p.brandId);
       return `<div class="rowitem" data-act="open" data-k="${c.id}">${pIcon(p,38)}
         <div class="grow"><div class="nm">${esc(p.name)} <span class="sub" style="font-weight:400">· ${esc(b.name)}</span></div><div class="sub">${TODO_L[c.status]||ST[c.status].l}${c.testDue?` · 기한 ${md(P(c.testDue))}`:''}</div></div>
-        <button class="pri sm">${c.status==='SAMPLE_SHIPPED'?'수령 확인':c.status==='TESTING'?'일정 제안':'스레드 보기'}</button></div>`;}).join('')}</div>`
+        <button class="pri sm">${c.status==='INVITED'?'수락/거절':c.status==='SAMPLE_SHIPPED'?'수령 확인':c.status==='TESTING'?'일정 제안':'스레드 보기'}</button></div>`;}).join('')}</div>`
     :`<div class="sec">지금 할 일</div><div class="listcard"><div class="empty" style="padding:14px">지금 응답할 일이 없어요 — 진행 중 판매를 확인하세요 ✓</div></div>`;
   /* 2 진행 중·예정 판매 (실시간 미니 지표) */
   const liveCard=c=>{const p=prod(c.productId),k=calc(c);const os=campOrders(c.id).filter(o=>o.status==='PAID');const tod=os.filter(o=>o.at===todayStr);const left=(c.qty||0)-soldQty(c.id);const dd=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
@@ -1811,7 +1820,7 @@ function vSellerHome(){
       ${fresh.map(p=>`<div class="news-item" data-act="prodDetail" data-k="${p.id}"><span class="nb new">NEW</span><div><b>${esc(p.name)}</b> 신규 입점 — ${brand(p.brandId).name} · ${p.cat} · 수수료 ${(p.rate*100).toFixed(0)}%</div></div>`).join('')}
     </div>
   </div>`;
-  const recs=listed.filter(p=>demoVisible(p)&&!mine.some(c=>c.productId===p.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status))).sort((a,b)=>realFirst(a,b)||((b.cat===sl.cat)-(a.cat===sl.cat))).slice(0,3);
+  const recs=listed.filter(p=>demoVisible(p)&&!mine.some(c=>c.productId===p.id&&!['REJECTED','PASSED','DECLINED','SETTLED'].includes(c.status))).sort((a,b)=>realFirst(a,b)||((b.cat===sl.cat)-(a.cat===sl.cat))).slice(0,3);
   return `<div class="hero-band">
     ${sl.img?`<img class="hero-av" src="${sl.img}" alt="프로필" data-act="gotoMy" style="cursor:pointer" title="마이페이지">`:''}
     <div class="ey">Seller Gallery</div>
@@ -1836,7 +1845,7 @@ function vSellerHome(){
 }
 function prodCard(p){
   const b=brand(p.brandId);
-  const already=D_().campaigns.some(c=>c.sellerId===S.actingSeller&&c.productId===p.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status));
+  const already=D_().campaigns.some(c=>c.sellerId===S.actingSeller&&c.productId===p.id&&!['REJECTED','PASSED','DECLINED','SETTLED'].includes(c.status));
   const margin=p.gp*p.rate;
   const exclLocked=p.exclusiveSellerId&&p.exclusiveSellerId!==S.actingSeller;
   return `<div class="card prod">
@@ -1924,7 +1933,7 @@ function vDM(){
     const p=prod(c.productId),b=brand(p.brandId),s=seller(c.sellerId);
     const myRole=isBrand?'brand':'seller';
     const unread=last.type==='chat'&&last.role!==myRole;
-    const who=last.type==='chat'?(last.role==='brand'?b.name:s.name)+': ':'';
+    const who=last.type==='chat'?(last.role==='brand'?b.name:last.role==='admin'?'셀러리 운영팀':s.name)+': ':'';
     return {c,p,b,s,last,unread,who};
   }).sort((a,b)=>a.last.at<b.last.at?1:a.last.at>b.last.at?-1:(a.c.createdAt<b.c.createdAt?1:-1));
   const unreadN=rows.filter(r=>r.unread).length;
@@ -2371,7 +2380,7 @@ function vBrandHome(){
     <div class="sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${note}</div></div>
     <button class="pri sm" data-act="invite" data-k="${sl.id}">제안</button></div>`;
   const rel=CATMAP[bd.cat]||[];
-  const recs3=D_().sellers.filter(x=>!x.hidden&&!cs.some(c=>c.sellerId===x.id&&!['REJECTED','PASSED','SETTLED'].includes(c.status))).map(x=>({s:x,fit:rel.includes(x.cat),score:(rel.includes(x.cat)?2:0)+growthOf(x)/50+(x.m3Sales/x.followers)/300})).sort((a,b)=>b.score-a.score).slice(0,3);
+  const recs3=D_().sellers.filter(x=>!x.hidden&&!cs.some(c=>c.sellerId===x.id&&!['REJECTED','PASSED','DECLINED','SETTLED'].includes(c.status))).map(x=>({s:x,fit:rel.includes(x.cat),score:(rel.includes(x.cat)?2:0)+growthOf(x)/50+(x.m3Sales/x.followers)/300})).sort((a,b)=>b.score-a.score).slice(0,3);
   const views=(D_().productViews||[]).filter(v=>myPid.includes(v.productId)).slice(0,3);
   const findHtml=`<div class="sec">인플루언서 찾기</div>
   <div class="grid g2">
@@ -2486,8 +2495,8 @@ function vBrandCamps(){
   const cs=D_().campaigns.filter(c=>myP.includes(c.productId));
   const f=S.bcF||'all';
   const G={live:cs.filter(c=>c.status==='LIVE'),soon:cs.filter(c=>c.status==='SCHEDULE_CONFIRMED'),
-    prep:cs.filter(c=>['SAMPLE_REQUESTED','SAMPLE_APPROVED','SAMPLE_PURCHASED','SAMPLE_SHIPPED','TESTING','SCHEDULE_PROPOSED'].includes(c.status)),
-    done:cs.filter(c=>['CLEARING','SETTLED','REJECTED','PASSED'].includes(c.status))};
+    prep:cs.filter(c=>['INVITED','SAMPLE_REQUESTED','SAMPLE_APPROVED','SAMPLE_PURCHASED','SAMPLE_SHIPPED','TESTING','SCHEDULE_PROPOSED'].includes(c.status)),
+    done:cs.filter(c=>['CLEARING','SETTLED','REJECTED','PASSED','DECLINED'].includes(c.status))};
   const todayStr=ymd(today());
   const liveCard=c=>{const p=prod(c.productId),sl=seller(c.sellerId),k=calc(c);const os=campOrders(c.id).filter(o=>o.status==='PAID');const tod=os.filter(o=>o.at===todayStr);const un=os.filter(o=>!o.tracking).length;const left=(c.qty||0)-soldQty(c.id);const dd=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
     return `<div class="card" style="padding:16px 18px">
@@ -2524,14 +2533,14 @@ function vBrandProducts(){
   <thead><tr><th>상품</th><th class="num">판매가</th><th class="num">수수료율</th><th>샘플 · 재고</th><th>독점권</th><th>상태</th><th>판매 일정</th></tr></thead>
   <tbody>${mine.map(p=>{
     const slots=D_().campaigns.filter(c=>c.productId===p.id&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status));
-    const stTag=p.status==='listed'?'<span class="st green">노출 중</span>':p.status==='paused'?'<span class="st gray">노출 중단</span>':'<span class="st amber">검수 대기</span>';
+    const stTag=p.status==='listed'?'<span class="st green">노출 중</span>':p.status==='paused'?'<span class="st gray">노출 중단</span>':p.status==='rejected'?`<span class="st red" title="${esc(p.rejectReason||'')}">반려</span><div style="font-size:11px;color:var(--danger);margin-top:4px;max-width:180px;white-space:normal">${esc(p.rejectReason||'')} — 수정 후 재검수</div>`:'<span class="st amber">검수 대기</span>';
     const dash='<span style="color:var(--mute);font-size:12px">—</span>';
     return `<tr><td class="nm"><b>${pIcon(p,24)} ${esc(p.name)}</b>${p.boosted?' <span class="st blue" style="animation:none">부스트</span>':''}<div style="font-size:11.5px;color:var(--mute)">${esc(p.desc)}</div></td>
     <td class="num"><b>₩${fmt(p.gp)}</b><div style="font-size:11px;color:var(--mute);text-decoration:line-through">₩${fmt(p.cp)}</div></td>
     <td class="num">${(p.rate*100).toFixed(0)}%<div style="color:var(--mute);font-size:11px">+플랫폼 ${(PLAT_RATE*100).toFixed(0)}</div></td>
     <td style="white-space:nowrap">${p.sample}<div style="font-size:11px;color:var(--mute)">${spOf(p).freeGrade}↑ 무상 · 구매 ₩${fmt(samplePrice(p))}${spOf(p).refund?' · 환급':''}</div><div style="font-size:11px;color:var(--mute)">재고 ${fmt(p.stock)}</div></td>
     <td style="white-space:nowrap">${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))} 이상</span>${p.exclusiveSellerId?`<div><span class="st green">확정</span></div>`:''}`:dash}</td>
-    <td style="white-space:nowrap">${stTag}<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap"><button class="sm pri" data-act="editProduct" data-k="${p.id}">수정</button>${p.status==='pending'?'':`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}<button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td>
+    <td style="white-space:nowrap">${stTag}<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap"><button class="sm pri" data-act="editProduct" data-k="${p.id}">${p.status==='rejected'?'수정 · 재검수':'수정'}</button>${p.status==='pending'||p.status==='rejected'?'':`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}<button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td>
     <td>${slots.map(c=>`<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;white-space:nowrap">${md(P(c.start))}–${md(P(c.end))} ${seller(c.sellerId).handle}</div>`).join('')||dash}</td></tr>`;}).join('')}
   </tbody></table></div>
   <p style="font-size:12px;color:var(--mute);margin-top:10px">판매가·수수료율은 진행 중인 판매가 있으면 변경할 수 없습니다(신뢰 보호). 노출 중단 시 새 샘플 요청만 막히고 진행 중 판매는 유지됩니다.</p>`;
@@ -2624,7 +2633,7 @@ function vGallery(){
   <div class="sec">익명 인플루언서 스카우트 — 유료 레퍼런스</div>
   <p style="font-size:12.5px;color:var(--mute);margin:-2px 0 14px">프로필 비공개 인플루언서입니다. 레퍼런스 열람권(건당)을 구매하면 상세 지표를 확인하고 제안을 보낼 수 있습니다. <b>제안이 수락되는 순간 DM이 열리고 신원이 공개됩니다.</b></p>
   <div class="grid g2">${scout}</div>
-  <p style="font-size:12px;color:var(--mute);margin-top:12px">※ 프로토타입에서는 제안 시 인플루언서가 즉시 수락한 것으로 처리되어 '샘플 발송 대기' 상태의 캠페인이 생성됩니다.</p>`;
+  <p style="font-size:12px;color:var(--mute);margin-top:12px">※ 제안은 인플루언서가 수락해야 진행됩니다(수락 대기 → 샘플 발송). 거절 시 제안권은 브랜드에 환급됩니다.</p>`;
 }
 function brandPending(){
   const myP=D_().products.filter(p=>p.brandId===S.actingBrand).map(p=>p.id);
@@ -2633,14 +2642,14 @@ function brandPending(){
   return {cs,xr,n:cs.length+xr.length};
 }
 function sellerPending(){
-  const cs=D_().campaigns.filter(c=>c.sellerId===S.actingSeller&&['SAMPLE_SHIPPED','TESTING','SAMPLE_APPROVED','SAMPLE_PURCHASED'].includes(c.status));
+  const cs=D_().campaigns.filter(c=>c.sellerId===S.actingSeller&&['INVITED','SAMPLE_SHIPPED','TESTING','SAMPLE_APPROVED','SAMPLE_PURCHASED'].includes(c.status));
   const info=c=>c.status==='SAMPLE_APPROVED'||c.status==='SAMPLE_PURCHASED';
   return {cs,n:cs.filter(c=>!info(c)).length,info:cs.filter(info).length};
 }
 function sellerRequests(){
   const {cs,n}=sellerPending();
   const isOpen=n?(S.reqOpen!==false):(S.reqOpen===true);
-  const LBL={SAMPLE_SHIPPED:['샘플 도착 — 수령 확인','수령 확인'],TESTING:['테스트 후 진행 여부 결정 — 일정 제안 또는 패스','일정 제안'],SAMPLE_APPROVED:['브랜드 승인 · 샘플 발송 준비 중','스레드'],SAMPLE_PURCHASED:['결제 완료 · 샘플 발송 준비 중','스레드']};
+  const LBL={INVITED:['브랜드가 판매를 직접 제안했어요 — 수락 또는 거절','수락/거절'],SAMPLE_SHIPPED:['샘플 도착 — 수령 확인','수령 확인'],TESTING:['테스트 후 진행 여부 결정 — 일정 제안 또는 패스','일정 제안'],SAMPLE_APPROVED:['브랜드 승인 · 샘플 발송 준비 중','스레드'],SAMPLE_PURCHASED:['결제 완료 · 샘플 발송 준비 중','스레드']};
   return `<div class="card acc" style="padding:0;overflow:hidden;margin-bottom:14px">
     <div class="acc-head" data-act="toggleReq">
       <div><b>📥 요청함</b> <span class="sub" style="color:var(--mute);font-size:12px">브랜드가 보낸 요청 · 내 응답이 필요한 것</span></div>
@@ -2845,7 +2854,7 @@ function vAdminHome(){
     <td class="num">${c.start?md(P(c.start))+'–'+md(P(c.end)):'—'}</td><td class="num">${k.paidCnt}${k.refCnt?` <span style="color:var(--danger)">−${k.refCnt}</span>`:''}</td><td class="num">₩${fmt(k.net)}</td><td class="num">₩${fmt(k.pfNet)}</td><td>${stChip(c.status)}</td></tr>`;}).join('')||'<tr><td colspan="8" class="empty">해당 상태의 캠페인이 없습니다</td></tr>'}
   </tbody></table></div>`;
 }
-function PSTATS(){return {pending:['검수 대기','amber'],listed:['노출 중','green'],paused:['노출 중단','gray']};}
+function PSTATS(){return {pending:['검수 대기','amber'],listed:['노출 중','green'],paused:['노출 중단','gray'],rejected:['반려','red']};}
 /* 리스트용 상품 아이콘: 누끼가 있으면 썸네일, 없으면 이모지 */
 function pIcon(pd,sz){sz=sz||38;return pd&&pd.thumb?`<span class="picon" style="width:${sz}px;height:${sz}px"><img src="${pd.thumb}" alt=""></span>`:`<div class="picon em" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*0.62)}px">${pd?pd.em:'📦'}</div>`;}
 function pstChip(st){const m=PSTATS()[st]||[st,'gray'];return `<span class="st ${m[1]}" style="animation:none">${m[0]}</span>`;}
@@ -2863,7 +2872,7 @@ function vAdminProducts(){
   const gmvOf=p=>campsOf(p).reduce((a,c)=>a+calc(c).net,0);
   return `<h2 class="pg">상품 <small>전 브랜드 등록 상품 ${all.length}개 · 검수 승인/반려, 노출 제어, 상세페이지 확인</small></h2>
   <div class="notice" style="margin-bottom:14px"><b>카테고리 정책</b> — ${CAT_POLICY} 건강기능식품은 표시광고 사전 심의 대상: 질병 치료·예방 표현 금지, 기능성 문구는 식약처 인정 범위 내.</div>
-  ${admChips([['all','전체',all.length],['pending','검수 대기',cnt('pending')],['listed','노출 중',cnt('listed')],['paused','노출 중단',cnt('paused')]],sf,'admPS')}
+  ${admChips([['all','전체',all.length],['pending','검수 대기',cnt('pending')],['listed','노출 중',cnt('listed')],['paused','노출 중단',cnt('paused')],['rejected','반려',cnt('rejected')]],sf,'admPS')}
   <div style="display:flex;gap:18px;flex-wrap:wrap">
     ${admChips([['all','모든 브랜드'],...D_().brands.map(b=>[b.id,b.name,all.filter(p=>p.brandId===b.id).length])],bf,'admPB')}
     ${admChips([['all','모든 카테고리'],...CATS.filter(c=>c!=='전체').map(c=>[c,c,all.filter(p=>p.cat===c).length])],cf,'admPC')}
@@ -2881,7 +2890,7 @@ function vAdminProducts(){
     <td class="num">${cs.length}건${live?` <span class="st live" style="animation:none">LIVE ${live}</span>`:''}<div style="font-size:11px;color:var(--mute)">₩${fmt(gmvOf(p))}</div></td>
     <td style="white-space:nowrap">${p.exclusive?`<span class="gradebox sm">${gfull(exGradeOf(p))}</span>${p.exclusiveSellerId?' <span class="st green" style="animation:none">확정</span>':''}`:'<span style="color:var(--mute)">—</span>'}</td>
     <td>${pstChip(p.status)}</td>
-    <td><div style="display:flex;gap:4px;flex-wrap:wrap">${p.status==='pending'?`<button class="sm pri" data-act="approveProduct" data-k="${p.id}">승인</button><button class="sm danger" data-act="rejectProduct" data-k="${p.id}">반려</button>`
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap">${p.status==='rejected'?`<span class="sub" style="font-size:11px;color:var(--mute)">${esc(p.rejectReason||'')}</span><button class="sm ghost" data-act="approveProduct" data-k="${p.id}">승인으로 변경</button>`:p.status==='pending'?`<button class="sm pri" data-act="approveProduct" data-k="${p.id}">승인</button><button class="sm danger" data-act="rejectProduct" data-k="${p.id}">반려</button>`
       :`<button class="sm ghost" data-act="toggleListing" data-k="${p.id}">${p.status==='listed'?'노출 중단':'재개'}</button>`}
       <button class="sm ghost" data-act="prodDetail" data-k="${p.id}">실적</button><button class="sm ghost" data-act="previewProduct" data-k="${p.id}">상세페이지</button></div></td></tr>`;}).join('')||`<tr><td colspan="10" class="empty">${S.admPQ?`"${esc(S.admPQ)}"에 맞는 상품이 없습니다`:'조건에 맞는 상품이 없습니다'}</td></tr>`}
   </tbody></table></div>`;
@@ -2941,7 +2950,7 @@ function vAdminOrders(){
     <td class="num"><b>₩${fmt(o.unit*o.qty)}</b></td>
     <td>${o.tracking?`<span class="st blue" style="animation:none">배송중</span><div style="font-size:11px;color:var(--mute)">${esc(o.courier||'')} ${esc(o.tracking)}</div>`:o.status==='PAID'?'<span class="st amber" style="animation:none">미발송</span>':'—'}</td>
     <td>${o.status==='PAID'?'<span class="st green" style="animation:none">결제완료</span>':'<span class="st red" style="animation:none">환불</span>'}</td>
-    <td><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="sm ghost" data-act="open" data-k="${cp.id}">스레드</button>${o.status==='PAID'?`<button class="sm danger" data-act="refund" data-k="${o.id}">환불 처리</button>`:''}</div></td></tr>`;}).join('')||'<tr><td colspan="7" class="empty">주문이 없습니다</td></tr>'}
+    <td><div style="display:flex;gap:4px;flex-wrap:wrap"><button class="sm ghost" data-act="open" data-k="${cp.id}">스레드</button>${o.status==='PAID'&&cp.status!=='SETTLED'?`<button class="sm danger" data-act="refund" data-k="${o.id}">환불 처리</button>`:o.status==='PAID'?'<span class="sub" style="color:var(--mute);font-size:11px">정산 완료 · 환불 불가</span>':''}</div></td></tr>`;}).join('')||'<tr><td colspan="7" class="empty">주문이 없습니다</td></tr>'}
   </tbody></table></div>`;
 }
 function vAdminReview(){
@@ -2964,13 +2973,13 @@ function vAdminSettle(){
     return `<div class="rowitem">
     ${pIcon(p,38)}
     <div class="grow"><div class="nm">${pIcon(p,20)} ${esc(p.name)} · ${seller(c.sellerId).handle}</div>
-      <div class="sub">확정 ₩${fmt(k.net)} → 브랜드 ₩${fmt(k.brandPay)} + 인플루언서 ₩${fmt(k.sf*(1-WHT))} · 정산 기준일 ${md(due)}</div></div>
+      <div class="sub">확정 ₩${fmt(k.net)} → 브랜드 ₩${fmt(k.brandPay)} + 인플루언서 ₩${fmt(k.sfTotal*(1-sellerWht(seller(c.sellerId))))} · 정산 기준일 ${md(due)}${(!seller(c.sellerId).settleInfo||!(prod(c.productId)&&brand(prod(c.productId).brandId).settleInfo))?' · <span class="st red" style="animation:none">정산 정보 미등록 → 지급 보류</span>':''}</div></div>
     ${isDue?`<button class="sm pri" data-act="runSettle" data-k="${c.id}">정산 실행</button>`
       :`<span class="st amber">D-${Math.ceil((due-today())/DAY)}</span> <button class="sm ghost" data-act="ffwd" data-k="${c.id}">⏩ 3주 경과(시뮬)</button>`}
   </div>`;}).join('')||'<div class="empty">정산 대기 건이 없습니다</div>'}</div>
   <div class="sec">정산 완료</div>
   <div class="tblw"><table><thead><tr><th>일자</th><th>판매</th><th class="num">확정 매출</th><th class="num">브랜드 지급</th><th class="num">인플루언서 지급</th><th class="num">플랫폼 수익</th></tr></thead>
-  <tbody>${D_().settlements.map(s=>`<tr><td class="num">${md(P(s.at))}</td><td>${esc(s.title)}</td><td class="num">₩${fmt(s.net)}</td><td class="num">₩${fmt(s.brandPay)}</td><td class="num">₩${fmt(s.sellerPay)}</td><td class="num" style="color:var(--accent-ink)">₩${fmt(s.platFee)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">아직 없음</td></tr>'}
+  <tbody>${D_().settlements.map(s=>`<tr><td class="num">${md(P(s.at))}</td><td>${esc(s.title)}${(s.holdS||s.holdB)?` <span class="st red" style="animation:none">지급 보류 · ${[s.holdS?'인플':'',s.holdB?'브랜드':''].filter(Boolean).join('·')} 계좌 미등록</span>`:''}</td><td class="num">₩${fmt(s.net)}</td><td class="num">₩${fmt(s.brandPay)}</td><td class="num">₩${fmt(s.sellerPay)}</td><td class="num" style="color:var(--accent-ink)">₩${fmt(s.platFee)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">아직 없음</td></tr>'}
   </tbody></table></div>`;
 }
 
@@ -3407,7 +3416,7 @@ function vCampDetail(cid){
   const p=prod(c.productId),b=brand(p.brandId),s=seller(c.sellerId);
   const k=calc(c);
   const msgs=(D_().messages[cid]||[]);
-  const role=S.view.role==='brand'?'brand':'seller';
+  const role=S.view.role==='brand'?'brand':S.view.role==='admin'?'admin':'seller';
   const linkUrl=`sellery.co.kr/s/${s.handle.slice(1)}/${cid}`;
   return `<button class="ghost sm" data-act="back">← 목록으로</button>
   <div class="det-head" style="margin-top:12px">
@@ -3426,10 +3435,10 @@ function vCampDetail(cid){
       <div class="msgs">${msgs.map(m=>{
         if(m.type==='sys')return `<div class="sysline">${m.txt} · ${md(P(m.at))}</div>`;
         if(m.type==='warn')return `<div class="warnline">${esc(m.txt)}</div>`;
-        return `<div class="msg ${m.role}"><div class="who" style="color:var(--${m.role==='brand'?'brand':'seller'}-c)">${m.role==='brand'?b.name:s.name}</div>${esc(m.txt)}<div class="tm">${md(P(m.at))}</div></div>`;
+        return `<div class="msg ${m.role}"><div class="who" style="color:${m.role==='admin'?'var(--ink)':`var(--${m.role==='brand'?'brand':'seller'}-c)`}">${m.role==='brand'?b.name:m.role==='admin'?'셀러리 운영팀':s.name}</div>${esc(m.txt)}<div class="tm">${md(P(m.at))}</div></div>`;
       }).join('')||'<div class="sysline">대화가 없습니다</div>'}</div>
       <div class="composer">
-        <span class="as">${role==='brand'?'브랜드':'인플루언서'}로 발신</span>
+        <span class="as">${role==='brand'?'브랜드':role==='admin'?'셀러리 운영팀(CS)':'인플루언서'}로 발신</span>
         <input id="chatIn" placeholder="메시지 입력… (시스템 승인·일정은 우측 버튼으로)" data-enter="sendChat">
         <button class="pri" data-act="sendChat" data-k="${cid}">전송</button>
       </div>
@@ -3470,6 +3479,14 @@ function detActions(c,k,p,s,linkUrl){
         `<button class="pri" data-act="approveSample" data-k="${c.id}">승인</button>
          <button class="danger" data-act="rejectSample" data-k="${c.id}">거절</button>`));
       break;
+    case 'INVITED':
+      if(V==='seller') A.push(card('브랜드 직접 제안 <span class="chip seller">인플루언서 액션</span>',
+        `<b>${esc(brand(p.brandId).name)}</b>가 <b>${esc(p.name)}</b> 판매를 제안했어요 · 수수료 ${(p.rate*100).toFixed(0)}%${gradeBonusOf(s)?` + 등급 보너스 ${(gradeBonusOf(s)*100).toFixed(1)}%p`:''} · 수락 시 샘플 발송 단계부터 시작됩니다 (무상 · 이달 한도 미차감).`,
+        `<button class="pri" data-act="acceptInvite" data-k="${c.id}">수락 → 샘플 받기</button>
+         <button data-act="declineInvite" data-k="${c.id}">거절</button>`));
+      else A.push(wait('인플루언서 수락 대기 중','제안을 보냈어요. 인플루언서가 수락하면 샘플 발송 단계로 넘어갑니다 — 보통 48시간 내 응답해요.'));
+      break;
+    case 'DECLINED': A.push(card('제안 거절됨','인플루언서가 이번 제안을 수락하지 않았습니다.'+(c.celRefunded?` 제안권 ${CEL} ${c.celRefunded} 환급 완료.`:''),'')); break;
     case 'SAMPLE_PURCHASED':{
       const sp=c.samplePaid||{};const rf=spOf(p).refund;
       if(V==='seller') A.push(wait('결제 완료 · 샘플 발송 준비 중',`샘플 구매 ₩${fmt(sp.price||0)}${sp.cel?` (${CEL} ${sp.cel} + ₩${fmt(sp.cash||0)})`:' (현금)'} — 브랜드가 발송하면 운송장이 표시됩니다.${rf?' 판매 확정 시 구매액이 환급됩니다.':''}`));
@@ -3525,7 +3542,7 @@ function detActions(c,k,p,s,linkUrl){
       if(V==='admin') A.push(sim('시뮬레이션','',`<button class="sm" data-act="ffwd" data-k="${c.id}">⏩ 3주 경과 처리</button>`));
       break;}
     case 'SETTLED':
-      A.push(card('정산 완료 ✓',`인플루언서 지급 ₩${fmt(k.sfTotal*(1-WHT))} (원천징수 후) · 브랜드 지급 ₩${fmt(k.brandPay)}. 성과가 좋았다면 같은 조합으로 바로 재판매를 열 수 있습니다.`,
+      A.push(card('정산 완료 ✓',`인플루언서 지급 ₩${fmt(k.sfTotal*(1-sellerWht(s)))}${sellerWht(s)?' (원천징수 3.3% 후)':' (사업자 · 세금계산서)'} · 브랜드 지급 ₩${fmt(k.brandPay)}. 성과가 좋았다면 같은 조합으로 바로 재판매를 열 수 있습니다.`,
         `${V!=='brand'?`<button class="pri" data-act="regongu" data-k="${c.id}">🔁 재판매 제안 (샘플 생략)</button>`:''}
          <button data-act="settleCSV">명세 CSV</button>`));
       break;
@@ -3546,7 +3563,7 @@ function scheduleModal(cid){
     <div class="slots">${slots.map(x=>`<div class="slot"><span class="rng">${md(P(x.start))} – ${md(P(x.end))}</span><span>${seller(x.sellerId).handle} 확정</span></div>`).join('')||'<div class="slot">아직 확정된 기간 없음</div>'}</div></div>
   <div class="fld"><label>시작일</label><input type="date" id="schStart" value="${ymd(addD(today(),7))}" min="${ymd(addD(today(),1))}"></div>
   <div class="fld"><label>기간</label><select id="schLen"><option value="3">3일</option><option value="5" selected>5일</option><option value="7">7일</option></select></div>
-  <div class="fld"><label>희망 배정 재고</label><input type="number" id="schQty" value="500" min="50" step="50"></div>
+  <div class="fld"><label>희망 배정 재고 <span style="font-weight:400">— 배정 가능 ${fmt(stockLeft(p,cid))}개</span></label><input type="number" id="schQty" value="${Math.min(500,stockLeft(p,cid))}" min="50" step="50" max="${stockLeft(p,cid)}"></div>
   <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="proposeSchedule" data-k="${cid}">승인 요청 보내기</button></div>`);
 }
 function sampleBuyModal(pid){
@@ -3580,7 +3597,7 @@ function inviteModal(sid){
   openModal(`<h3>판매 직접 제안 — ${disp}</h3>
   <div class="fld"><label>제안할 상품</label><select id="invProd">${myP.map(p=>`<option value="${p.id}">${p.name} · 판매가 ₩${fmt(p.gp)} · 수수료 ${(p.rate*100).toFixed(0)}%</option>`).join('')}</select></div>
   <div class="fld"><label>제안 메시지</label><textarea id="invMsg" rows="3">안녕하세요${s.hidden?'':' '+s.name+'님'}, ${brand(S.actingBrand).name}입니다. 채널 결이 저희 상품과 잘 맞아 판매를 제안드려요. 샘플부터 보내드릴게요!</textarea></div>
-  <p style="font-size:12px;color:var(--mute)">인플루언서 수락 시 샘플 발송 단계부터 시작됩니다.</p>
+  <p style="font-size:12px;color:var(--mute)">인플루언서가 수락하면 샘플 발송 단계부터 시작됩니다 · 거절 시 사용한 제안권(다이아·블랙 ${CEL} 10)은 자동 환급됩니다.</p>
   <div class="foot"><button data-act="closeModal">취소</button><button class="pri" data-act="confirmInvite" data-k="${sid}">제안 보내기</button></div>`);
 }
 let NP={thumb:null,imgs:[]};
@@ -3641,24 +3658,9 @@ function productModal(pid){
   <p style="font-size:12px;color:var(--mute)">${ed?'수정한 내용은 저장 즉시 인플루언서·고객 화면에 반영됩니다. 판매가·수수료율을 바꾸면 재검수가 필요할 수 있습니다.':'등록 후 플랫폼 검수(관리자 탭)를 통과하면 인플루언서에게 노출됩니다. 고객 구매 페이지에는 옵션·가격·상세 이미지가 그대로 노출됩니다.'}</p>
   <div class="foot"><button data-act="closeModal">취소</button>${ed?`<button class="danger" data-act="deleteProduct" data-k="${ed.id}">삭제</button>`:''}<button class="pri" data-act="${ed?'saveProduct':'createProduct'}" data-k="${ed?ed.id:''}">${ed?'저장':'검수 요청'}</button></div>`);
 }
-function previewModal(cid){
-  const c=camp(cid),p=prod(c.productId),s=seller(c.sellerId),b=brand(p.brandId);
-  const left=Math.max(0,Math.ceil((addD(P(c.end),1)-new Date())/DAY));
-  openModal(`<h3 style="text-align:center">판매 페이지 미리보기 — 구매자 화면</h3>
-  <div class="landing">
-    <div class="hero"><div class="em">${p.thumb?`<img src="${p.thumb}" alt="" style="max-height:96px;max-width:70%;object-fit:contain">`:p.em}</div>
-      <h3>${esc(p.name)}</h3><div class="by">${b.name} × ${s.name} ${s.handle} 단독 판매</div></div>
-    <div class="body">
-      <div class="pr"><span class="g">₩${fmt(p.gp)}</span><span class="c">₩${fmt(p.cp)}</span></div>
-      <div class="timer">판매 마감까지 ${left}일 — 기간 한정 특가</div>
-      <button class="pri buy" data-act="simBuy" data-k="${cid}">구매하기 (주문 시뮬레이션)</button>
-      <p style="font-size:11px;color:var(--mute);text-align:center;margin:10px 0 0">결제는 셀러리(주)가 대행하며, 당사는 통신판매중개자입니다 · #광고 경제적 대가 관계 표시</p>
-    </div>
-  </div>
-  <div class="foot"><button data-act="closeModal">닫기</button></div>`);
-}
 
 /* ============ actions ============ */
+const pushAdminLog=null;
 function transition(cid,st,sysTxt){const c=camp(cid);c.status=st;if(sysTxt)pushSys(cid,sysTxt);save();render();}
 const ACT={
   role(k){S.view={role:k,screen:'home',cid:null};render();},
@@ -3931,11 +3933,24 @@ const ACT={
     const tg=gname(seller(sid));
     if((tg==='다이아'||tg==='블랙')&&!celSpend(S.actingBrand,10,`${tg} 인플루언서 제안 · ${prod(pid).name}`))return;
     const id='c'+(D_().seq++);
-    D_().campaigns.push({id,sellerId:sid,productId:pid,status:'SAMPLE_APPROVED',createdAt:ymd(today()),invited:true});
-    pushSys(id,`브랜드 <b>${brand(S.actingBrand).name}</b>가 <b>${prod(pid).name}</b> 판매를 직접 제안했고, 인플루언서가 수락했습니다 (프로토타입 자동 수락)`);
-    if(seller(sid).hidden)pushSys(id,`🔓 익명 인플루언서가 제안을 수락해 신원이 공개되었습니다 — <b>${seller(sid).name} ${seller(sid).handle}</b>. 지금부터 이 스레드(DM)로 소통하세요`);
+    const celUsed=(tg==='다이아'||tg==='블랙')?10:0;
+    D_().campaigns.push({id,sellerId:sid,productId:pid,status:'INVITED',createdAt:ymd(today()),invited:true,celUsed});
+    pushSys(id,`브랜드 <b>${brand(S.actingBrand).name}</b>가 <b>${prod(pid).name}</b> 판매를 직접 제안했습니다 · 인플루언서 수락 대기`);
     if(msg)pushChat(id,'brand',msg);
-    closeModal();save();S.view.cid=id;render();toast(`${seller(sid).name}님에게 제안 발송 → 수락됨`);
+    closeModal();save();S.view.cid=id;render();toast(`${seller(sid).hidden?'○○○ 인플루언서':seller(sid).name+'님'}에게 제안 발송 — 수락 대기`);
+  },
+  acceptInvite(cid){
+    const c=camp(cid),s=seller(c.sellerId),p=prod(c.productId);
+    if(p.exclusiveSellerId&&p.exclusiveSellerId!==c.sellerId){toast('이 상품은 다른 인플루언서의 독점권이 확정되어 진행할 수 없습니다');return;}
+    if(p.status!=='listed'){toast('현재 노출 중단된 상품입니다 — 브랜드에 문의하세요');return;}
+    transition(cid,'SAMPLE_APPROVED',`인플루언서가 제안을 <b>수락</b>했습니다 · 샘플 발송 단계로 이동 (배송지 전달됨)${s.hidden?` · 🔓 익명 인플루언서 신원 공개 — <b>${esc(s.name)} ${s.handle}</b>`:''}`);
+    toast('제안 수락 — 브랜드가 샘플을 발송하면 운송장이 표시됩니다');
+  },
+  declineInvite(cid){
+    const c=camp(cid),p=prod(c.productId),b=brand(p.brandId);
+    if(c.celUsed){(D_().celeryLedger=D_().celeryLedger||[]).push({who:b.id,at:ymd(today()),delta:c.celUsed,memo:`제안 거절 환급 · ${p.name}`});c.celRefunded=c.celUsed;}
+    transition(cid,'DECLINED',`인플루언서가 제안을 <b>거절</b>했습니다${c.celRefunded?` · 제안권 ${CEL} ${c.celRefunded} 브랜드에 환급`:''}`);
+    toast('제안을 거절했습니다');
   },
   toggleLive(){
     if(liveTimer){clearInterval(liveTimer);liveTimer=null;toast('실시간 시뮬레이션 중지');render();return;}
@@ -4058,6 +4073,8 @@ const ACT={
     const en=ymd(addD(P(st),len-1));
     const c=camp(cid);
     if(overlaps(c.productId,st,en,cid)){toast('⚠ 이미 확정된 기간과 겹칩니다 — 다른 날짜를 선택하세요');return;}
+    if(qty<=0){toast('배정 재고를 입력하세요');return;}
+    const sl_=stockLeft(prod(c.productId),cid);if(qty>sl_){toast(`⚠ 배정 가능한 재고를 초과했어요 (잔여 ${fmt(sl_)}개) — 수량을 줄여주세요`);return;}
     c.propStart=st;c.propEnd=en;c.propQty=qty;
     closeModal();
     if(c.regongu&&passActive(seller(c.sellerId),'regongu',30)){
@@ -4069,7 +4086,10 @@ const ACT={
     toast('일정 제안 완료 — 브랜드 승인 대기');
   },
   confirmSchedule(cid){
-    const c=camp(cid);c.start=c.propStart;c.end=c.propEnd;c.qty=c.propQty;
+    const c=camp(cid);
+    if(overlaps(c.productId,c.propStart,c.propEnd,cid)){toast('⚠ 제안 이후 다른 판매가 같은 기간에 확정됐어요 — 반려하고 재제안을 요청하세요');return;}
+    const sl_=stockLeft(prod(c.productId),cid);if(c.propQty>sl_){toast(`⚠ 잔여 재고(${fmt(sl_)}개)보다 많은 수량입니다 — 재고를 늘리거나 반려하세요`);return;}
+    c.start=c.propStart;c.end=c.propEnd;c.qty=c.propQty;
     transition(cid,'SCHEDULE_CONFIRMED',`브랜드가 일정을 <b>승인</b>했습니다 · ${md(P(c.start))} – ${md(P(c.end))} 기간 독점 확정`);
     toast('일정 확정 — 캘린더 잠금');
   },
@@ -4081,7 +4101,6 @@ const ACT={
   },
   simOrders(cid){simSell(cid,5);},
   simOrders20(cid){simSell(cid,20);},
-  simBuy(cid){simSell(cid,1);closeModal();},
   endCamp(cid){
     const c=camp(cid);c.end=ymd(today());
     transition(cid,'CLEARING',`판매 종료 · 교환/환불 기간 시작 (정산 예정 <b>${md(settleDue(c))}</b>)`);
@@ -4095,7 +4114,10 @@ const ACT={
     save();render();toast('3주 경과 처리 — 관리자 탭에서 정산 실행 가능');
   },
   refund(oid){
-    const o=D_().orders.find(x=>x.id===oid);o.status='REFUNDED';
+    const o=D_().orders.find(x=>x.id===oid);if(!o||o.status!=='PAID')return;
+    if(camp(o.campaignId).status==='SETTLED'){toast('정산이 완료된 판매의 주문은 환불 처리할 수 없습니다 — 별도 CS 정산 조정 필요');return;}
+    if(o.sample){toast('인플루언서 샘플 구매분은 브랜드 정산에 포함된 건이라 여기서 환불하지 않습니다 — 캠페인 스레드에서 협의');return;}
+    o.status='REFUNDED';
     pushSys(o.campaignId,`환불 처리 · ${o.buyer} · ₩${fmt(o.unit*o.qty)} (정산액 차감)`);
     save();render();toast('환불 처리 — 정산 기준액에서 차감됨');
   },
@@ -4105,7 +4127,9 @@ const ACT={
     if(+c.id.slice(1)>=100)sl.m3Sales=(sl.m3Sales||0)+k.net;   // 시드 이후 생성된 판매만 3개월 매출(등급·셀러리 획득 기준)에 누적
     let refundCash=0;
     if(c.samplePaid&&spOf(p).refund&&!c.sampleRefunded){const sp=c.samplePaid;if(sp.cel)(D_().celeryLedger=D_().celeryLedger||[]).push({who:c.sellerId,at:ymd(today()),delta:sp.cel,memo:`샘플 구매 환급 · ${p.name}`});refundCash=sp.cash||0;c.sampleRefunded=true;pushSys(cid,`🎁 샘플 구매액 환급 — ${sp.cel?`${CEL} ${sp.cel}`:''}${sp.cel&&refundCash?' + ':''}${refundCash?'₩'+fmt(refundCash):''} (판매 확정 조건 충족)`);}
-    D_().settlements.push({at:ymd(today()),title:`${p.name} · ${sl.handle}`,net:k.net,brandPay:k.brandPay,sellerPay:k.sfTotal*(1-sellerWht(sl))+refundCash,platFee:k.pf,pfNet:k.pfNet});
+    const bz=brand(p.brandId);const holdS=!(sl.settleInfo&&sl.settleInfo.account),holdB=!(bz.settleInfo&&bz.settleInfo.account);
+    D_().settlements.push({at:ymd(today()),cid,title:`${p.name} · ${sl.handle}`,net:k.net,brandPay:k.brandPay,sellerPay:k.sfTotal*(1-sellerWht(sl))+refundCash,platFee:k.pf,pfNet:k.pfNet,holdS,holdB});
+    if(holdS||holdB)pushSys(cid,`⏸ 지급 보류 — ${[holdS?'인플루언서':'',holdB?'브랜드':''].filter(Boolean).join('·')} 정산 계좌 미등록. 마이페이지에서 정산 정보를 등록하면 다음 지급 배치에 포함됩니다.`);
     if(k.refReward>0){
       const refId=seller(c.sellerId).referredBy;
       (D_().refEarnings=D_().refEarnings||[]).push({at:ymd(today()),referrerId:refId,fromSellerId:c.sellerId,campaignId:cid,amt:k.refReward});
@@ -4119,8 +4143,8 @@ const ACT={
     pushSys(cid,`<b>정산 완료</b> · 브랜드 ₩${fmt(k.brandPay)}${k.bb?' (추천 할인 −1%p 포함)':''}${k.bDisc?' (등급 할인 포함)':''} · 인플루언서 ₩${fmt(k.sfTotal)}${k.gBonus?` (${gname(sl)} 보너스 포함)`:''}${k.rb?' (추천 부스트 +1%p 포함)':''} → ${sellerWht(sl)?`원천징수 3.3% 공제 후 ₩${fmt(k.sfTotal*(1-WHT))}`:'사업자 정산(세금계산서) ₩'+fmt(k.sfTotal)} · 명세 발행`);
     save();render();toast('정산 실행 완료 — 양측 지급 및 명세 발행');
   },
-  approveProduct(pid){const p=prod(pid);p.status='listed';p.stock=p.stock||500;save();render();toast(`${p.name} 노출 승인`);},
-  rejectProduct(pid){const p=prod(pid);D_().products=D_().products.filter(x=>x.id!==pid);save();render();toast('반려 처리');},
+  approveProduct(pid){const p=prod(pid);p.status='listed';delete p.rejectReason;p.stock=p.stock||500;save();render();toast(`${p.name} 노출 승인`);},
+  rejectProduct(pid){const p=prod(pid);const why=prompt('반려 사유 (브랜드에 표시됩니다)','건강·웰니스 카테고리 범위 밖 / 허위·과장 표기 확인 필요');if(why===null)return;p.status='rejected';p.rejectReason=why||'검수 기준 미달';save();render();toast(`${p.name} 반려 — 브랜드가 수정 후 재검수 요청할 수 있습니다`);},
   newProduct(){productModal();},
   editProduct(pid){productModal(pid);},
   saveProduct(pid){
@@ -4138,17 +4162,18 @@ const ACT={
     if(!locked){const cp=+$('#npCp').value||p.cp,gp=+$('#npGp').value||p.gp,rate=Math.max(5,(+$('#npRate').value||30)-PLAT_RATE*100)/100;
       const priceChanged=(gp!==p.gp||rate!==p.rate);p.cp=cp;p.gp=gp;p.rate=rate;
       if(priceChanged&&p.status==='listed'){p.status='pending';toast('판매가·수수료율 변경 — 재검수 대기로 전환됩니다');}}
-    NP={thumb:null,imgs:[]};closeModal();save();render();toast(`${p.name} 수정 저장 완료`);
+    if(p.status==='rejected'){p.status='pending';delete p.rejectReason;}
+    NP={thumb:null,imgs:[]};closeModal();save();render();toast(p.status==='pending'?`${p.name} 수정 저장 — 재검수 요청됨`:`${p.name} 수정 저장 완료`);
   },
   deleteProduct(pid){
     const p=prod(pid);if(!p)return;
-    const used=D_().campaigns.some(c=>c.productId===pid&&!['REJECTED','PASSED'].includes(c.status));
+    const used=D_().campaigns.some(c=>c.productId===pid&&!['REJECTED','PASSED','DECLINED'].includes(c.status));
     if(used){toast('진행 이력이 있는 상품은 삭제할 수 없습니다 — 노출 중단을 사용하세요');return;}
     if(!confirm(`${p.name}을(를) 삭제할까요?`))return;
     D_().products=D_().products.filter(x=>x.id!==pid);closeModal();save();render();toast('상품 삭제됨');
   },
   toggleListing(pid){
-    const p=prod(pid);if(!p||p.status==='pending')return;
+    const p=prod(pid);if(!p||p.status==='pending'||p.status==='rejected')return;
     p.status=p.status==='listed'?'paused':'listed';
     save();render();toast(p.status==='listed'?`${p.name} 노출 재개`:`${p.name} 노출 중단 — 새 샘플 요청이 막힙니다`);
   },
@@ -4200,6 +4225,7 @@ const ACT={
   qtyDelta(d){S.storeQty=Math.max(1,Math.min(10,(S.storeQty||1)+ +d));render();},
   buyNow(cid){
     const c=camp(cid),p=prod(c.productId);
+    if(S.view.role!=='customer'){toast('미리보기에서는 주문이 생성되지 않습니다 — 고객 화면에서 구매 흐름을 확인하세요 (주문 시뮬레이션은 관리자 스레드)');return;}
     if(c.status!=='LIVE'){toast('현재 판매 중이 아닙니다');return;}
     const opts=optsOf(p),o=opts[Math.min(S.storeOpt||0,opts.length-1)],q=S.storeQty||1;
     const left=(c.qty||0)-soldQty(cid);
@@ -4267,10 +4293,11 @@ const ACT={
     list.forEach(({b,p,s})=>{
       const tg=gname(s);
       if((tg==='다이아'||tg==='블랙')&&celBal(b.id)<10){skip++;return;}
-      if(tg==='다이아'||tg==='블랙')celSpend(b.id,10,`${tg} 인플루언서 자동 제안 · ${p.name}`);
+      const celUsed=(tg==='다이아'||tg==='블랙')?10:0;
+      if(celUsed)celSpend(b.id,10,`${tg} 인플루언서 자동 제안 · ${p.name}`);
       const id='c'+(D_().seq++);
-      D_().campaigns.push({id,sellerId:s.id,productId:p.id,status:'SAMPLE_APPROVED',createdAt:ymd(today()),invited:true,auto:true});
-      pushSys(id,`🤖 <b>셀러리 자동 제안</b> — 트렌드·카테고리 적합도 기반으로 <b>${esc(b.name)}</b>가 <b>${esc(p.name)}</b> 판매를 제안했고 인플루언서가 수락했습니다 (프로토타입 자동 수락)`);
+      D_().campaigns.push({id,sellerId:s.id,productId:p.id,status:'INVITED',createdAt:ymd(today()),invited:true,auto:true,celUsed});
+      pushSys(id,`🤖 <b>셀러리 자동 제안</b> — 트렌드·카테고리 적합도 기반으로 <b>${esc(b.name)}</b>가 <b>${esc(p.name)}</b> 판매를 제안했습니다 · 인플루언서 수락 대기`);
       n++;
     });
     save();render();toast(`자동 제안 ${n}건 발송${skip?` · ${skip}건은 브랜드 셀러리 부족으로 보류`:''}`);
@@ -4280,7 +4307,7 @@ const ACT={
   },
   sendChat(cid){
     const inp=$('#chatIn');const t=inp.value.trim();if(!t)return;
-    pushChat(cid,S.view.role==='brand'?'brand':'seller',t);
+    pushChat(cid,S.view.role==='brand'?'brand':S.view.role==='admin'?'admin':'seller',t);
     save();render();
   }
 };
