@@ -50,6 +50,16 @@ button.sm{font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:4px 9px
 button.link{font:inherit;font-size:12.5px;border:none;background:none;color:var(--bar);text-decoration:underline;text-underline-offset:2px;cursor:pointer;padding:0}
 .err{color:var(--danger);font-size:12.5px;min-height:18px;margin:-6px 0 10px}
 .ok{color:var(--red);font-weight:600}
+.or{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--mute);font-size:11.5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.08em}.or::before,.or::after{content:'';flex:1;height:1.5px;background:var(--line-soft)}
+button.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'IBM Plex Sans KR',sans-serif;font-size:13.5px;font-weight:600;padding:11px;border:2px solid var(--line-soft);background:#fff;color:var(--ink);cursor:pointer;box-shadow:3px 3px 0 var(--line-sh)}
+button.gbtn:hover{border-color:var(--line)}
+.gpick{border:2px solid var(--line-soft);background:var(--surface-2);padding:10px 12px;margin-top:10px}
+.gpick h5{margin:0 0 8px;font-size:12px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;color:var(--mute);display:flex;justify-content:space-between}
+.gpick .acc{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;font-size:13px;padding:8px 10px;border:2px solid transparent;background:#fff;cursor:pointer;margin-bottom:6px}
+.gpick .acc:hover{border-color:var(--line-soft)}
+.gpick .av{width:28px;height:28px;border-radius:50%;background:var(--bar);color:var(--bar-fg);display:grid;place-items:center;font-weight:700;font-size:12px;flex:none}
+.gpick .acc small{display:block;color:var(--mute);font-size:11.5px}
+#gsiHost{display:flex;justify-content:center;min-height:0}
 .foot{margin-top:16px;padding-top:14px;border-top:1.5px solid var(--line-soft);font-size:12.5px;color:var(--mute);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .note{font-size:11.5px;color:var(--mute);margin-top:12px;line-height:1.5}
 .pw{position:relative}.pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:none;background:none;font-size:11.5px;color:var(--mute);cursor:pointer;font-family:'IBM Plex Mono',monospace}
@@ -92,8 +102,12 @@ footer{padding:14px 18px;font-size:11.5px;color:var(--mute);text-align:center}
       <div class="row"><label><input type="checkbox" id="keep" checked> 로그인 유지</label><button type="button" class="link" data-show="fReset">비밀번호를 잊으셨나요?</button></div>
       <div class="err" id="loginErr" role="alert"></div>
       <button class="pri" type="submit">로그인 →</button>
+      <div class="or">또는</div>
+      <div id="gsiHost"></div>
+      <button type="button" class="gbtn" id="gLogin"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.5l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4H24v8.1h12.7c-.3 2.1-1.7 5.3-4.8 7.4l7.4 5.7c4.4-4.1 7.2-10.1 7.2-17.2z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.7 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2 1.4-4.7 2.4-8.5 2.4-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.2C6.5 42.6 14.6 48 24 48z"/></svg> Google 계정으로 계속하기</button>
+      <div class="gpick" id="gPick" hidden><h5><span>계정 선택 — accounts.google.com (시뮬)</span><button type="button" class="link" id="gClose">닫기</button></h5><div id="gAccs"></div><small style="color:var(--mute);font-size:11px">가입되지 않은 Google 계정은 이메일 인증을 건너뛰고 바로 가입 폼으로 이어집니다.</small></div>
       <div class="foot"><span>아직 계정이 없나요?</span><button type="button" class="link" data-show="fJoin" id="joinLink">인플루언서 가입</button></div>
-      <p class="note">실서비스: 이메일·비밀번호(bcrypt) + 이메일 인증 · 로그인 5회 실패 시 10분 잠금 · 세션 쿠키(HttpOnly). 카카오 로그인은 고객 화면에서만 사용합니다.</p>
+      <p class="note">실서비스: 이메일·비밀번호(bcrypt) + 이메일 인증 · Google 로그인은 Google Identity Services(OIDC) — 같은 이메일이면 기존 계정에 연결 · 로그인 5회 실패 시 10분 잠금 · 세션 쿠키(HttpOnly). 카카오 로그인은 고객 화면에서만 사용합니다.</p>
     </form>
 
     <!-- 가입 -->
@@ -103,7 +117,8 @@ footer{padding:14px 18px;font-size:11.5px;color:var(--mute);text-align:center}
       <div class="fld"><label for="jName" id="jNameL">활동명</label><input id="jName" placeholder="예: 지유" required></div>
       <div class="fld" id="jBizWrap" hidden><label for="jBiz">사업자등록번호</label><input id="jBiz" inputmode="numeric" placeholder="000-00-00000"></div>
       <div class="fld"><label for="jEmail">이메일</label><input id="jEmail" type="email" autocomplete="email" placeholder="name@company.com" required></div>
-      <div class="fld"><label for="jPw">비밀번호</label><input id="jPw" type="password" autocomplete="new-password" placeholder="8자 이상, 영문+숫자" required></div>
+      <div class="fld" id="jPwWrap"><label for="jPw">비밀번호</label><input id="jPw" type="password" autocomplete="new-password" placeholder="8자 이상, 영문+숫자" required></div>
+      <div class="fld" id="jGoogle" hidden><label>로그인 방식</label><div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:9px 12px;border:2px solid var(--line-soft);background:var(--surface-2)"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.5l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.8-.4-4H24v8.1h12.7c-.3 2.1-1.7 5.3-4.8 7.4l7.4 5.7c4.4-4.1 7.2-10.1 7.2-17.2z"/><path fill="#FBBC05" d="M10.5 28.6A14.6 14.6 0 0 1 9.7 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2 1.4-4.7 2.4-8.5 2.4-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.2C6.5 42.6 14.6 48 24 48z"/></svg> Google 계정으로 인증됨 — 비밀번호 없이 Google로 로그인합니다</div></div>
       <div class="fld"><label for="jRef">추천 코드 <span style="font-weight:400;text-transform:none;letter-spacing:0">(선택)</span></label><input id="jRef" placeholder="예: JIYU01 — 첫 5회 판매 수수료 +1%p" style="text-transform:uppercase"></div>
       <label class="check"><input type="checkbox" id="jAgree"> <span><a href="#" onclick="return false">이용약관</a>·<a href="#" onclick="return false">개인정보 처리방침</a>에 동의합니다. 셀러리는 건강·웰니스 상품만 취급하며, 플랫폼 밖 직거래는 정산·분쟁 보호를 받지 못합니다.</span></label>
       <div class="err" id="joinErr" role="alert"></div>
@@ -150,6 +165,16 @@ const ACCOUNTS=[
   {role:'admin',id:'admin',name:'셀러리 운영팀',handle:'admin@sellery.co.kr',email:'admin@sellery.co.kr'}
 ];
 const SESSION_KEY='sellery-session';
+/* ---- Google 로그인 ----
+   실서비스: GOOGLE_CLIENT_ID를 채우면 Google Identity Services 버튼이 렌더되고 시뮬 버튼은 숨겨집니다.
+   흐름: GIS credential(ID 토큰 JWT) → 서버 POST /auth/google 에서 토큰 검증(aud=client_id, iss=accounts.google.com, exp)
+        → email_verified 이메일로 계정 조회: 있으면 로그인, 없으면 가입 폼(이메일 고정·비밀번호 생략) → 세션 쿠키 발급.
+   Google Cloud Console: OAuth 클라이언트(웹) · 승인된 JavaScript 원본에 sellery.co.kr 추가 · 동의 화면 게시. */
+const GOOGLE_CLIENT_ID='';
+const GOOGLE_DEMO=[
+  {email:'jiyu@sellery.demo',name:'김지유'},{email:'haneul@sellery.demo',name:'하늘'},{email:'partner@vyneherb.co',name:'김바인 · 바인허브'},{email:'official@weglow.biz',name:'박글로 · 글로헬스'},{email:'new.partner@gmail.com',name:'신규 파트너 (미가입)'}
+];
+let googleJoin=null; // Google 인증으로 넘어온 신규 가입 이메일
 const $=s=>document.querySelector(s);
 let role=(new URLSearchParams(location.search).get('role')||'seller');if(!['seller','brand'].includes(role))role='seller';
 const COPY={
@@ -173,8 +198,29 @@ function login(acc,keep){
   location.href=acc.role==='admin'?'index.html#admin':COPY[acc.role].dest;
 }
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>setRole(b.dataset.role)));
+/* Google 계정으로 로그인/가입 — 실서비스에서는 onGoogleCredential(jwt)이 이 함수를 호출 */
+function googleSignIn(email,name){
+  email=email.toLowerCase();const acc=ACCOUNTS.find(a=>a.email===email);
+  if(acc){ if(acc.role!=='admin'&&acc.role!==role){$('#loginErr').textContent=`이 Google 계정은 ${acc.role==='seller'?'인플루언서':'브랜드'} 계정에 연결되어 있어요 — 위 탭을 바꿔주세요.`;$('#gPick').hidden=true;return;} login(acc,true);return; }
+  googleJoin={email,name};$('#jEmail').value=email;$('#jEmail').readOnly=true;$('#jName').value=role==='seller'?(name||'').split(' ')[0]:'';
+  $('#jPwWrap').hidden=true;$('#jGoogle').hidden=false;$('#joinErr').textContent='';show('fJoin');$('#jName').focus();
+}
+function onGoogleCredential(resp){ // GIS callback: resp.credential = ID 토큰(JWT). 프로토타입은 payload만 디코드(서버 검증 대체)
+  try{const p=JSON.parse(atob(resp.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));if(p.email_verified===false){$('#loginErr').textContent='Google 계정 이메일이 인증되지 않았어요.';return;}googleSignIn(p.email,p.name);}catch(e){$('#loginErr').textContent='Google 로그인 처리 중 오류가 났어요. 다시 시도해주세요.';}
+}
+if(GOOGLE_CLIENT_ID){
+  const sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.defer=true;
+  sc.onload=()=>{google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:onGoogleCredential,ux_mode:'popup',auto_select:false});google.accounts.id.renderButton($('#gsiHost'),{theme:'outline',size:'large',width:340,text:'continue_with',locale:'ko'});$('#gLogin').hidden=true;};
+  document.head.appendChild(sc);
+}
+$('#gLogin').addEventListener('click',()=>{
+  $('#gAccs').innerHTML=GOOGLE_DEMO.map(g=>`<button type="button" class="acc" data-g="${g.email}" data-n="${g.name}"><span class="av">${g.name[0]}</span><span>${g.name}<small>${g.email}</small></span></button>`).join('');
+  $('#gPick').hidden=false;
+});
+$('#gClose').addEventListener('click',()=>$('#gPick').hidden=true);
+$('#gAccs').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(b)googleSignIn(b.dataset.g,b.dataset.n);});
 document.addEventListener('click',e=>{
-  const s=e.target.closest('[data-show]');if(s){show(s.dataset.show);return;}
+  const s=e.target.closest('[data-show]');if(s){if(s.dataset.show==='fJoin'){googleJoin=null;$('#jEmail').readOnly=false;$('#jPwWrap').hidden=false;$('#jGoogle').hidden=true;}show(s.dataset.show);return;}
   const f=e.target.closest('[data-fill]');if(f){$('#email').value=f.dataset.fill;$('#pw').value='sellery2026';$('#loginErr').textContent='';show('fLogin');$('#pw').focus();}
 });
 $('#togglePw').addEventListener('click',()=>{const p=$('#pw');p.type=p.type==='password'?'text':'password';$('#togglePw').textContent=p.type==='password'?'표시':'숨김';});
@@ -195,9 +241,10 @@ $('#fJoin').addEventListener('submit',e=>{
   if(role==='brand'&&!/^\d{3}-?\d{2}-?\d{5}$/.test($('#jBiz').value.trim())){err.textContent='사업자등록번호 10자리를 입력해주세요.';return;}
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){err.textContent='이메일 형식을 확인해주세요.';return;}
   if(ACCOUNTS.some(a=>a.email===email)){err.textContent='이미 가입된 이메일입니다 — 로그인해주세요.';return;}
-  if(!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(pw)){err.textContent='비밀번호는 영문과 숫자를 포함해 8자 이상이어야 합니다.';return;}
+  if(!googleJoin&&!/^(?=.*[A-Za-z])(?=.*\d).{8,}$/.test(pw)){err.textContent='비밀번호는 영문과 숫자를 포함해 8자 이상이어야 합니다.';return;}
   if(!$('#jAgree').checked){err.textContent='약관에 동의해주세요.';return;}
-  pendingJoin={role,id:role==='seller'?'s1':'b1',name,email,ref}; // 프로토타입: 신규 계정은 데모 첫 계정 데이터로 입장
+  pendingJoin={role,id:role==='seller'?'s1':'b1',name,email,ref,google:!!googleJoin}; // 프로토타입: 신규 계정은 데모 첫 계정 데이터로 입장
+  if(googleJoin){login({...pendingJoin},true);return;} // Google은 이메일이 이미 인증됨 → 인증 메일 생략
   $('#vEmail').textContent=email;show('fVerify');
 });
 $('#vDone').addEventListener('click',()=>{if(!pendingJoin)return show('fLogin');const acc={...pendingJoin};login(acc,true);});
