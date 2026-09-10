@@ -635,10 +635,10 @@ button,a,.rowitem,.hb-row,.news-item,.catchip,[data-act]{cursor:url("data:image/
 /* ---- 로고 최종(2026-09-03): 네오브루탈 흰 박스 + Archivo 볼드 잉크 텍스트 + 그린 점 + 일러스트 셀러리 아이콘 (픽셀 폰트·가짜볼드 제거) ---- */
 .wordmark{font-family:'Archivo','IBM Plex Sans KR',sans-serif!important;font-weight:800!important;font-size:18px;letter-spacing:.06em!important;text-transform:uppercase!important;text-shadow:none;color:var(--ink);background:#fff;padding:8px 14px 8px 12px;gap:8px;box-shadow:var(--pxb2),4px 4px 0 0 var(--ink);line-height:1}
 .wordmark .dot{color:var(--red);margin-left:2px}
-.wordmark .celogo{width:24px;height:28px;margin:0;shape-rendering:auto;image-rendering:auto;display:block}
+.wordmark .celogo{width:24px;height:28px;margin:0;shape-rendering:auto;image-rendering:auto;display:block;transform:rotate(-14deg);transform-origin:50% 80%}  /* 사용자 선택 2026-09-10: 로고 셀러리 살짝 왼쪽 기울임 */
 .boot-logo{font-family:'Archivo','IBM Plex Sans KR',sans-serif;font-weight:800;font-size:40px;letter-spacing:.06em;color:var(--ink);text-shadow:none;display:flex;align-items:center;justify-content:center}
 .boot-logo span{color:var(--red)}
-.boot-logo .celogo{shape-rendering:auto}
+.boot-logo .celogo{shape-rendering:auto;transform:rotate(-14deg);transform-origin:50% 80%}
 @media(max-width:640px){.wordmark{font-size:16px;padding:6px 12px 6px 10px}.wordmark .celogo{width:20px;height:24px}}
 /* ==== v7 정돈 (2026-09-03, 대표 피드백 반영): 픽셀 셀러리 컨셉 유지 + 장식 밀도 축소 + 위계 회복.
    원복: 이 v7 블록 삭제 또는 `git checkout skin-pixel-v2 -- index.html` ==== */
