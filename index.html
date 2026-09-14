@@ -1352,7 +1352,7 @@ function seedData(){
 }
 
 /* ============ state ============ */
-const LS='sellery-proto-v27';
+const LS='sellery-proto-v28';
 const BREF_RATE=0.01, BREF_DISC=0.01, BREF_TIMES=3;
 /* ---- 셀러리(🥬) 포인트 경제 ---- */
 const CELERY_PER=5000000; // 확정 매출 ₩500만당 1🥬
@@ -1468,9 +1468,9 @@ function celSpend(who,n,memo){
 const SEMOJI={'s1':'💄','s2':'🛋️','s3':'🏃‍♀️','s6':'💪','s7':'🌸','s8':'🥗'};
 const PLAT_NAMES={instagram:'인스타그램',youtube:'유튜브',naver:'네이버 블로그',tiktok:'틱톡'};
 const GRADES=[
-  {g:'블랙',min:100000000,bonus:3,pct:1,perk:'수수료 +3%p · 샘플 월 5회 · 전담 매니저 · 독점권 우선 협상'},
-  {g:'다이아',min:50000000,bonus:2,pct:3,perk:'수수료 +2%p · 샘플 월 5회 · 독점권 신청 · 스카우트 최상단'},
-  {g:'플래티넘',min:30000000,bonus:1.5,pct:8,perk:'수수료 +1.5%p · 샘플 월 5회 · 신상품 우선 제안권'},
+  {g:'블랙',min:100000000,bonus:3,pct:1,perk:'수수료 +3%p · 샘플 월 5회 · 전담 매니저 · 판매 기간 우선권 · 독점권 우선 협상'},
+  {g:'다이아',min:50000000,bonus:2,pct:3,perk:'수수료 +2%p · 샘플 월 5회 · 독점권 신청 · 판매 기간 우선권 · 스카우트 최상단'},
+  {g:'플래티넘',min:30000000,bonus:1.5,pct:8,perk:'수수료 +1.5%p · 샘플 월 5회 · 신상품 우선 제안권 · 판매 기간 우선권'},
   {g:'골드',min:15000000,bonus:1,pct:18,perk:'수수료 +1%p · 샘플 월 2회'},
   {g:'실버',min:8000000,bonus:0.5,pct:35,perk:'수수료 +0.5%p · 샘플 월 2회'},
   {g:'브론즈',min:3000000,bonus:0.3,pct:60,perk:'수수료 +0.3%p · 샘플 월 1회'},
@@ -1632,9 +1632,21 @@ function toast(t){
   const el=document.createElement('div');el.className='toast';el.textContent=t;
   $('#toasts').appendChild(el);setTimeout(()=>el.remove(),2600);
 }
-function overlaps(pid,s,e,exceptCid){
-  return D_().campaigns.some(c=>c.productId===pid&&c.id!==exceptCid&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status)
+/* 기간 정책(2026-09-14 변경): 같은 상품이라도 기간은 기본 공유(누구나 오픈 가능).
+   단 플래티넘 이상 인플루언서가 확정·진행 중인 기간에는 플래티넘 이상만 새로 진입할 수 있다.
+   반환: 차단 사유가 되는 상위 등급 인플루언서 객체 (없으면 null) */
+const PRIORITY_TIER = '플래티넘';
+function periodHolders(pid,s,e,exceptCid){
+  return D_().campaigns.filter(c=>c.productId===pid&&c.id!==exceptCid
+    &&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status)
     &&!(P(e)<P(c.start)||P(s)>P(c.end)));
+}
+function isPriority(sl){return sl&&tierIdx(gname(sl))>-1&&tierIdx(gname(sl))<=tierIdx(PRIORITY_TIER);}
+function periodBlock(pid,s,e,exceptCid,sellerId){
+  const me=seller(sellerId);
+  if(isPriority(me))return null;                       // 플래티넘 이상은 언제나 진입 가능
+  const hit=periodHolders(pid,s,e,exceptCid).find(c=>isPriority(seller(c.sellerId)));
+  return hit?seller(hit.sellerId):null;                // 상위 등급이 선점한 기간이면 차단
 }
 /* 상품 재고 배정: 확정·진행 중 캠페인에 배정된 수량 합 (제안 시 잔여 재고 초과 불가) */
 function allocated(pid,exceptCid){return D_().campaigns.filter(c=>c.productId===pid&&c.id!==exceptCid&&['SCHEDULE_CONFIRMED','LIVE'].includes(c.status)).reduce((a,c)=>a+(c.qty||0),0);}
@@ -3529,7 +3541,7 @@ function detActions(c,k,p,s,linkUrl){
     case 'SCHEDULE_PROPOSED':
       if(V==='seller') A.push(wait('브랜드 일정 승인 대기',`제안한 기간 <b>${md(P(c.propStart))} – ${md(P(c.propEnd))}</b> · 재고 ${fmt(c.propQty)}개를 브랜드가 검토 중이에요.`));
       else A.push(card('일정 승인 <span class="chip brand">브랜드 액션</span>',
-        `제안 기간: <b>${md(P(c.propStart))} – ${md(P(c.propEnd))}</b> · 배정 재고 ${fmt(c.propQty)}개. 승인 시 이 기간이 캘린더에 잠깁니다(기간 독점).`,
+        `제안 기간: <b>${md(P(c.propStart))} – ${md(P(c.propEnd))}</b> · 배정 재고 ${fmt(c.propQty)}개. 승인하면 이 기간이 캘린더에 표시됩니다(플래티넘 이상이 잡은 기간은 상위 등급만 추가 진입).`,
         `<button class="pri" data-act="confirmSchedule" data-k="${c.id}">일정 승인</button>
          <button class="danger" data-act="rejectSchedule" data-k="${c.id}">반려 (재제안 요청)</button>`));
       break;
@@ -3573,7 +3585,7 @@ function scheduleModal(cid){
   const c=camp(cid),p=prod(c.productId);
   const slots=D_().campaigns.filter(x=>x.productId===p.id&&['SCHEDULE_CONFIRMED','LIVE'].includes(x.status));
   openModal(`<h3>판매 일정 제안 — ${esc(p.name)}</h3>
-  <div class="fld"><label>이미 확정된 기간 (선택 불가 · 기간 독점)</label>
+  <div class="fld"><label>이 상품의 확정 기간 — ${gfull(PRIORITY_TIER).replace(/<[^>]+>/g,'').trim()} 이상이 잡은 기간은 상위 등급만 진입 가능</label>
     <div class="slots">${slots.map(x=>`<div class="slot"><span class="rng">${md(P(x.start))} – ${md(P(x.end))}</span><span>${seller(x.sellerId).handle} 확정</span></div>`).join('')||'<div class="slot">아직 확정된 기간 없음</div>'}</div></div>
   <div class="fld"><label>시작일</label><input type="date" id="schStart" value="${ymd(addD(today(),7))}" min="${ymd(addD(today(),1))}"></div>
   <div class="fld"><label>기간</label><select id="schLen"><option value="3">3일</option><option value="5" selected>5일</option><option value="7">7일</option></select></div>
@@ -4087,7 +4099,8 @@ const ACT={
     if(!st){toast('시작일을 선택하세요');return;}
     const en=ymd(addD(P(st),len-1));
     const c=camp(cid);
-    if(overlaps(c.productId,st,en,cid)){toast('⚠ 이미 확정된 기간과 겹칩니다 — 다른 날짜를 선택하세요');return;}
+    const blk=periodBlock(c.productId,st,en,cid,c.sellerId);
+    if(blk){toast(`⚠ 이 기간은 ${gname(blk)} 등급 인플루언서가 선점했습니다 — ${gfull(PRIORITY_TIER).replace(/<[^>]+>/g,'').trim()} 이상만 함께 판매할 수 있어요. 다른 날짜를 선택해주세요`);return;}
     if(qty<=0){toast('배정 재고를 입력하세요');return;}
     const sl_=stockLeft(prod(c.productId),cid);if(qty>sl_){toast(`⚠ 배정 가능한 재고를 초과했어요 (잔여 ${fmt(sl_)}개) — 수량을 줄여주세요`);return;}
     c.propStart=st;c.propEnd=en;c.propQty=qty;
@@ -4102,10 +4115,11 @@ const ACT={
   },
   confirmSchedule(cid){
     const c=camp(cid);
-    if(overlaps(c.productId,c.propStart,c.propEnd,cid)){toast('⚠ 제안 이후 다른 판매가 같은 기간에 확정됐어요 — 반려하고 재제안을 요청하세요');return;}
+    const blk2=periodBlock(c.productId,c.propStart,c.propEnd,cid,c.sellerId);
+    if(blk2){toast(`⚠ 제안 이후 ${gname(blk2)} 등급 인플루언서가 이 기간을 선점했어요 — 반려하고 재제안을 요청하세요`);return;}
     const sl_=stockLeft(prod(c.productId),cid);if(c.propQty>sl_){toast(`⚠ 잔여 재고(${fmt(sl_)}개)보다 많은 수량입니다 — 재고를 늘리거나 반려하세요`);return;}
     c.start=c.propStart;c.end=c.propEnd;c.qty=c.propQty;
-    transition(cid,'SCHEDULE_CONFIRMED',`브랜드가 일정을 <b>승인</b>했습니다 · ${md(P(c.start))} – ${md(P(c.end))} 기간 독점 확정`);
+    transition(cid,'SCHEDULE_CONFIRMED',`브랜드가 일정을 <b>승인</b>했습니다 · ${md(P(c.start))} – ${md(P(c.end))} 기간 확정`);
     toast('일정 확정 — 캘린더 잠금');
   },
   rejectSchedule(cid){transition(cid,'TESTING','브랜드가 일정을 반려했습니다 · 다른 기간으로 재제안해주세요');toast('반려 — 인플루언서 재제안 대기');},
