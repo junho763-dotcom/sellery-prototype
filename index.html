@@ -37,7 +37,11 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);
   font-family:'IBM Plex Sans KR',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-  font-size:14.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  font-size:14.5px;line-height:1.65;
+  /* 2026-09-14 가독성 수정: (1) Windows에서 subpixel AA를 끄던 antialiased 제거,
+     (2) IBM Plex Sans KR은 700까지만 존재 → font-weight:800 지정 시 브라우저가 가짜볼드로
+     글자를 뭉개던 문제를 font-synthesis로 차단(실제 있는 700을 사용) */
+  font-synthesis-weight:none;font-synthesis:none}
 button{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12.5px;cursor:pointer;
   border:2px solid var(--line);border-radius:4px;padding:9px 16px;
   background:var(--surface);color:var(--ink);font-weight:700;letter-spacing:.02em;
