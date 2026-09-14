@@ -41,7 +41,9 @@ body{margin:0;background:var(--bg);color:var(--ink);
   /* 2026-09-14 가독성 수정: (1) Windows에서 subpixel AA를 끄던 antialiased 제거,
      (2) IBM Plex Sans KR은 700까지만 존재 → font-weight:800 지정 시 브라우저가 가짜볼드로
      글자를 뭉개던 문제를 font-synthesis로 차단(실제 있는 700을 사용) */
-  font-synthesis-weight:none;font-synthesis:none}
+  font-synthesis-weight:none;font-synthesis:none;
+  /* 한글은 단어(어절) 단위로만 줄바꿈 — '바인허/브'처럼 글자 중간에서 잘리지 않게 */
+  word-break:keep-all;overflow-wrap:break-word}
 button{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12.5px;cursor:pointer;
   border:2px solid var(--line);border-radius:4px;padding:9px 16px;
   background:var(--surface);color:var(--ink);font-weight:700;letter-spacing:.02em;
@@ -1151,6 +1153,14 @@ button:active{transform:translate(1px,1px)!important;box-shadow:var(--pxbl)!impo
 .hb-nm .picon,.sc-hist .picon,.rowitem .sub .picon,td .picon,h3 .picon{margin-right:4px}
 .hb-nm{display:inline-flex;align-items:center;gap:2px}
 h3 .picon{vertical-align:-22%}
+/* --- 표 열 정렬: 아이콘+핸들 한 줄, 브랜드명 줄바꿈 금지 (2026-09-14) --- */
+.who-cell{white-space:nowrap}
+.who-cell .plic{vertical-align:-2px;margin-right:4px}
+.who-cell .hd{font-family:'IBM Plex Mono','IBM Plex Sans KR',monospace;font-size:12px}
+.brd-cell{white-space:nowrap}
+.tblw table th,.tblw table td{word-break:keep-all}
+@media (max-width:900px){.who-cell,.brd-cell{white-space:normal}}
+
 /* ============================ /SKIN ============================ */
 </style>
 </head>
@@ -2880,7 +2890,7 @@ function vAdminHome(){
   <div class="tblw compact"><table>
   <thead><tr><th>캠페인</th><th>인플루언서</th><th>브랜드</th><th class="num">기간</th><th class="num">주문</th><th class="num">확정 매출</th><th class="num">플랫폼 순수익</th><th>상태</th></tr></thead>
   <tbody>${flist.map(c=>{const p=prod(c.productId);const k=calc(c);
-    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td class="nm"><b>${pIcon(p,22)} ${esc(p.name)}</b> <span style="color:var(--mute);font-size:11px">${c.id.toUpperCase()}${c.auto?' · 🤖 자동':''}${c.invited&&!c.auto?' · 브랜드 제안':''}</span></td><td>${platIcon(seller(c.sellerId))} ${seller(c.sellerId).handle}</td><td>${brand(p.brandId).name}</td>
+    return `<tr class="clickable" data-act="open" data-k="${c.id}"><td class="nm"><b>${pIcon(p,22)} ${esc(p.name)}</b> <span style="color:var(--mute);font-size:11px">${c.id.toUpperCase()}${c.auto?' · 🤖 자동':''}${c.invited&&!c.auto?' · 브랜드 제안':''}</span></td><td class="who-cell">${platIcon(seller(c.sellerId))}<span class="hd">${seller(c.sellerId).handle}</span></td><td class="brd-cell">${esc(brand(p.brandId).name)}</td>
     <td class="num">${c.start?md(P(c.start))+'–'+md(P(c.end)):'—'}</td><td class="num">${k.paidCnt}${k.refCnt?` <span style="color:var(--danger)">−${k.refCnt}</span>`:''}</td><td class="num">₩${fmt(k.net)}</td><td class="num">₩${fmt(k.pfNet)}</td><td>${stChip(c.status)}</td></tr>`;}).join('')||'<tr><td colspan="8" class="empty">해당 상태의 캠페인이 없습니다</td></tr>'}
   </tbody></table></div>`;
 }
